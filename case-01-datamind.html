@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 01 — Transformação de Dados | DataMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0d0d0d;
+  --surface: #141414;
+  --surface2: #1a1a1a;
+  --gold: #c9a84c;
+  --gold-light: #e2c97e;
+  --gold-border: rgba(201,168,76,0.2);
+  --gold-dim: rgba(201,168,76,0.06);
+  --white: #f5f0e8;
+  --text: #c8c2b8;
+  --muted: #6b6560;
+  --border: rgba(255,255,255,0.06);
+  --green: #4caf82;
+  --red: #e05555;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--text);font-family:'Montserrat',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden;}
+
+/* HEADER */
+.doc-header{background:var(--surface);border-bottom:1px solid var(--gold-border);padding:48px 64px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;}
+.brand{font-family:'Playfair Display',serif;font-size:13px;color:var(--gold);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
+.doc-title{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(26px,3.5vw,42px);color:var(--white);line-height:1.1;margin-bottom:12px;}
+.doc-sub{font-size:14px;color:var(--muted);font-weight:300;max-width:560px;line-height:1.6;}
+.doc-meta{text-align:right;}
+.meta-row{font-size:11px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;}
+.meta-row span{color:var(--text);font-weight:600;}
+.badge{display:inline-block;border:1px solid var(--gold-border);color:var(--gold);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;padding:5px 14px;font-weight:700;margin-top:12px;}
+
+/* NAV */
+.doc-nav{position:sticky;top:0;z-index:100;background:rgba(13,13,13,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 64px;display:flex;gap:0;overflow-x:auto;}
+.nav-item{padding:16px 20px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;cursor:pointer;}
+.nav-item:hover,.nav-item.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* BODY */
+.doc-body{max-width:960px;margin:0 auto;padding:64px 40px;}
+
+/* SECTION */
+.doc-section{margin-bottom:80px;padding-top:20px;}
+.sec-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.sec-eyebrow span{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.sec-eyebrow::after{content:'';width:28px;height:1px;background:var(--gold);opacity:0.4;}
+.sec-title{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(22px,2.8vw,34px);color:var(--white);line-height:1.15;margin-bottom:28px;}
+p{color:var(--text);font-size:15px;line-height:1.85;margin-bottom:16px;font-weight:300;}
+p strong{color:var(--white);font-weight:600;}
+
+/* CALLOUT */
+.callout{background:var(--gold-dim);border:1px solid var(--gold-border);border-left:3px solid var(--gold);padding:24px 28px;margin:24px 0;}
+.callout p{margin:0;font-size:15px;}
+
+/* PROBLEM LIST */
+.prob-list{display:flex;flex-direction:column;gap:2px;margin:28px 0;}
+.prob-item{background:var(--surface);border:1px solid var(--border);padding:24px 28px;display:flex;gap:20px;align-items:flex-start;transition:border-color 0.2s;}
+.prob-item:hover{border-color:var(--gold-border);}
+.prob-num{font-family:'Playfair Display',serif;font-weight:700;font-size:28px;color:var(--gold);line-height:1;flex-shrink:0;width:36px;}
+.prob-text h4{font-size:13px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.prob-text p{font-size:13px;margin:0;line-height:1.6;}
+
+/* ARCHITECTURE FLOW */
+.arch-flow{margin:36px 0;font-family:'Montserrat',monospace;font-size:12px;}
+.arch-layer{border:1px solid var(--border);margin-bottom:2px;transition:border-color 0.2s;}
+.arch-layer:hover{border-color:var(--gold-border);}
+.layer-header{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.layer-name{font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--white);}
+.layer-tool{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.layer-body{padding:0 24px 20px;display:none;}
+.layer-body.open{display:block;}
+.layer-desc{font-size:13px;color:var(--text);line-height:1.65;margin-bottom:10px;font-weight:300;}
+.layer-contract{font-size:11px;color:var(--muted);font-style:italic;}
+
+.arch-arrow{text-align:center;padding:6px 0;color:var(--gold);font-size:18px;opacity:0.5;}
+
+.split-layers{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;}
+
+/* PHASES */
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.phase{background:var(--surface);border:1px solid var(--border);padding:24px 20px;}
+.phase-num{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:rgba(201,168,76,0.15);line-height:1;margin-bottom:10px;}
+.phase-title{font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+.phase-items{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.phase-items li{font-size:12px;color:var(--muted);padding-left:12px;position:relative;line-height:1.5;}
+.phase-items li::before{content:'–';position:absolute;left:0;color:var(--gold);}
+
+/* INTERVENTIONS */
+.interventions{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:28px 0;}
+.intervention{background:var(--surface);border:1px solid var(--border);padding:24px;transition:border-color 0.2s;}
+.intervention:hover{border-color:var(--gold-border);}
+.int-tag{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.int-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:8px;}
+.int-desc{font-size:13px;color:var(--text);line-height:1.65;font-weight:300;}
+
+/* RESULTS TABLE */
+.results-table{width:100%;border-collapse:collapse;margin:28px 0;font-size:13px;}
+.results-table th{padding:12px 16px;background:var(--surface2);color:var(--gold);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;text-align:left;border-bottom:1px solid var(--gold-border);}
+.results-table td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
+.results-table tr:hover td{background:var(--surface);}
+.td-before{color:var(--red);font-weight:500;}
+.td-after{color:var(--green);font-weight:600;}
+.td-label{color:var(--white);font-weight:600;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:28px 0;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);padding:28px 24px;text-align:center;}
+.kpi-val{font-family:'Playfair Display',serif;font-weight:700;font-size:36px;color:var(--gold);line-height:1;margin-bottom:8px;}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:6px;}
+.kpi-method{font-size:11px;color:var(--muted);font-style:italic;line-height:1.4;}
+
+/* LESSONS */
+.lessons{display:flex;flex-direction:column;gap:2px;margin:28px 0;}
+.lesson{background:var(--surface);border:1px solid var(--border);padding:28px 32px;transition:border-color 0.2s;}
+.lesson:hover{border-color:var(--gold-border);}
+.lesson-num{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.lesson-title{font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--white);margin-bottom:12px;line-height:1.2;}
+.lesson-body{font-size:14px;color:var(--text);line-height:1.8;font-weight:300;}
+
+/* FRAMEWORKS */
+.fw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:28px 0;}
+.fw-card{background:var(--surface);border:1px solid var(--border);padding:20px 22px;}
+.fw-name{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:6px;letter-spacing:0.06em;}
+.fw-use{font-size:12px;color:var(--text);line-height:1.5;font-weight:300;}
+
+/* FOOTER */
+.doc-footer{background:var(--surface);border-top:1px solid var(--gold-border);padding:40px 64px;display:flex;justify-content:space-between;align-items:center;margin-top:80px;}
+.footer-brand{font-family:'Playfair Display',serif;font-size:16px;color:var(--white);}
+.footer-brand span{color:var(--gold);}
+.footer-links{display:flex;gap:20px;}
+.footer-link{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;transition:color 0.2s;}
+.footer-link:hover{color:var(--gold);}
+
+/* DIVIDER */
+.rule{width:100%;height:1px;background:var(--border);margin:48px 0;}
+
+@media(max-width:768px){
+  .doc-header{grid-template-columns:1fr;}.doc-meta{text-align:left;}
+  .doc-nav{padding:0 24px;}.doc-body{padding:40px 24px;}
+  .phases{grid-template-columns:1fr 1fr;}.interventions{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}.fw-grid{grid-template-columns:1fr;}
+  .split-layers{grid-template-columns:1fr;}.doc-footer{flex-direction:column;gap:16px;padding:32px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div>
+    <div class="brand">DataMind Consultoria · Case Study</div>
+    <div class="doc-title">Transformação de Dados:<br>Da Fragmentação à Infraestrutura de Decisão</div>
+    <div class="doc-sub">Reestruturação completa do ambiente analítico de uma operadora nacional de alto volume transacional — da arquitetura em camadas ao self-BI com fundação AI-First.</div>
+  </div>
+  <div class="doc-meta">
+    <div class="meta-row">Setor: <span>Alto volume transacional</span></div>
+    <div class="meta-row">Duração: <span>12 meses</span></div>
+    <div class="meta-row">Áreas impactadas: <span>7+</span></div>
+    <div class="meta-row">Consultor: <span>Marcos Diego Ribeiro</span></div>
+    <div class="badge">Cliente Confidencial</div>
+  </div>
+</div>
+
+<nav class="doc-nav">
+  <a class="nav-item active" onclick="scrollTo('s1')">01 Contexto</a>
+  <a class="nav-item" onclick="scrollTo('s2')">02 Problema</a>
+  <a class="nav-item" onclick="scrollTo('s3')">03 Consequências</a>
+  <a class="nav-item" onclick="scrollTo('s4')">04 Diagnóstico</a>
+  <a class="nav-item" onclick="scrollTo('s5')">05 Princípios</a>
+  <a class="nav-item" onclick="scrollTo('s6')">06 Arquitetura</a>
+  <a class="nav-item" onclick="scrollTo('s7')">07 Execução</a>
+  <a class="nav-item" onclick="scrollTo('s8')">08 Resultados</a>
+  <a class="nav-item" onclick="scrollTo('s9')">09 Lições</a>
+</nav>
+
+<div class="doc-body">
+
+<!-- S1 -->
+<div class="doc-section" id="s1">
+  <div class="sec-eyebrow"><span>01 · Contexto Estratégico</span></div>
+  <h2 class="sec-title">O momento certo para transformar.</h2>
+  <p>A empresa-cliente era uma <strong>organização com operação nacional em setor de alto volume transacional</strong>, caracterizado por alta competitividade, decisões operacionais em tempo real e crescente pressão por eficiência. A empresa atravessava um processo de <strong>reorganização interna conduzida por uma nova gestão executiva</strong> — um momento que, por natureza, abre espaço para mudanças estruturais que em períodos de estabilidade encontrariam maior resistência organizacional.</p>
+  <p>A nova liderança identificou rapidamente que o principal gargalo para executar sua agenda de transformação não era comercial nem operacional. Era <strong>informacional</strong>: a empresa não conseguia tomar decisões com velocidade e confiança porque seus dados não eram confiáveis, não estavam integrados e não estavam acessíveis para quem precisava deles no momento certo.</p>
+  <div class="callout">
+    <p>A contratação da DataMind Consultoria não seguiu um processo seletivo convencional. A liderança chegou até o projeto através de uma <strong>publicação técnica do consultor responsável</strong> — o que estabeleceu desde o início uma relação baseada em autoridade técnica reconhecida. O mandato era legítimo e a expectativa era de transformação sistêmica, não de entrega pontual.</p>
+  </div>
+  <p>O projeto nasceu com escopo de <strong>reestruturação da infraestrutura de decisão da organização</strong> — com respaldo executivo real e urgência estratégica clara.</p>
+</div>
+
+<div class="rule"></div>
+
+<!-- S2 -->
+<div class="doc-section" id="s2">
+  <div class="sec-eyebrow"><span>02 · O Problema Estrutural</span></div>
+  <h2 class="sec-title">Fragmentação sistêmica normalizada.</h2>
+  <p>Ao iniciar o diagnóstico, o que se encontrou não era um problema técnico isolado. Era uma <strong>fragmentação sistêmica</strong> que havia se normalizado ao longo do tempo — e que, por isso, era ainda mais difícil de combater.</p>
+  <p>A empresa operava com <strong>quatro camadas de dados desconectadas</strong>: um sistema operacional, um sistema financeiro, um sistema de vendas e uma camada informal composta por inúmeras planilhas, controles paralelos, extrações manuais e importações recorrentes. Cada área havia desenvolvido seus próprios processos de coleta e validação — não por má intenção, mas por necessidade.</p>
+  <div class="prob-list">
+    <div class="prob-item">
+      <div class="prob-num">1</div>
+      <div class="prob-text">
+        <h4>Ausência de fonte única de verdade</h4>
+        <p>Não existia uma camada de dados integrada que consolidasse as informações dos diferentes sistemas em um modelo único e governado. Cada extração era um processo manual, sujeito a erro e desatualização.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">2</div>
+      <div class="prob-text">
+        <h4>Dependência de processos manuais críticos</h4>
+        <p>O fluxo de informações entre sistemas dependia de intervenção humana constante — importações, exportações, cruzamentos em planilhas. Isso criava gargalos, inconsistências e retrabalho analítico crescente.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">3</div>
+      <div class="prob-text">
+        <h4>Time de BI operando como extrator, não como analista</h4>
+        <p>O time existente era composto por analistas com forte domínio de SQL, mas seu tempo estava inteiramente consumido em extração e reconciliação de dados — sem capacidade real de gerar análise estratégica.</p>
+      </div>
+    </div>
+  </div>
+  <p>Este não era um problema de falta de dados. A empresa <strong>tinha dados</strong> — em volume e variedade. O problema era estrutural: faltava arquitetura, governança e integração para transformá-los em informação confiável e acionável.</p>
+</div>
+
+<div class="rule"></div>
+
+<!-- S3 -->
+<div class="doc-section" id="s3">
+  <div class="sec-eyebrow"><span>03 · Consequência para o Negócio</span></div>
+  <h2 class="sec-title">O custo real da fragmentação.</h2>
+  <p>A fragmentação descrita na seção anterior não era apenas um inconveniente operacional. Ela tinha <strong>custo real e mensurável</strong> para a organização — em tempo, em dinheiro e em qualidade de decisão.</p>
+  <p>O time de dados era composto por <strong>7 profissionais</strong>: um engenheiro de dados, dois analistas de negócio, um cientista de dados, um responsável pela camada semântica e <strong>dois analistas com dedicação exclusiva a extrações SQL</strong>. Na prática, esses dois últimos operavam como extratores manuais — profissionais tecnicamente qualificados consumindo sua capacidade inteira em tarefas que não geravam análise, não geravam insight e não geravam decisão.</p>
+  <p>O processo de atualização de dados funcionava <strong>sob demanda</strong> — reativamente. Em um setor de alto volume transacional, onde decisões operacionais precisam ser tomadas com agilidade, essa latência representava risco direto ao negócio.</p>
+  <div class="interventions">
+    <div class="intervention">
+      <div class="int-tag">Impacto 01</div>
+      <div class="int-title">Custo de retrabalho analítico</div>
+      <div class="int-desc">Reuniões consumiam tempo não em decisão, mas em validação de números. Diferentes versões do mesmo indicador geravam debates improdutivos que atrasavam ações e corroíam a confiança na área de dados.</div>
+    </div>
+    <div class="intervention">
+      <div class="int-tag">Impacto 02</div>
+      <div class="int-title">Capacidade analítica bloqueada</div>
+      <div class="int-desc">Com o time ocupado em extração manual, não havia espaço para análise preditiva, modelagem de risco ou qualquer iniciativa de maior valor estratégico. A área era percebida como suporte operacional.</div>
+    </div>
+    <div class="intervention">
+      <div class="int-tag">Impacto 03</div>
+      <div class="int-title">Risco de decisão com dado errado</div>
+      <div class="int-desc">Em um ambiente onde cada área mantinha sua própria versão dos dados, a probabilidade de uma decisão estratégica ser tomada com base em informação incorreta ou desatualizada era real e recorrente.</div>
+    </div>
+    <div class="intervention">
+      <div class="int-tag">Conclusão</div>
+      <div class="int-title">O custo de não resolver era maior</div>
+      <div class="int-desc">Esse foi o argumento central da proposta apresentada à liderança executiva — estruturado com cases reais de mercado e análise de ROI de projetos similares em organizações de alto volume transacional.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- S4 -->
+<div class="doc-section" id="s4">
+  <div class="sec-eyebrow"><span>04 · Diagnóstico Técnico</span></div>
+  <h2 class="sec-title">Arquitetura frágil construída por adição.</h2>
+  <p>O diagnóstico técnico revelou uma arquitetura que havia crescido organicamente, por adição de camadas improvisadas, sem um desenho estrutural que sustentasse escala ou confiabilidade. O mapeamento seguiu os domínios do <strong>DAMA-DMBOK v2</strong> como estrutura de avaliação.</p>
+  <div class="prob-list">
+    <div class="prob-item">
+      <div class="prob-num">→</div>
+      <div class="prob-text">
+        <h4>Modelo de integração por query direta</h4>
+        <p>A movimentação de dados entre sistemas ocorria predominantemente por queries SQL executadas diretamente nas bases de origem. Sem pipelines formalizados, controle de versão ou documentação de dependências.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">→</div>
+      <div class="prob-text">
+        <h4>Power BI operando como banco de dados</h4>
+        <p>Em diversas situações, o Power BI havia assumido o papel de repositório de dados — conectando diretamente às fontes transacionais sem camada intermediária. Qualquer alteração de schema quebrava relatórios em produção.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">→</div>
+      <div class="prob-text">
+        <h4>Ausência de camada semântica consolidada</h4>
+        <p>Não existia uma camada central onde métricas fossem definidas, versionadas e governadas. Cada relatório calculava receita, inadimplência ou conversão à sua maneira — metric sprawl generalizado.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">→</div>
+      <div class="prob-text">
+        <h4>Sem separação entre camadas de dados</h4>
+        <p>A arquitetura não distinguia dados brutos de dados transformados, nem dados transformados de dados prontos para consumo analítico. Impossível garantir qualidade, rastrear origem ou reproduzir análises anteriores.</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout">
+    <p>O diagnóstico concluiu que a empresa operava no <strong>nível 1 de maturidade de dados (DAMA)</strong> — caracterizado por processos ad hoc, ausência de governança formal e dependência de heroísmo individual para manter o ambiente funcionando. A transição necessária era para o nível 3: processos definidos, arquitetura documentada e governança operacional ativa.</p>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- S5 -->
+<div class="doc-section" id="s5">
+  <div class="sec-eyebrow"><span>05 · Princípios de Arquitetura</span></div>
+  <h2 class="sec-title">Princípios antes de ferramentas.</h2>
+  <p>Antes de qualquer decisão técnica, foi necessário estabelecer <strong>princípios que guiariam todas as escolhas subsequentes</strong>. Os princípios foram definidos em conjunto com a equipe de TI — nenhum foi imposto, todos foram construídos e validados coletivamente. Isso garantiu adesão real, não apenas concordância formal.</p>
+  <div class="prob-list">
+    <div class="prob-item">
+      <div class="prob-num">P1</div>
+      <div class="prob-text">
+        <h4>Uma única fonte de verdade</h4>
+        <p>Toda métrica de negócio deveria ter uma única definição, em uma única camada, consumida por todos os sistemas downstream. Eliminar o metric sprawl era condição para qualquer dashboard ser confiável.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">P2</div>
+      <div class="prob-text">
+        <h4>Separação clara de responsabilidades por camada</h4>
+        <p>Cada camada com sua responsabilidade, suas regras de qualidade e seu contrato de dados. O maior debate com a TI — que temia latência — foi resolvido com estudos demonstrando que separação de camadas reduz latência no médio prazo ao eliminar reprocessamentos.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">P3</div>
+      <div class="prob-text">
+        <h4>Governança como habilitador, não burocracia</h4>
+        <p>Governança implementada de forma progressiva, começando pelos indicadores mais críticos. O objetivo não era documentar tudo — era garantir que decisões executivas fossem baseadas em dados com procedência rastreável.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">P4</div>
+      <div class="prob-text">
+        <h4>Self-service como destino, não ponto de partida</h4>
+        <p>Self-service analytics seria o objetivo final — mas só seria liberado após a camada de dados estar estável e governada. Democratizar acesso a dados não confiáveis seria pior do que não democratizar.</p>
+      </div>
+    </div>
+    <div class="prob-item">
+      <div class="prob-num">P5</div>
+      <div class="prob-text">
+        <h4>Documentação como ativo estratégico</h4>
+        <p>Toda decisão de arquitetura e definição de métrica seria documentada em linguagem consumível por agentes de IA — alicerce para a evolução futura do ambiente para uma operação AI-First.</p>
+      </div>
+    </div>
+  </div>
+  <div class="fw-grid">
+    <div class="fw-card"><div class="fw-name">TOGAF ADM</div><div class="fw-use">Estrutura de arquitetura corporativa — estado atual, alvo e roadmap por domínio</div></div>
+    <div class="fw-card"><div class="fw-name">DAMA-DMBOK v2</div><div class="fw-use">Domínios de gestão de dados: arquitetura, qualidade, governança e integração</div></div>
+    <div class="fw-card"><div class="fw-name">dbt Best Practices</div><div class="fw-use">Versionamento de modelos, documentação de lineage e testes de qualidade embutidos</div></div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- S6 -->
+<div class="doc-section" id="s6">
+  <div class="sec-eyebrow"><span>06 · Arquitetura Implementada</span></div>
+  <h2 class="sec-title">Lakehouse em camadas com fundação AI-First.</h2>
+  <p>A arquitetura implementada seguiu o modelo <strong>Lakehouse em camadas</strong>, referenciado pelo DAMA-DMBOK v2 como padrão para ambientes que precisam equilibrar flexibilidade analítica com governança operacional. Clique em cada camada para ver os detalhes.</p>
+
+  <div class="arch-flow">
+
+    <div class="arch-layer">
+      <div class="layer-header" onclick="toggleLayer(this)">
+        <span class="layer-name">⬡ Fontes de Origem</span>
+        <span class="layer-tool">Sistema Operacional · Financeiro · Vendas · Planilhas</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-desc">Quatro sistemas desconectados operando com esquemas e lógicas independentes. Sem contrato de dados formal entre eles. Ponto de partida do fluxo — nenhuma transformação ocorre aqui.</div>
+        <div class="layer-contract">Contrato: dado bruto, no estado em que o sistema produz.</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-layer" style="border-color:rgba(201,168,76,0.15)">
+      <div class="layer-header" onclick="toggleLayer(this)">
+        <span class="layer-name">📥 Camada RAW</span>
+        <span class="layer-tool">BigQuery</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-desc">Dados ingeridos no estado bruto, sem transformação. Imutáveis após ingestão. Rastreabilidade total de origem — cada registro sabe de onde veio e quando chegou. Funciona como "fotografia histórica" do que os sistemas produziram.</div>
+        <div class="layer-contract">Contrato: dado como veio da fonte, versionado, imutável.</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-layer" style="border-color:rgba(201,168,76,0.2)">
+      <div class="layer-header" onclick="toggleLayer(this)">
+        <span class="layer-name">✓ Camada TRUSTED</span>
+        <span class="layer-tool">BigQuery + dbt</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-desc">Dados limpos, validados e padronizados. Regras de qualidade aplicadas via dbt — testes automáticos de nulidade, unicidade e integridade referencial. Deduplicação e padronização de formatos. Aqui o dado é "certificado" como confiável.</div>
+        <div class="layer-contract">Contrato: dado confiável, padronizado, pronto para modelagem.</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-layer" style="border-color:rgba(201,168,76,0.3)">
+      <div class="layer-header" onclick="toggleLayer(this)">
+        <span class="layer-name">◆ Camada REFINED</span>
+        <span class="layer-tool">BigQuery + dbt</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-desc">Modelos de negócio construídos. Métricas definidas, governadas e documentadas. Single source of truth por domínio — receita, inadimplência, conversão e demais KPIs críticos têm uma única definição versionada no dbt. Qualquer alteração de definição é rastreável.</div>
+        <div class="layer-contract">Contrato: métrica com definição única, rastreável e versionada.</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-layer">
+      <div class="layer-header" onclick="toggleLayer(this)">
+        <span class="layer-name">🔬 Camada Semântica / Análise</span>
+        <span class="layer-tool">Hex</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-desc">Análises exploratórias, modelos preditivos e notebooks analíticos para o cientista de dados. O Hex consome a camada Refined — garantindo que análises avançadas sejam construídas sobre dados governados, não sobre extrações ad hoc.</div>
+        <div class="layer-contract">Contrato: análise reproduzível, documentada, construída sobre dados governados.</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow">↓</div>
+
+    <div class="split-layers">
+      <div class="arch-layer">
+        <div class="layer-header" onclick="toggleLayer(this)">
+          <span class="layer-name">📊 Consumo Analítico</span>
+          <span class="layer-tool">Omni Analytics</span>
+        </div>
+        <div class="layer-body">
+          <div class="layer-desc">Analistas e gestores operacionais. Maior flexibilidade para exploração, cruzamento de dados e construção de análises ad hoc sem depender do time de engenharia. Self-service com guardrails de governança.</div>
+          <div class="layer-contract">Perfil: Analistas, gestores, operação, controladoria, vendas.</div>
+        </div>
+      </div>
+      <div class="arch-layer">
+        <div class="layer-header" onclick="toggleLayer(this)">
+          <span class="layer-name">📈 Consumo Executivo</span>
+          <span class="layer-tool">Power BI</span>
+        </div>
+        <div class="layer-body">
+          <div class="layer-desc">C-level e diretores. Visão consolidada com familiaridade já estabelecida com a ferramenta. Dashboards curados com os indicadores estratégicos — sem necessidade de exploração, com foco em decisão rápida.</div>
+          <div class="layer-contract">Perfil: CEO, diretores, C-level, comitê executivo.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-layer" style="border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.03)">
+      <div class="layer-header" onclick="toggleLayer(this)">
+        <span class="layer-name">🤖 Camada AI-First</span>
+        <span class="layer-tool">Em implantação · Próxima fase</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-desc">Agentes de IA consumindo documentação estruturada. Automação de processos analíticos recorrentes. Próxima fase planejada: assistente executivo em linguagem natural para a diretoria — respostas a perguntas de negócio sem intermediário humano. A fundação construída nas camadas anteriores é o pré-requisito técnico para essa evolução. Dados confiáveis na fundação viabilizam IA confiável na superfície.</div>
+        <div class="layer-contract">Objetivo: decisão executiva sem dependência de analista como intermediário.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- S7 -->
+<div class="doc-section" id="s7">
+  <div class="sec-eyebrow"><span>07 · Execução e Gestão da Mudança</span></div>
+  <h2 class="sec-title">Entregar valor antes de entregar a solução.</h2>
+  <p>A execução seguiu uma lógica que poucos projetos de transformação de dados adotam explicitamente: <strong>entregar valor antes de entregar a solução.</strong> A abordagem inicial foi de big bang intencional — movimentação rápida para centralizar dados críticos e entregar os primeiros dashboards para a diretoria. O objetivo não era perfeição técnica. Era construir credibilidade institucional.</p>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-num">0</div>
+      <div class="phase-title">Big Bang + Incêndios</div>
+      <ul class="phase-items">
+        <li>Centralização emergencial de dados críticos</li>
+        <li>Primeiros dashboards para diretoria</li>
+        <li>4 intervenções analíticas urgentes</li>
+        <li>Construção de credibilidade institucional</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">1</div>
+      <div class="phase-title">Fundação</div>
+      <ul class="phase-items">
+        <li>Arquitetura Raw → Trusted → Refined</li>
+        <li>Implementação do dbt</li>
+        <li>Governança de métricas críticas</li>
+        <li>Catálogo de dados inicial</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">2</div>
+      <div class="phase-title">Expansão</div>
+      <ul class="phase-items">
+        <li>Dashboards por perfil de usuário</li>
+        <li>Self-BI para usuários-chave</li>
+        <li>Documentação estruturada para IA</li>
+        <li>Reconfiguração do time</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">3</div>
+      <div class="phase-title">AI-First</div>
+      <ul class="phase-items">
+        <li>Agentes consumindo documentação</li>
+        <li>Automação de processos recorrentes</li>
+        <li>Planejamento do assistente executivo</li>
+        <li>40% redução de retrabalho</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin:36px 0 20px;font-weight:700;">Intervenções críticas na fase de transição</h3>
+
+  <div class="interventions">
+    <div class="intervention">
+      <div class="int-tag">Contábil</div>
+      <div class="int-title">Inconsistências no fechamento contábil</div>
+      <div class="int-desc">Dados contábeis não fechavam com os sistemas de origem. A análise identificou divergências de conciliação entre o sistema financeiro e controles paralelos. Reforçou a urgência de uma camada Trusted com regras de qualidade explícitas.</div>
+    </div>
+    <div class="intervention">
+      <div class="int-tag">Operacional</div>
+      <div class="int-title">Queda na conversão de pagamentos via Pix</div>
+      <div class="int-desc">Análise identificou que o QR Code não estava sendo renderizado corretamente em dispositivos móveis de tela menor — impacto direto em receita. Só foi possível com a centralização inicial dos dados de dispositivo e conversão.</div>
+    </div>
+    <div class="intervention">
+      <div class="int-tag">Marketing</div>
+      <div class="int-title">Mapeamento de campanhas e testes A/B</div>
+      <div class="int-desc">Estruturação do primeiro ambiente de análise de campanhas com rastreabilidade real. Testes A/B passaram a ter metodologia formal: grupos de controle definidos, métricas acordadas antes do teste, análise de significância estatística.</div>
+    </div>
+    <div class="intervention">
+      <div class="int-tag">Estratégico</div>
+      <div class="int-title">Análise de impacto para realocação de investimentos</div>
+      <div class="int-desc">Primeira entrega para comitê executivo: análise de cenários sobre impacto financeiro de diferentes alocações de investimento. Marcou a transição da área de dados de suporte operacional para parceira de decisão estratégica.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>A resistência inicial — TI, financeiro e diretoria — foi tratada não como obstáculo político, mas como informação. A estratégia seguiu o modelo <strong>ADKAR de gestão de mudança</strong>: primeiro construir consciência do problema, depois desejo de mudar, depois conhecimento de como mudar. As entregas rápidas da Fase 0 foram o instrumento mais eficaz dessa estratégia — nada convence mais do que ver funcionando.</p>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- S8 -->
+<div class="doc-section" id="s8">
+  <div class="sec-eyebrow"><span>08 · Resultados Mensuráveis</span></div>
+  <h2 class="sec-title">Antes e depois em números.</h2>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-val">40%</div>
+      <div class="kpi-label">Redução de retrabalho</div>
+      <div class="kpi-method">Medido por volume de tarefas operacionais no ClickUp antes e após automação dos pipelines</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">~R$1,5M</div>
+      <div class="kpi-label">Economia/mês estimada</div>
+      <div class="kpi-method">Estimativa do consultor baseada em modelagem de custos operacionais e redução de perdas por inadimplência</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">12 meses</div>
+      <div class="kpi-label">Da fragmentação ao self-BI</div>
+      <div class="kpi-method">Ciclo completo: diagnóstico, arquitetura, implementação, automação e AI-First</div>
+    </div>
+  </div>
+
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Dimensão</th>
+        <th>Antes</th>
+        <th>Depois</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-label">Atualização de dados</td>
+        <td class="td-before">Sob demanda, manual, reativo</td>
+        <td class="td-after">Cadências definidas + tempo real</td>
+      </tr>
+      <tr>
+        <td class="td-label">Fontes de dados</td>
+        <td class="td-before">4 sistemas desconectados + planilhas</td>
+        <td class="td-after">1 lake centralizado (Raw→Trusted→Refined)</td>
+      </tr>
+      <tr>
+        <td class="td-label">Definição de métricas</td>
+        <td class="td-before">Múltiplas versões conflitantes</td>
+        <td class="td-after">Única por domínio, governada no dbt</td>
+      </tr>
+      <tr>
+        <td class="td-label">Retrabalho analítico</td>
+        <td class="td-before">Linha de base (ClickUp)</td>
+        <td class="td-after">Redução de 40% (ClickUp)</td>
+      </tr>
+      <tr>
+        <td class="td-label">Perfil do time</td>
+        <td class="td-before">2 extratores SQL sem análise real</td>
+        <td class="td-after">Time 100% analítico + 2 AI-First</td>
+      </tr>
+      <tr>
+        <td class="td-label">Capacidade de experimentação</td>
+        <td class="td-before">Inexistente</td>
+        <td class="td-after">Testes A/B formais + análise preditiva</td>
+      </tr>
+      <tr>
+        <td class="td-label">Decisões executivas</td>
+        <td class="td-before">Baseadas em planilhas conflitantes</td>
+        <td class="td-after">Dados centralizados em tempo real</td>
+      </tr>
+      <tr>
+        <td class="td-label">Redução de custos operacionais</td>
+        <td class="td-before">—</td>
+        <td class="td-after">~R$1,5M/mês (estimativa modelada)</td>
+      </tr>
+      <tr>
+        <td class="td-label">Assistente executivo com IA</td>
+        <td class="td-before">Inexistente</td>
+        <td class="td-after">Em roadmap — fundação construída</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="rule"></div>
+
+<!-- S9 -->
+<div class="doc-section" id="s9">
+  <div class="sec-eyebrow"><span>09 · Lições Estratégicas</span></div>
+  <h2 class="sec-title">O que este projeto ensinou.</h2>
+  <p>Projetos de transformação de dados falham com mais frequência por razões organizacionais do que por razões técnicas. Essa foi a principal confirmação deste projeto — e a principal lição que orienta a abordagem da DataMind em engajamentos subsequentes.</p>
+
+  <div class="lessons">
+    <div class="lesson">
+      <div class="lesson-num">Lição 01</div>
+      <div class="lesson-title">Dados fragmentados são um problema de governança, não de tecnologia.</div>
+      <div class="lesson-body">A pergunta errada é "qual plataforma vamos usar?" A pergunta certa é "quem é responsável por cada dado e qual é a definição acordada de cada métrica?" Sem essa resposta, qualquer arquitetura técnica reproduz o mesmo caos em infraestrutura mais cara. A definição de princípios antes da escolha de ferramentas foi determinante neste projeto.</div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-num">Lição 02</div>
+      <div class="lesson-title">Entregar valor antes de entregar a solução é uma estratégia, não uma concessão.</div>
+      <div class="lesson-body">Em ambientes em reorganização, credibilidade precede mandato. Você não recebe espaço para construir a solução certa sem primeiro provar que consegue resolver o problema imediato. As quatro intervenções da fase de transição não foram desvios do projeto — foram o projeto, na sua forma mais visível e politicamente relevante.</div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-num">Lição 03</div>
+      <div class="lesson-title">Resistência de stakeholders é informação, não obstáculo.</div>
+      <div class="lesson-body">A TI temia instabilidade. O financeiro temia custo. A diretoria temia investimento sem retorno. Cada resistência era legítima — e apontava para um risco real que precisava ser endereçado. Tratar resistência como informação muda a dinâmica do projeto: em vez de vencer argumentos, você incorpora preocupações.</div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-num">Lição 04</div>
+      <div class="lesson-title">Self-service sem governança é caos democratizado.</div>
+      <div class="lesson-body">Democratizar acesso a dados não confiáveis, sem definições acordadas e sem camada semântica estruturada, é pior do que não democratizar. A sequência correta foi mantida mesmo sob pressão: estruturar, governar, depois abrir. O self-service que chegou ao usuário final foi construído sobre fundação confiável.</div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-num">Lição 05</div>
+      <div class="lesson-title">Documentação é infraestrutura, não burocracia.</div>
+      <div class="lesson-body">Neste projeto, documentação foi tratada como ativo estratégico desde o início. Essa decisão revelou seu valor na fase de automação: os agentes de IA implementados consumiram essa documentação como base de conhecimento. Sem ela, a evolução AI-First não seria possível. <strong>Dados confiáveis na fundação viabilizam IA confiável na superfície.</strong></div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-num">Lição 06</div>
+      <div class="lesson-title">A maior transformação não foi técnica. Foi cultural.</div>
+      <div class="lesson-body">O indicador mais significativo do sucesso deste projeto foi o momento em que a diretoria passou a convocar a área de dados para discutir decisões estratégicas — não apenas para validar números depois que a decisão já havia sido tomada. Essa mudança de percepção não acontece por decreto. Acontece por entregas consistentes, linguagem executiva e presença nos momentos certos.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>Replicabilidade.</strong> As lições deste projeto não são específicas ao setor ou ao porte da empresa. O padrão de fragmentação descrito é encontrado em organizações de todos os tamanhos e setores. A sequência testada e validada: <strong>diagnóstico honesto → princípios antes de ferramentas → valor imediato → fundação estruturada → governança → self-service → automação → AI-First.</strong></p>
+  </div>
+</div>
+
+</div>
+
+<div class="doc-footer">
+  <div class="footer-brand">DataMind<span>.</span> · Marcos Diego Ribeiro</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank">LinkedIn ↗</a>
+    <a class="footer-link" href="#">Portfólio</a>
+    <a class="footer-link" href="#">Contato</a>
+  </div>
+</div>
+
+<script>
+function toggleLayer(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.layer-body').forEach(b => b.classList.remove('open'));
+  if (!isOpen) body.classList.add('open');
+}
+
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Active nav on scroll
+const sections = document.querySelectorAll('.doc-section');
+const navItems = document.querySelectorAll('.nav-item');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navItems.forEach((n, i) => {
+    n.classList.remove('active');
+    if (current === 's'+(i+1)) n.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
