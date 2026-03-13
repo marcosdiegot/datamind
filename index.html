@@ -355,6 +355,7 @@ section { padding: 96px 48px; position: relative; }
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 64px; align-items: start; margin-top: 52px;
 }
+.metodo-diff-col { display: flex; flex-direction: column; justify-content: center; }
 
 .metodo-text p { font-size: 15px; color: var(--text); line-height: 1.85; margin-bottom: 18px; }
 .metodo-text p strong { color: var(--white); font-weight: 600; }
@@ -798,6 +799,7 @@ footer {
   .kpi-item:nth-child(2n) { border-bottom: 1px solid var(--border); }
   .kpi-item:nth-last-child(-n+2) { border-bottom: none; }
   .metodo-grid { grid-template-columns: 1fr; }
+  .metodo-diff-col { width: 100%; }
   .artigos-grid { grid-template-columns: 1fr 1fr; }
   .servicos-grid { grid-template-columns: 1fr 1fr; }
   .stack-grid { grid-template-columns: 1fr; }
@@ -923,6 +925,7 @@ footer {
     <div class="sec-label">Método</div>
     <h2 class="sec-title">AI-First não é usar IA.<br><span class="hl">É arquitetura de orquestração.</span></h2>
 
+    <!-- LINHA 1: texto + comparação em 2 colunas -->
     <div class="metodo-grid">
       <div class="metodo-text">
         <p>
@@ -934,7 +937,9 @@ footer {
         <p>
           Filosofia: <em>"Evidência antes de público. Velocidade com rigor. O builder-first mindset."</em>
         </p>
+      </div>
 
+      <div class="metodo-diff-col">
         <div class="aifirst-diff">
           <div class="diff-card bad">
             <div class="diff-label">AI-Eventually</div>
@@ -952,8 +957,10 @@ footer {
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="squad-wrap">
+    <!-- LINHA 2: diagrama + supervisão em largura total -->
+    <div class="squad-wrap" style="margin-top:40px;">
         <div class="squad-title">Fluxo de orquestração — visão geral</div>
 
         <!-- DIAGRAMA HTML/CSS RESPONSIVO -->
@@ -1063,8 +1070,7 @@ footer {
           </div>
         </div>
 
-      </div><!-- /squad-wrap -->
-    </div>
+    </div><!-- /squad-wrap -->
   </div>
 </section>
 
