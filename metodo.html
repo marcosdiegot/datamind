@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Método Operacional AI-First · DataMind</title>
+  <meta name="description" content="O método operacional completo da DataMind AI-First: 6 etapas, 3 princípios, governança contínua. IA com propósito. Inteligência com método." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #050810;
+      --bg2:     #080d18;
+      --bg3:     #0d1525;
+      --border:  rgba(255,255,255,0.07);
+      --blue:    #3b82f6;
+      --cyan:    #22d3ee;
+      --purple:  #8b5cf6;
+      --amber:   #f59e0b;
+      --green:   #10b981;
+      --red:     #ef4444;
+      --white:   #f8fafc;
+      --text:    #94a3b8;
+      --mono:    'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── PARTÍCULAS DE FUNDO ─── */
+    #particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: float-particle linear infinite;
+      opacity: 0;
+    }
+    @keyframes float-particle {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(5,8,16,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 36px; width: auto; }
+    .nav-back {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text); text-decoration: none; font-size: 14px;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--cyan); }
+    .nav-back svg { transition: transform .2s; }
+    .nav-back:hover svg { transform: translateX(-3px); }
+    .nav-cta {
+      background: var(--blue); color: #fff;
+      padding: 9px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      transition: background .2s, transform .2s;
+    }
+    .nav-cta:hover { background: #2563eb; transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative; z-index: 1;
+      padding: 140px 40px 80px;
+      max-width: 1100px; margin: 0 auto;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+      color: var(--cyan); text-transform: uppercase;
+      border: 1px solid rgba(34,211,238,.25);
+      padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -.03em; margin-bottom: 24px;
+    }
+    .hero h1 em { font-style: normal; color: var(--cyan); }
+    .hero-sub {
+      font-size: 18px; color: var(--text); max-width: 620px; margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    /* ─── PRINCÍPIOS ─── */
+    .section { position: relative; z-index: 1; padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+    .sec-label {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 16px;
+    }
+    .sec-title {
+      font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+      line-height: 1.15; letter-spacing: -.02em; margin-bottom: 48px;
+    }
+    .sec-title .hl { color: var(--cyan); }
+
+    .principios-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .principio-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s;
+    }
+    .principio-card:hover { transform: translateY(-4px); border-color: rgba(34,211,238,.3); }
+    .principio-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--card-color, var(--cyan));
+    }
+    .principio-num {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+      color: var(--text); margin-bottom: 16px;
+    }
+    .principio-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(34,211,238,.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .principio-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .principio-card p { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+    /* ─── SEPARADOR ─── */
+    .divider {
+      position: relative; z-index: 1;
+      height: 1px; background: var(--border);
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    /* ─── FLUXO OPERACIONAL ─── */
+    .fluxo-section {
+      position: relative; z-index: 1;
+      padding: 80px 40px; max-width: 1100px; margin: 0 auto;
+    }
+    .fluxo-header { text-align: center; margin-bottom: 72px; }
+
+    /* Linha de progresso vertical */
+    .etapas-container { position: relative; }
+    .etapas-line {
+      position: absolute; left: 39px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--blue), var(--purple), var(--cyan), var(--amber), var(--green), var(--cyan));
+      opacity: .3;
+    }
+
+    .etapa {
+      display: grid; grid-template-columns: 80px 1fr;
+      gap: 32px; margin-bottom: 64px;
+      position: relative;
+    }
+    .etapa:last-child { margin-bottom: 0; }
+
+    .etapa-num-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+      position: relative; z-index: 2;
+    }
+    .etapa-num {
+      width: 80px; height: 80px; border-radius: 20px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: var(--mono); font-weight: 700;
+      border: 2px solid; flex-shrink: 0;
+      position: relative; overflow: hidden;
+    }
+    .etapa-num::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--etapa-bg, rgba(59,130,246,.1));
+    }
+    .etapa-num-text { font-size: 28px; line-height: 1; position: relative; z-index: 1; }
+    .etapa-num-label { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; opacity: .7; position: relative; z-index: 1; }
+
+    .etapa-body {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px;
+      position: relative; overflow: hidden;
+      transition: border-color .3s;
+    }
+    .etapa-body:hover { border-color: rgba(255,255,255,.15); }
+    .etapa-body::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+      background: var(--etapa-accent, var(--blue));
+      border-radius: 4px 0 0 4px;
+    }
+
+    .etapa-tag {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--etapa-color, var(--blue));
+      margin-bottom: 10px;
+    }
+    .etapa-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .etapa-why {
+      font-size: 13px; color: var(--cyan); font-weight: 600;
+      margin-bottom: 14px; font-style: italic;
+    }
+    .etapa-desc { font-size: 15px; color: var(--text); line-height: 1.75; margin-bottom: 28px; }
+
+    /* Grid de detalhes dentro da etapa */
+    .etapa-details {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .detail-item {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .detail-item-title {
+      font-size: 12px; font-weight: 700; color: var(--white);
+      margin-bottom: 4px;
+    }
+    .detail-item-sub { font-size: 11px; color: var(--text); }
+
+    /* Squad de agentes */
+    .squad-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; margin-top: 4px;
+    }
+    .squad-agent {
+      border-radius: 12px; padding: 16px;
+      border: 1px solid; position: relative; overflow: hidden;
+    }
+    .squad-agent::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--agent-bg); opacity: .08;
+    }
+    .agent-name {
+      font-size: 14px; font-weight: 700; margin-bottom: 4px;
+      position: relative; z-index: 1;
+    }
+    .agent-role {
+      font-size: 11px; color: var(--text); line-height: 1.5;
+      position: relative; z-index: 1;
+    }
+    .agent-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-bottom: 10px; position: relative; z-index: 1;
+    }
+
+    /* Bifurcação de entrega */
+    .bifurcacao {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px;
+    }
+    .bifurcacao-item {
+      border-radius: 12px; padding: 20px;
+      border: 1px solid; position: relative; overflow: hidden;
+    }
+    .bifurcacao-item::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--bif-bg); opacity: .07;
+    }
+    .bif-tool {
+      font-family: var(--mono); font-size: 11px; font-weight: 700;
+      letter-spacing: .08em; margin-bottom: 6px;
+      position: relative; z-index: 1;
+    }
+    .bif-type {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text); margin-bottom: 12px;
+      position: relative; z-index: 1;
+    }
+    .bif-list { list-style: none; position: relative; z-index: 1; }
+    .bif-list li {
+      font-size: 13px; color: var(--text); padding: 3px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .bif-list li::before {
+      content: '→'; color: var(--bif-color); font-size: 11px; flex-shrink: 0;
+    }
+
+    /* Aprovação final */
+    .aprovacao-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 4px;
+    }
+    .aprov-item {
+      background: rgba(16,185,129,.06);
+      border: 1px solid rgba(16,185,129,.2);
+      border-radius: 10px; padding: 16px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .aprov-title { font-size: 13px; font-weight: 700; color: var(--green); }
+    .aprov-sub { font-size: 12px; color: var(--text); }
+
+    /* ─── GOVERNANÇA ─── */
+    .gov-section {
+      position: relative; z-index: 1;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 40px;
+    }
+    .gov-inner { max-width: 1100px; margin: 0 auto; }
+    .gov-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(34,211,238,.08);
+      border: 1px solid rgba(34,211,238,.2);
+      border-radius: 100px; padding: 6px 16px;
+      font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 20px;
+    }
+    .gov-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 1.5s infinite; }
+
+    .gov-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 48px; }
+    .gov-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s;
+    }
+    .gov-card:hover { transform: translateY(-4px); border-color: rgba(34,211,238,.25); }
+    .gov-card-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(34,211,238,.08);
+      border: 1px solid rgba(34,211,238,.15);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .gov-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .gov-card p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 14px; }
+    .gov-card-why {
+      font-size: 12px; color: var(--cyan);
+      font-style: italic; border-left: 2px solid rgba(34,211,238,.3);
+      padding-left: 12px; line-height: 1.6;
+    }
+
+    /* ─── DIFERENCIAIS ─── */
+    .diff-section {
+      position: relative; z-index: 1;
+      padding: 80px 40px; max-width: 1100px; margin: 0 auto;
+    }
+    .diff-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px;
+    }
+    .diff-card-item {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+      transition: transform .3s, border-color .3s;
+      position: relative; overflow: hidden;
+    }
+    .diff-card-item:hover { transform: translateY(-3px); border-color: rgba(59,130,246,.3); }
+    .diff-card-item::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      opacity: 0; transition: opacity .3s;
+    }
+    .diff-card-item:hover::after { opacity: 1; }
+    .diff-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(59,130,246,.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .diff-card-item h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+    .diff-card-item p { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+    /* ─── CTA FINAL ─── */
+    .cta-section {
+      position: relative; z-index: 1;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 80px 40px;
+      text-align: center;
+    }
+    .cta-inner { max-width: 640px; margin: 0 auto; }
+    .cta-section h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; margin-bottom: 16px; }
+    .cta-section p { font-size: 16px; color: var(--text); margin-bottom: 36px; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue); color: #fff;
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background .2s, transform .2s;
+    }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent; color: var(--white);
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      border: 1px solid var(--border);
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: border-color .2s, transform .2s;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.3); transform: translateY(-2px); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1100px; margin: 0 auto;
+    }
+    footer p { font-size: 13px; color: var(--text); }
+    footer a { color: var(--text); text-decoration: none; transition: color .2s; }
+    footer a:hover { color: var(--cyan); }
+
+    /* ─── REVEAL ANIMATION ─── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVO ─── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 120px 20px 60px; }
+      .section, .fluxo-section, .diff-section { padding: 60px 20px; }
+      .gov-section { padding: 60px 20px; }
+      .cta-section { padding: 60px 20px; }
+      footer { padding: 28px 20px; flex-direction: column; gap: 12px; text-align: center; }
+
+      .principios-grid { grid-template-columns: 1fr; }
+      .gov-grid { grid-template-columns: 1fr; }
+      .diff-grid { grid-template-columns: 1fr 1fr; }
+
+      .etapa { grid-template-columns: 60px 1fr; gap: 20px; }
+      .etapa-num { width: 60px; height: 60px; border-radius: 14px; }
+      .etapa-num-text { font-size: 22px; }
+      .etapas-line { left: 29px; }
+      .etapa-body { padding: 24px; }
+
+      .squad-grid { grid-template-columns: 1fr 1fr; }
+      .bifurcacao { grid-template-columns: 1fr; }
+      .aprovacao-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .diff-grid { grid-template-columns: 1fr; }
+      .etapa-details { grid-template-columns: 1fr 1fr; }
+      .squad-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PARTÍCULAS -->
+<div id="particles"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="datamind_final_escuro_limpo.png" alt="DataMind" />
+  </a>
+  <a href="index.html" class="nav-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Voltar ao hub
+  </a>
+  <a href="https://wa.me/5511995772800" target="_blank" class="nav-cta">Falar comigo</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero reveal">
+  <div class="hero-eyebrow">
+    <span></span>
+    DataMind AI-First · Método Operacional · 2026
+  </div>
+  <h1>IA com <em>propósito.</em><br>Inteligência com <em>método.</em></h1>
+  <p class="hero-sub">Cada projeto nasce de uma ideia humana, percorre um fluxo estruturado com início, meio e fim definidos, e entrega resultados confiáveis, rastreáveis e visualmente precisos. A IA é ferramenta — não substituto do julgamento.</p>
+</section>
+
+<!-- PRINCÍPIOS -->
+<section class="section reveal">
+  <div class="sec-label">Fundação</div>
+  <h2 class="sec-title">3 princípios que <span class="hl">nunca são negociados</span></h2>
+
+  <div class="principios-grid">
+
+    <div class="principio-card" style="--card-color: #22d3ee;">
+      <div class="principio-num">PRINCÍPIO 01</div>
+      <div class="principio-icon" style="background: rgba(34,211,238,.1);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h3>IA com propósito, não por impulso</h3>
+      <p>Cada ferramenta é acionada com intenção clara. Sem loops infinitos, sem delegação cega. A IA executa; o julgamento é humano.</p>
+    </div>
+
+    <div class="principio-card" style="--card-color: #3b82f6;">
+      <div class="principio-num">PRINCÍPIO 02</div>
+      <div class="principio-icon" style="background: rgba(59,130,246,.1);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.66 0 3.21.45 4.54 1.24"/>
+          <path d="M16 5l3 3-3 3"/>
+        </svg>
+      </div>
+      <h3>Dados checados, não assumidos</h3>
+      <p>Nenhuma entrega parte de dado não verificado. A IA sugere; a validação é obrigatória antes de qualquer decisão ou publicação.</p>
+    </div>
+
+    <div class="principio-card" style="--card-color: #10b981;">
+      <div class="principio-num">PRINCÍPIO 03</div>
+      <div class="principio-icon" style="background: rgba(16,185,129,.1);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+      <h3>Resultado seguro e rastreável</h3>
+      <p>Todo processo é mapeado, monitorado em tempo real e documentado. Erros são notificados com plano de solução antes de impactar a entrega.</p>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FLUXO OPERACIONAL -->
+<section class="fluxo-section reveal">
+  <div class="fluxo-header">
+    <div class="sec-label">Fluxo Operacional</div>
+    <h2 class="sec-title" style="margin-bottom:16px;">6 etapas. <span class="hl">Início, meio e fim definidos.</span></h2>
+    <p style="color:var(--text);font-size:16px;max-width:560px;margin:0 auto;">Cada etapa tem um propósito claro, um ponto de entrega definido e critérios de aceite antes de avançar. Nenhuma fase progride sem aprovação do Head.</p>
+  </div>
+
+  <div class="etapas-container">
+    <div class="etapas-line"></div>
+
+    <!-- ETAPA 01 -->
+    <div class="etapa reveal">
+      <div class="etapa-num-wrap">
+        <div class="etapa-num" style="border-color:#3b82f6;color:#60a5fa;--etapa-bg:rgba(59,130,246,.1);">
+          <span class="etapa-num-text">01</span>
+          <span class="etapa-num-label">Origem</span>
+        </div>
+      </div>
+      <div class="etapa-body" style="--etapa-accent:#3b82f6;">
+        <div class="etapa-tag" style="color:#60a5fa;">Origem Humana · Estratégia</div>
+        <h3 class="etapa-title">A ideia nasce aqui — e só aqui</h3>
+        <p class="etapa-why">"Por que esta etapa existe: Todo projeto parte de uma intenção estratégica definida por Marcos Diego."</p>
+        <p class="etapa-desc">Nenhuma IA gera propósito; ela apenas amplifica o que foi pensado por quem entende o contexto real. O Head define o problema, o objetivo, o público, o formato de entrega e os critérios de sucesso. Só então o fluxo é acionado.</p>
+        <div class="etapa-details">
+          <div class="detail-item">
+            <div class="detail-item-title">Definição do problema</div>
+            <div class="detail-item-sub">O que precisa ser resolvido</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-title">Objetivo da entrega</div>
+            <div class="detail-item-sub">Resultado esperado e formato</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-title">Critérios de sucesso</div>
+            <div class="detail-item-sub">Como medir que funcionou</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-title">Estrutura do projeto</div>
+            <div class="detail-item-sub">Fases, prazo e responsáveis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPA 02 -->
+    <div class="etapa reveal">
+      <div class="etapa-num-wrap">
+        <div class="etapa-num" style="border-color:#8b5cf6;color:#a78bfa;--etapa-bg:rgba(139,92,246,.1);">
+          <span class="etapa-num-text">02</span>
+          <span class="etapa-num-label">Briefing</span>
+        </div>
+      </div>
+      <div class="etapa-body" style="--etapa-accent:#8b5cf6;">
+        <div class="etapa-tag" style="color:#a78bfa;">Briefing · Atribuição de Funções</div>
+        <h3 class="etapa-title">O squad escolhe seu papel — baseado em capacidade real</h3>
+        <p class="etapa-why">"Cada IA tem uma competência distinta. Em vez de usar a mesma ferramenta para tudo, o briefing aciona uma rodada onde cada agente define onde entrega mais valor."</p>
+        <p class="etapa-desc">Isso elimina redundância, evita alucinação por uso fora do contexto ideal e maximiza a qualidade de cada entrega parcial. Cada agente opera no seu ponto de excelência.</p>
+        <div class="squad-grid">
+          <div class="squad-agent" style="border-color:rgba(215,119,56,.3);--agent-bg:#d77738;color:#fdba74;">
+            <div class="agent-dot" style="background:#d77738;"></div>
+            <div class="agent-name">Claude</div>
+            <div class="agent-role">Lógica · Orquestração · Prompts<br>Raciocínio estruturado e síntese</div>
+          </div>
+          <div class="squad-agent" style="border-color:rgba(16,163,127,.3);--agent-bg:#10a37f;color:#6ee7b7;">
+            <div class="agent-dot" style="background:#10a37f;"></div>
+            <div class="agent-name">GPT-4o</div>
+            <div class="agent-role">Modelagem · Cálculos · Análise<br>Profundidade técnica e numérica</div>
+          </div>
+          <div class="squad-agent" style="border-color:rgba(29,161,242,.3);--agent-bg:#1da1f2;color:#93c5fd;">
+            <div class="agent-dot" style="background:#1da1f2;"></div>
+            <div class="agent-name">Grok</div>
+            <div class="agent-role">Audiência · Social · Mercado<br>Contexto real e tendências</div>
+          </div>
+          <div class="squad-agent" style="border-color:rgba(66,133,244,.3);--agent-bg:#4285f4;color:#bfdbfe;">
+            <div class="agent-dot" style="background:#4285f4;"></div>
+            <div class="agent-name">Gemini</div>
+            <div class="agent-role">Design · Visualização · Multimodal<br>Tradução visual de conceitos</div>
+          </div>
+          <div class="squad-agent" style="border-color:rgba(99,102,241,.3);--agent-bg:#6366f1;color:#c7d2fe;">
+            <div class="agent-dot" style="background:#6366f1;"></div>
+            <div class="agent-name">Perplexity</div>
+            <div class="agent-role">Pesquisa · Dados · Fontes<br>Informação atual e verificada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPA 03 -->
+    <div class="etapa reveal">
+      <div class="etapa-num-wrap">
+        <div class="etapa-num" style="border-color:#22d3ee;color:#67e8f9;--etapa-bg:rgba(34,211,238,.1);">
+          <span class="etapa-num-text">03</span>
+          <span class="etapa-num-label">Execução</span>
+        </div>
+      </div>
+      <div class="etapa-body" style="--etapa-accent:#22d3ee;">
+        <div class="etapa-tag" style="color:#67e8f9;">Execução · Orquestração via Manus</div>
+        <h3 class="etapa-title">O Manus conduz — o Head monitora em tempo real</h3>
+        <p class="etapa-why">"O Manus atua como orquestrador central, acionando cada agente via API na sequência correta e consolidando os outputs."</p>
+        <p class="etapa-desc">Isso elimina o risco de decisão circular entre ferramentas — o fluxo tem direção, não loop. Cada fase tem um ponto de entrega definido antes de avançar. Qualquer erro ou inconsistência dispara uma notificação ao Head via chat privado — junto com o plano de solução proposto — aguardando aprovação antes de prosseguir.</p>
+        <div class="etapa-details">
+          <div class="detail-item" style="border-color:rgba(34,211,238,.2);">
+            <div class="detail-item-title" style="color:#67e8f9;">Dashboard em tempo real</div>
+            <div class="detail-item-sub">Visibilidade total de cada fase</div>
+          </div>
+          <div class="detail-item" style="border-color:rgba(239,68,68,.2);">
+            <div class="detail-item-title" style="color:#fca5a5;">Notificação de erros</div>
+            <div class="detail-item-sub">Chat privado com plano de solução</div>
+          </div>
+          <div class="detail-item" style="border-color:rgba(245,158,11,.2);">
+            <div class="detail-item-title" style="color:#fcd34d;">Aprovação antes de avançar</div>
+            <div class="detail-item-sub">Nenhuma fase avança sem OK do Head</div>
+          </div>
+          <div class="detail-item" style="border-color:rgba(139,92,246,.2);">
+            <div class="detail-item-title" style="color:#c4b5fd;">Log de cada decisão</div>
+            <div class="detail-item-sub">Rastreabilidade total do processo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPA 04 -->
+    <div class="etapa reveal">
+      <div class="etapa-num-wrap">
+        <div class="etapa-num" style="border-color:#f59e0b;color:#fcd34d;--etapa-bg:rgba(245,158,11,.1);">
+          <span class="etapa-num-text">04</span>
+          <span class="etapa-num-label">Validação</span>
+        </div>
+      </div>
+      <div class="etapa-body" style="--etapa-accent:#f59e0b;">
+        <div class="etapa-tag" style="color:#fcd34d;">Validação · Camadas de Segurança</div>
+        <h3 class="etapa-title">Nenhum dado entra sem ser verificado</h3>
+        <p class="etapa-why">"A IA não é fonte de verdade — é motor de processamento."</p>
+        <p class="etapa-desc">Antes de qualquer dado, análise ou conteúdo gerado pelo squad chegar à entrega final, passa por camadas de validação definidas pelo Head. Isso inclui checagem de fontes, consistência de dados, coerência estratégica e conformidade com o briefing original.</p>
+        <div class="etapa-details">
+          <div class="detail-item" style="border-color:rgba(245,158,11,.2);">
+            <div class="detail-item-title" style="color:#fcd34d;">Segurança da informação</div>
+            <div class="detail-item-sub">Camadas de acesso por projeto</div>
+          </div>
+          <div class="detail-item" style="border-color:rgba(245,158,11,.2);">
+            <div class="detail-item-title" style="color:#fcd34d;">Conformidade com briefing</div>
+            <div class="detail-item-sub">Alinhamento ao objetivo original</div>
+          </div>
+          <div class="detail-item" style="border-color:rgba(245,158,11,.2);">
+            <div class="detail-item-title" style="color:#fcd34d;">Checagem de dados</div>
+            <div class="detail-item-sub">Fonte, consistência e validade</div>
+          </div>
+          <div class="detail-item" style="border-color:rgba(245,158,11,.2);">
+            <div class="detail-item-title" style="color:#fcd34d;">Segregação de contextos</div>
+            <div class="detail-item-sub">Dados de clientes isolados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPA 05 -->
+    <div class="etapa reveal">
+      <div class="etapa-num-wrap">
+        <div class="etapa-num" style="border-color:#ec4899;color:#f9a8d4;--etapa-bg:rgba(236,72,153,.1);">
+          <span class="etapa-num-text">05</span>
+          <span class="etapa-num-label">Entrega</span>
+        </div>
+      </div>
+      <div class="etapa-body" style="--etapa-accent:#ec4899;">
+        <div class="etapa-tag" style="color:#f9a8d4;">Entrega Bifurcada · Produto ou Conteúdo</div>
+        <h3 class="etapa-title">A ferramenta certa para cada tipo de resultado</h3>
+        <p class="etapa-why">"Nem toda entrega é igual. O fluxo bifurca de forma intencional, garantindo que cada entrega use a tecnologia adequada."</p>
+        <p class="etapa-desc">Conteúdo de comunicação exige um pipeline diferente de produto funcional. Sem gambiarra e sem superengenharia — cada resultado usa a stack ideal para seu propósito.</p>
+        <div class="bifurcacao">
+          <div class="bifurcacao-item" style="border-color:rgba(34,211,238,.25);--bif-bg:#22d3ee;--bif-color:#22d3ee;">
+            <div class="bif-tool" style="color:#22d3ee;">Manus</div>
+            <div class="bif-type">Conteúdo</div>
+            <ul class="bif-list">
+              <li>Sites &amp; Landing Pages</li>
+              <li>Apresentações HTML / PPTX</li>
+              <li>Publicações &amp; Carrosséis</li>
+              <li>Relatórios &amp; Documentos</li>
+            </ul>
+          </div>
+          <div class="bifurcacao-item" style="border-color:rgba(139,92,246,.25);--bif-bg:#8b5cf6;--bif-color:#a78bfa;">
+            <div class="bif-tool" style="color:#a78bfa;">Lovable</div>
+            <div class="bif-type">Produto · Novo</div>
+            <ul class="bif-list">
+              <li>Apps com backend real</li>
+              <li>Demos interativas para pitches</li>
+              <li>Ferramentas internas de cliente</li>
+              <li>MVPs validados em horas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPA 06 -->
+    <div class="etapa reveal">
+      <div class="etapa-num-wrap">
+        <div class="etapa-num" style="border-color:#10b981;color:#34d399;--etapa-bg:rgba(16,185,129,.1);">
+          <span class="etapa-num-text">06</span>
+          <span class="etapa-num-label">Aprovação</span>
+        </div>
+      </div>
+      <div class="etapa-body" style="--etapa-accent:#10b981;">
+        <div class="etapa-tag" style="color:#34d399;">Aprovação Final · Decisão Humana</div>
+        <h3 class="etapa-title">O Head aprova — ou o ciclo não fecha</h3>
+        <p class="etapa-why">"Nenhuma entrega vai ao cliente sem a aprovação final do Head. É aqui que o MBA, as certificações e os 10+ anos de experiência fazem diferença."</p>
+        <p class="etapa-desc">Não na execução mecânica, mas na leitura crítica do resultado. O cliente recebe algo que foi pensado, estruturado, monitorado, validado e aprovado por um profissional sênior. Não um output bruto de IA.</p>
+        <div class="aprovacao-grid">
+          <div class="aprov-item">
+            <div class="aprov-title">Revisão estratégica</div>
+            <div class="aprov-sub">Alinhamento com objetivo do cliente</div>
+          </div>
+          <div class="aprov-item">
+            <div class="aprov-title">Precisão visual</div>
+            <div class="aprov-sub">Clareza, estética e objetividade</div>
+          </div>
+          <div class="aprov-item">
+            <div class="aprov-title">Entrega confiável</div>
+            <div class="aprov-sub">Segura, rastreável, documentada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /etapas-container -->
+</section>
+
+<!-- GOVERNANÇA -->
+<div class="gov-section reveal">
+  <div class="gov-inner">
+    <div class="gov-badge">
+      <div class="gov-badge-dot"></div>
+      Camadas de Governança — Sempre Ativas
+    </div>
+    <h2 class="sec-title">Não é revisado no final.<br><span class="hl">É construído em cada passo.</span></h2>
+
+    <div class="gov-grid">
+
+      <div class="gov-card">
+        <div class="gov-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+            <path d="M6 8h.01M10 8h4"/>
+          </svg>
+        </div>
+        <h3>Monitoramento em Tempo Real</h3>
+        <p>Dashboards acompanham cada fase do projeto. Métricas de progresso, status de cada agente e alertas de desvio são visíveis ao Head a qualquer momento.</p>
+        <p class="gov-card-why">O que não é monitorado não é gerenciado. Visibilidade total elimina surpresas na entrega.</p>
+      </div>
+
+      <div class="gov-card">
+        <div class="gov-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3>Segurança da Informação</h3>
+        <p>Camadas de acesso por projeto, segregação de dados de clientes, controle de contexto entre projetos e rastreabilidade de quem acessou o quê e quando.</p>
+        <p class="gov-card-why">Clientes confiam dados sensíveis. Segurança não é opcional — é parte do produto.</p>
+      </div>
+
+      <div class="gov-card">
+        <div class="gov-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <h3>Controle de Qualidade por Fase</h3>
+        <p>Cada etapa tem critérios de aceite definidos antes de ser iniciada. Erros disparam notificação com plano de correção. Nenhuma fase avança sem aprovação explícita.</p>
+        <p class="gov-card-why">Qualidade não é revisada no final — é construída em cada passo do processo.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- DIFERENCIAIS -->
+<section class="diff-section reveal">
+  <div class="sec-label">Por que contratar o DataMind</div>
+  <h2 class="sec-title">O que nos torna <span class="hl">diferentes</span></h2>
+
+  <div class="diff-grid">
+
+    <div class="diff-card-item">
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <h3>Não é executor — é arquiteto</h3>
+      <p>Profissionais que apenas executam entregam o que foi pedido. DataMind entrega o que precisa ser feito, com estrutura, método e visão estratégica.</p>
+    </div>
+
+    <div class="diff-card-item">
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h3>IA como alavanca, não como muleta</h3>
+      <p>O stack de IA amplifica capacidade humana. Nunca substitui o julgamento, a experiência de mercado ou a responsabilidade pelo resultado.</p>
+    </div>
+
+    <div class="diff-card-item">
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <h3>Processo documentado e rastreável</h3>
+      <p>Cada decisão, cada fase, cada dado tem registro. O cliente sabe o que foi feito, como foi feito e por quê — não apenas o que foi entregue.</p>
+    </div>
+
+    <div class="diff-card-item">
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+        </svg>
+      </div>
+      <h3>Experiência real em mercados regulados</h3>
+      <p>MBA em Analytics &amp; IA (FIA), MBA Executivo (FGV) e 10+ anos em finanças, seguros e betting formam a base que dá credibilidade às decisões e às entregas.</p>
+    </div>
+
+    <div class="diff-card-item">
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </div>
+      <h3>Entrega visualmente precisa e objetiva</h3>
+      <p>O resultado não é um relatório cheio de texto. É uma entrega clara, bem construída, que comunica exatamente o que precisa ser comunicado para o público certo.</p>
+    </div>
+
+    <div class="diff-card-item">
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <h3>Fim de ciclo garantido</h3>
+      <p>Todo projeto tem início, meio e fim definidos. Sem escopo aberto, sem loop infinito de revisões, sem entrega que nunca chega. Prazos são compromissos.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-section reveal">
+  <div class="cta-inner">
+    <h2>Pronto para trabalhar<br>com <span style="color:var(--cyan)">método de verdade?</span></h2>
+    <p>Seja para um projeto pontual, uma parceria estratégica ou uma posição de liderança — a conversa começa com um clique.</p>
+    <div class="cta-btns">
+      <a href="https://wa.me/5511995772800" target="_blank" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>
+        Falar no WhatsApp
+      </a>
+      <a href="index.html" class="btn-secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Voltar ao hub
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 DataMind AI-First Consulting · Marcos Diego Ribeiro</p>
+  <p><a href="https://linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank">LinkedIn ↗</a></p>
+</footer>
+
+<script>
+  // Partículas
+  const container = document.getElementById('particles');
+  const colors = ['#3b82f6','#22d3ee','#8b5cf6','#10b981'];
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*20+15}s;
+      animation-delay:${Math.random()*15}s;
+    `;
+    container.appendChild(p);
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+</body>
+</html>
