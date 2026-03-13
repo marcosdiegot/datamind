@@ -452,16 +452,38 @@ section { padding: 96px 48px; position: relative; }
 }
 
 .formacao-card {
-  margin-top: 48px; padding: 28px 32px;
-  background: var(--surface); border: 1px solid var(--border2);
+  padding: 28px 32px;
+  background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   display: flex; align-items: center; gap: 20px;
+  transition: all 0.25s;
+}
+.formacao-card:hover { background: var(--surface2); border-color: var(--border2); }
+.formacao-card.destaque {
+  background: rgba(59,130,246,0.06);
+  border: 2px solid var(--blue);
+  box-shadow: 0 0 32px rgba(59,130,246,0.12), inset 0 1px 0 rgba(96,165,250,0.1);
+  position: relative; overflow: hidden;
+}
+.formacao-card.destaque::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
 }
 .formacao-icon { font-size: 32px; flex-shrink: 0; }
 .formacao-info {}
 .formacao-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-glow); margin-bottom: 6px; }
+.formacao-label.destaque-label { color: var(--cyan); }
 .formacao-title { font-size: 18px; font-weight: 700; color: var(--white); }
+.formacao-title.destaque-title { font-size: 20px; }
 .formacao-sub { font-size: 13px; color: var(--text); margin-top: 4px; }
+.formacao-badge {
+  display: inline-block; margin-top: 8px;
+  padding: 3px 10px; border-radius: 100px;
+  background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3);
+  font-size: 11px; font-weight: 700; color: var(--cyan);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
 
 /* ============================================================
    ARTIGOS / PENSAMENTO
@@ -808,13 +830,13 @@ footer {
     <div class="metodo-grid">
       <div class="metodo-text">
         <p>
-          Existe uma diferença fundamental entre profissionais que <strong>usam IA</strong> e profissionais que <strong>orquestram IA</strong>. O primeiro abre uma janela, digita uma pergunta e copia a resposta. O segundo construiu um sistema onde cada modelo tem função específica, os outputs de um alimentam os inputs do outro, e o resultado final é supervisionado por inteligência humana.
+          Existe uma diferença fundamental entre profissionais que <strong>usam IA</strong> e profissionais que <strong>orquestram IA</strong>. O primeiro abre uma janela, digita uma pergunta e copia a resposta. O segundo — eu — é o <strong>Head que define o fluxo</strong>: um orquestrador recebe o comando, distribui para agentes especializados via API, e a entrega já está pronta quando o pipeline termina.
         </p>
         <p>
-          Os dados entram, o pipeline processa — os <strong>insights e conclusões são 100% meus</strong>, não da máquina. Resultado: redução de tempo de entrega em até <strong>90%</strong>, multiplicação da profundidade de análise.
+          <strong>Zero looping de entregas infinitas.</strong> O resultado é estipulado antes do primeiro comando. Os insights, a narrativa e a decisão final são 100% meus — a máquina executa, eu dirijo. Redução de até <strong>90% no tempo</strong> e <strong>89% no custo</strong> por ciclo de entrega.
         </p>
         <p>
-          Automação via <strong>n8n + Evolution API</strong> para pipelines WhatsApp. Filosofia resumida: <em>"Evidência antes de público. Velocidade com rigor. O builder-first mindset."</em>
+          Filosofia: <em>"Evidência antes de público. Velocidade com rigor. O builder-first mindset."</em>
         </p>
 
         <div class="aifirst-diff">
@@ -823,60 +845,28 @@ footer {
             <div class="diff-item">Abre chat e copia resposta</div>
             <div class="diff-item">Ferramentas isoladas</div>
             <div class="diff-item">Sem fluxo definido</div>
-            <div class="diff-item">Resultado inconsistente</div>
+            <div class="diff-item">Looping infinito de revisões</div>
           </div>
           <div class="diff-card good">
             <div class="diff-label">AI-First</div>
-            <div class="diff-item">Arquitetura de orquestração</div>
+            <div class="diff-item">Head define o fluxo</div>
+            <div class="diff-item">Orquestrador roteia via API</div>
             <div class="diff-item">Agentes com função definida</div>
-            <div class="diff-item">Fluxo supervisionado</div>
-            <div class="diff-item">ROI mensurável desde o ciclo 1</div>
+            <div class="diff-item">Entrega automatizada no 1º comando</div>
           </div>
         </div>
       </div>
 
       <div class="squad-wrap">
-        <div class="squad-title">Squad de trabalho — orquestração via API</div>
-
-        <div class="squad-card lead">
-          <div class="squad-avatar">Cl</div>
-          <div class="squad-info">
-            <div class="squad-name">Claude <span class="squad-badge-lead">Orquestrador</span></div>
-            <div class="squad-role">Lógica, orquestração e validação — mantém coerência lógica</div>
-          </div>
+        <div class="squad-title">Fluxo de orquestração — visão geral</div>
+        <div style="margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid var(--border2);">
+          <img src="diagrama-metodo-aifirst.png"
+               alt="Diagrama do Método AI-First: Diego como Head, Orquestrador, Agentes IA, Entrega Automatizada"
+               style="width:100%;display:block;">
         </div>
-
-        <div class="squad-card">
-          <div class="squad-avatar">Px</div>
-          <div class="squad-info">
-            <div class="squad-name">Perplexity</div>
-            <div class="squad-role">Dados externos e pesquisa de mercado em tempo real</div>
-          </div>
-        </div>
-
-        <div class="squad-card">
-          <div class="squad-avatar">G4</div>
-          <div class="squad-info">
-            <div class="squad-name">GPT-4o</div>
-            <div class="squad-role">Modelagem preditiva e análise quantitativa</div>
-          </div>
-        </div>
-
-        <div class="squad-card">
-          <div class="squad-avatar">Gm</div>
-          <div class="squad-info">
-            <div class="squad-name">Gemini</div>
-            <div class="squad-role">Design, visualização e apresentações executivas</div>
-          </div>
-        </div>
-
-        <div class="squad-card">
-          <div class="squad-avatar">Gk</div>
-          <div class="squad-info">
-            <div class="squad-name">Grok</div>
-            <div class="squad-role">Audiência, social e tendências real-time</div>
-          </div>
-        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;text-align:center;">
+          Diego (Head) → Orquestrador (n8n / Make / Manus) → Agentes especializados via API → Entrega automatizada
+        </p>
       </div>
     </div>
   </div>
@@ -971,12 +961,13 @@ footer {
 
     <div style="margin-top:48px;display:flex;flex-direction:column;gap:12px;">
 
-      <div class="formacao-card">
+      <div class="formacao-card destaque">
         <div class="formacao-icon">🎓</div>
         <div class="formacao-info">
-          <div class="formacao-label">MBA — Destaque</div>
-          <div class="formacao-title">MBA em Analytics e Inteligência Artificial · FIA Business School</div>
-          <div class="formacao-sub">2021 – 2023 · A formação mais relevante para a área de dados e IA</div>
+          <div class="formacao-label destaque-label">Formação Principal</div>
+          <div class="formacao-title destaque-title">MBA em Analytics e Inteligência Artificial</div>
+          <div class="formacao-sub">FIA Business School · 2021 – 2023</div>
+          <div class="formacao-badge">Especialização em IA &amp; Dados</div>
         </div>
       </div>
 
