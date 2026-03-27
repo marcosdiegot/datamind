@@ -551,7 +551,6 @@ footer a{color:var(--green);text-decoration:none}
 
   <div class="gov-doc" id="govDoc"></div>
 </div>
-
 </main>
 
 <footer>DataMind AI Radar · <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352">Marcos Diego Ribeiro</a> · <a href="https://marcosdiegot.github.io/datamind">Portfolio</a> · 25 Mar 2026 · v4.1</footer>
@@ -566,10 +565,8 @@ footer a{color:var(--green);text-decoration:none}
   </div>
 </div>
 
-
 <script>
-
-<script>// ── DATA ──
+// ── DATA ──
 const DECISIONS = [
   { headline:'Configurar Claude mobile com Figma e Canva hoje', impact:'Claude mobile integra Figma, Canva e Amplitude. Consultores que demonstrarem isso em reuniao de cliente esta semana saem na frente. A maioria ainda nao tem configurado.', action:'Baixar update do Claude mobile e conectar work tools', detail:{title:'Claude mobile: Figma, Canva e Amplitude — configurar agora',eye:'ACAO IMEDIATA · 27 MAR 2026',why:'Anthropic lancou work tools no app movel do Claude. Figma, Canva e Amplitude direto na interface de chat. Orbit em desenvolvimento para controlar chamadas e calendario do smartphone.',impact:'Em reuniao de cliente voce prototipa telas e decks em tempo real do celular. Diferencial concreto e demonstravel.',stats:[{l:'LANCAMENTO',v:'26 Mar 2026'},{l:'TOOLS',v:'Figma+Canva+Amplitude'},{l:'ORBIT',v:'Em desenvolvimento'},{l:'ACAO',v:'Configurar hoje'}]}},
   { headline:'Instalar Figma MCP no Claude Code — pipeline code-to-design', impact:'Figma MCP server permite Claude Code escrever direto no canvas respeitando o design system. Beta gratuito. Janela curta antes de virar pago.', action:'Instalar mcp.figma.com/mcp no Claude Code e testar em 1 projeto', detail:{title:'Figma MCP: Claude Code escreve direto no canvas do cliente',eye:'ACAO TECNICA · 24 MAR 2026',why:'Figma lancou MCP server que permite agentes (Claude Code, Cursor, Codex) criarem e modificarem elementos reais no canvas usando o design system do time. Skills sao arquivos markdown que definem convencoes.',impact:'Pipeline code-to-design para clientes que vivem em Figma. Gera dashboards e interfaces de dados com o design system do cliente em minutos.',stats:[{l:'BETA',v:'Gratuito agora'},{l:'AGENTES',v:'Claude Code, Cursor'},{l:'PAGO',v:'Mar/Mai 2026'},{l:'ACAO',v:'Instalar hoje'}]}},
@@ -1420,6 +1417,13 @@ function renderThresholds() {
 buildStore();
 renderDecision();
 renderPulse();
+renderIntel();
+renderRanking();
+renderBullets();
+renderSquad();
+renderEmg();
+renderDT();
+initCosts();
 const GOV = [
   {ico:'🟢',mod:'liberdade',nome:'Zonas de Liberdade',badge:'gb-lib',badgeLabel:'LIBERDADE',
    desc:'O que cada colaborador pode fazer livremente com IA — sem monitoramento, sem aprovacao previa.',
