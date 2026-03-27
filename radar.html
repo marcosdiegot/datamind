@@ -1826,7 +1826,71 @@ function generateGovDoc(){
     +'</div>'
   );
 
-  h += sec('07','🛡','PROTECAO CONTRA ATAQUES',
+  // ── VAZAMENTO POR CANAL HUMANO ──
+  var canalControles = [];
+  var canalDLP = '';
+  var canalContrato = '';
+
+  // Controle de acesso na origem — varia por setor
+  if(s==='igaming'||s==='financeiro'||s==='seguros'){
+    canalControles = [
+      '<strong>RBAC no banco de dados e no CRM</strong> — colaborador so baixa o que precisa para sua funcao especifica',
+      '<strong>Mascaramento de dados sensiveis</strong> na interface — CPF aparece como ***.***.***-** para quem nao precisa do dado completo',
+      '<strong>Log de download</strong> — qualquer exportacao de dados de cliente gera alerta automatico',
+      '<strong>Bloqueio de USB e armazenamento externo</strong> nos endpoints corporativos',
+      '<strong>Restricao de WhatsApp Web e email pessoal</strong> em dispositivos corporativos via MDM',
+    ];
+    canalDLP = 'Ferramentas enterprise recomendadas: <strong>Netskope</strong>, <strong>Microsoft Purview</strong> ou <strong>Google Workspace DLP</strong>. Detectam quando dados sensiveis saem do perimetro corporativo — incluindo pelo WhatsApp Web, email pessoal e uploads para servicos de nuvem nao autorizados. Custo: R$ 800-3.000/mes dependendo do porte.';
+    canalContrato = 'Clausula de confidencialidade com <strong>penalidade civil e criminal explicita</strong> para vazamento intencional. Em setores com PLD (iGaming, Financeiro), vazamento de dados de cliente pode configurar cumplicidade em lavagem — detalhar no contrato.';
+  } else if(s==='saude'||s==='juridico'){
+    canalControles = [
+      '<strong>Prontuarios e dados de processo: acesso apenas no sistema oficial</strong> — sem exportacao autorizada',
+      '<strong>Dispositivos corporativos gerenciados</strong> — sem instalacao de apps pessoais de mensagem',
+      '<strong>Proibicao de fotografia da tela</strong> em areas de acesso a dados de paciente ou cliente',
+      '<strong>Audit trail de acesso a dados</strong> — quem abriu qual registro e quando',
+    ];
+    canalDLP = s==='saude'
+      ? 'Vazamento de dados de saude e crime com pena de 2-5 anos (LGPD + CP). Recomendado: <strong>Microsoft Purview</strong> com politicas especificas para dados de saude. O sistema deve bloquear automaticamente qualquer tentativa de copiar conteudo de prontuario para fora do sistema.'
+      : 'Vazamento de dados de cliente por advogado e violacao do sigilo profissional (OAB Art. 34, XIV) — suspensao ou exclusao dos quadros. Recomendado: <strong>sistema de gestao juridica com DLP integrado</strong> (ex: Advbox, Jurisprudencia.com.br com controles de exportacao).';
+    canalContrato = 'Contrato com clausula de confidencialidade vinculada ao Codigo de Etica profissional. Para saude: mencionar LGPD Art. 11 e CFM. Para juridico: mencionar Estatuto da OAB e sigilo profissional absoluto.';
+  } else if(s==='rh'){
+    canalControles = [
+      '<strong>Dados de salario e beneficios: acesso restrito ao RH e gestores diretos</strong>',
+      '<strong>Dados de processo disciplinar: acesso apenas ao RH e juridico</strong>',
+      '<strong>Proibicao de compartilhar dados de colaboradores</strong> com terceiros sem autorizacao da lideranca',
+    ];
+    canalDLP = 'Dados trabalhistas vazados podem gerar passivo trabalhista e danos morais. Recomendado: <strong>HRIS com controles de exportacao</strong> e log de acesso. Ferramentas como Gupy, Totvs RH e SAP SuccessFactors tem controles nativos de acesso por funcao.';
+    canalContrato = 'Clausula especifica no contrato sobre confidencialidade de dados de colegas e candidatos. Vazamento de historico disciplinar ou salario de terceiro e violacao de LGPD e pode gerar indenizacao.';
+  } else {
+    canalControles = [
+      '<strong>RBAC nas fontes de dados</strong> — colaborador acessa apenas o necessario para sua funcao',
+      '<strong>Log de exportacao</strong> em planilhas e dashboards com dados de clientes',
+      '<strong>Clausula de confidencialidade clara</strong> no contrato de trabalho',
+    ];
+    canalDLP = 'Para empresas de medio porte sem budget para DLP enterprise: <strong>Google Workspace ou Microsoft 365</strong> ja tem controles basicos de DLP nativos — configurar politicas para bloquear envio de CPF e dados de clientes por email pessoal. Custo adicional: R$ 0 se ja usa estas plataformas.';
+    canalContrato = 'Clausula de confidencialidade com exemplos concretos do que e considerado dado sigiloso. Quanto mais especifico, mais defensavel juridicamente.';
+  }
+
+  h += sec('07','📱','VAZAMENTO POR CANAL HUMANO',
+    '<div class="gov-restrict"><div class="gov-box-label" style="color:var(--red)">A BRECHA QUE A GOVERNANCA DE IA NAO COBRE</div>'
+    +'<p class="gov-p">Se um colaborador decide pegar dados de clientes e mandar pelo WhatsApp pessoal para um concorrente, nenhum guardrail de LLM vai impedir. <strong>Este nao e um problema de IA — e um problema classico de DLP que existe independente de qualquer stack tecnologico.</strong></p>'
+    +'<p class="gov-p">Um dado RESTRITO e RESTRITO em qualquer canal — WhatsApp, email pessoal, pendrive, foto da tela, conversa em voz. A classificacao de dados desta politica se aplica a <strong>todos os canais de comunicacao</strong>, nao apenas a ferramentas de IA.</p>'
+    +'</div>'
+    +'<div class="gov-warn"><div class="gov-box-label" style="color:var(--gold)">CONTROLE DE ACESSO NA ORIGEM</div>'
+    +'<p class="gov-p">A mitigacao mais eficaz: <strong>se o colaborador nao consegue baixar o dado, ele nao consegue vazar.</strong></p>'
+    +ul(canalControles)+'</div>'
+    +'<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">DLP — DETECCAO DE VAZAMENTO EM TEMPO REAL</div>'
+    +'<p class="gov-p">'+canalDLP+'</p>'
+    +'<p class="gov-p" style="font-size:11px;color:var(--t3)">DLP detecta padrao — nao le conteudo completo. Ele identifica que uma mensagem contem um CPF ou CNPJ e bloqueia o envio. Nao e vigilancia de conversa — e filtro de dados.</p>'
+    +'</div>'
+    +'<div class="gov-freedom"><div class="gov-box-label" style="color:var(--green)">CONTRATO E CULTURA</div>'
+    +'<p class="gov-p">Controle tecnico sem cultura e fraco. Cultura sem contrato e ingenuidade.</p>'
+    +'<p class="gov-p">'+canalContrato+'</p>'
+    +'<p class="gov-p">Mais importante que o contrato: <strong>um ambiente onde as pessoas nao querem vazar dados porque estao engajadas</strong>. Nenhuma clausula substitui isso.</p>'
+    +'</div>'
+  );
+
+  h += sec('08','🛡','PROTECAO CONTRA ATAQUES DE IA',
     '<p class="gov-p">3 camadas entre os canais de entrada (WhatsApp, webhooks, email) e os agentes que executam acoes reais.</p>'
     +tbl(['CAMADA','FERRAMENTA','O QUE FAZ','CUSTO'],[
       ['1 — Regex','n8n template 7453','Detecta instrucoes maliciosas, XSS, data URI attacks','<span class="tok-ok">R$ 0</span>'],
@@ -1848,7 +1912,7 @@ function generateGovDoc(){
     +'<p class="gov-p">Nenhum colaborador sera responsabilizado por incidente sem investigacao completa do audit trail.</p>'
   );
 
-  h += sec('09','📐','OPERACAO DESTA POLITICA',
+  h += sec('10','📐','OPERACAO DESTA POLITICA',
     '<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">'+(c==='formal'?'GOVERNANCA FORMAL':c==='informal'?'GOVERNANCA INFORMAL':'GOVERNANCA EM TRANSICAO')+'</div>'
     +ul(govOp)+'</div>'
     +'<div class="gov-warn"><div class="gov-box-label" style="color:var(--gold)">RETENCAO DE LOGS — '+retencao+'</div>'
