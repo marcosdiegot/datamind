@@ -271,6 +271,29 @@ footer a{color:var(--green);text-decoration:none}
   .modal-overlay{align-items:flex-end;justify-content:center}
   @keyframes slideIn{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
 }
+.gov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px}
+.gov-card{padding:16px 18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.gov-card:hover{transform:translateY(-2px);border-color:var(--rimh) !important}
+.gov-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0}
+.gov-card.liberdade::after{background:var(--green)}
+.gov-card.auditoria::after{background:var(--blue)}
+.gov-card.dados::after{background:var(--gold)}
+.gov-card.agentes::after{background:var(--purple)}
+.gov-card.incidentes::after{background:var(--red)}
+.gov-card.frameworks::after{background:var(--t3)}
+.gov-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.gov-ico{font-size:18px;line-height:1}
+.gov-name{font-size:13px;font-weight:600;color:var(--t1);flex:1}
+.gov-badge{font-size:9px;padding:2px 8px;border-radius:10px;letter-spacing:1px;font-family:var(--mono)}
+.gb-lib{background:rgba(0,229,160,.12);color:var(--green);border:1px solid rgba(0,229,160,.25)}
+.gb-aud{background:rgba(77,159,255,.12);color:var(--blue);border:1px solid rgba(77,159,255,.25)}
+.gb-dad{background:rgba(255,179,64,.12);color:var(--gold);border:1px solid rgba(255,179,64,.25)}
+.gb-age{background:rgba(176,110,255,.12);color:var(--purple);border:1px solid rgba(176,110,255,.25)}
+.gb-inc{background:rgba(255,61,110,.12);color:var(--red);border:1px solid rgba(255,61,110,.25)}
+.gb-frm{background:rgba(112,112,160,.12);color:var(--t3);border:1px solid rgba(112,112,160,.25)}
+.gov-desc{font-size:12px;color:var(--t3);line-height:1.6;margin-bottom:10px}
+.gov-stats{display:flex;flex-wrap:wrap;gap:6px}
+.gs{font-size:10px;padding:3px 8px;background:var(--g);border:1px solid var(--rim);border-radius:4px;color:var(--t2);font-family:var(--mono)}
 </style>
 </head>
 <body>
@@ -288,6 +311,7 @@ footer a{color:var(--green);text-decoration:none}
   <button class="nb"     onclick="show('s4',this)">04 · EMERGENTES</button>
   <button class="nb"     onclick="show('s5',this)">05 · DATA TOOLS</button>
   <button class="nb"     onclick="show('s6',this)">06 · CUSTOS</button>
+  <button class="nb"     onclick="show('s7',this)">07 · GOVERNANÇA</button>
 </nav>
 
 <main class="main">
@@ -406,6 +430,20 @@ footer a{color:var(--green);text-decoration:none}
   <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Indicadores de quando o plano atual ficou pequeno ou quando está pagando mais do que deveria.</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px" id="threshGrid"></div>
 
+</div>
+<div class="sec" id="s7">
+  <div class="slabel" style="margin-bottom:16px">GOVERNANÇA & SEGURANÇA DE IA — FRAMEWORK AI-FIRST</div>
+  <div class="fb">
+    <span class="fl">MÓDULO</span>
+    <button class="fbtn on" onclick="filterGov('all',this)">TODOS</button>
+    <button class="fbtn" onclick="filterGov('liberdade',this)">LIBERDADE</button>
+    <button class="fbtn" onclick="filterGov('auditoria',this)">AUDITORIA</button>
+    <button class="fbtn" onclick="filterGov('dados',this)">DADOS & LGPD</button>
+    <button class="fbtn" onclick="filterGov('agentes',this)">AGENTES</button>
+    <button class="fbtn" onclick="filterGov('incidentes',this)">INCIDENTES</button>
+    <button class="fbtn" onclick="filterGov('frameworks',this)">FRAMEWORKS</button>
+  </div>
+  <div class="gov-grid" id="govGrid"></div>
 </div>
 </main>
 
@@ -1269,6 +1307,114 @@ function renderThresholds() {
   el.innerHTML = h;
 }
 
+
+const GOV = [
+  {ico:'🟢',mod:'liberdade',nome:'Zonas de Liberdade',badge:'gb-lib',badgeLabel:'LIBERDADE',
+   desc:'O que cada colaborador pode fazer livremente com IA — sem monitoramento, sem aprovacao previa.',
+   stats:['Sem vigilancia','Uso pessoal livre','Zero restricao'],
+   col:'#00e5a0',
+   detail:{title:'O que voce pode fazer livremente com IA',eye:'LIBERDADE · SEM MONITORAMENTO',
+   why:'Esta politica comeca pela liberdade. O objetivo da governanca de IA nao e controlar o que as pessoas fazem — e garantir que os agentes automatizados operem com seguranca para que as pessoas possam trabalhar com mais autonomia.',
+   how:'Usar qualquer ferramenta de IA para rascunhos, brainstorming e pesquisa pessoal sem supervisao. Conversar com Claude, ChatGPT ou Gemini sobre qualquer tema profissional livremente. Experimentar ferramentas novas de IA fora dos pipelines criticos. Criar conteudo com IA sem aprovacao previa — desde que nao envolva dados restritos.',
+   impact:'Estas atividades nunca serao monitoradas, auditadas ou reportadas. O que cada pessoa conversa com IA fora dos pipelines automaticos e de uso pessoal e profissional livre.',
+   actions:'1. Comunicar zonas de liberdade explicitamente no onboarding. 2. Incluir exemplos do que nao e monitorado. 3. Revisar a politica com o time antes de publicar.',
+   stats:[{l:'MONITORADO',v:'Nunca'},{l:'APROVACAO',v:'Nao precisa'},{l:'ESCOPO',v:'Uso pessoal e profissional'},{l:'EXCECAO',v:'Dados restritos'}]}},
+  {ico:'🔍',mod:'auditoria',nome:'O que e Auditado',badge:'gb-aud',badgeLabel:'AUDITORIA',
+   desc:'Audit trail registra acoes dos agentes automatizados — nunca conversas de pessoas. Distincao fundamental.',
+   stats:['Acoes de agentes','Nao conversas','Langfuse self-hosted'],
+   col:'#4d9fff',
+   detail:{title:'Audit trail: acoes de agentes, nao conversas de pessoas',eye:'AUDITORIA · LGPD-READY',
+   why:'O sistema de audit trail registra o que agentes automatizados fizeram — nao o que pessoas conversaram. Isso protege o colaborador de ser responsabilizado por acoes de um sistema que ele nao controlava.',
+   how:'O que e registrado: qual agente executou qual acao, timestamp, modelo de IA usado, tokens consumidos, workflow ID, custo da operacao. O que NUNCA e registrado: conteudo de conversas pessoais, mensagens do WhatsApp, dados de uso de ferramentas pessoais.',
+   impact:'Se um agente enviou um email errado, o log mostra que foi o agente — nao a pessoa. A rastreabilidade existe para esclarecer, nao para punir.',
+   actions:'1. Instalar Langfuse self-hosted — R$ 0. 2. Configurar para logar apenas metadados. 3. Comunicar para o time o que esta e o que nao esta sendo registrado.',
+   stats:[{l:'FERRAMENTA',v:'Langfuse self-hosted'},{l:'CUSTO',v:'R$ 0'},{l:'DADOS PESSOAIS',v:'Nunca registrados'},{l:'RETENCAO',v:'90 dias'}]}},
+  {ico:'📋',mod:'dados',nome:'Classificacao de Dados',badge:'gb-dad',badgeLabel:'DADOS & LGPD',
+   desc:'4 niveis definem o que pode ir para APIs externas e o que precisa de redaction obrigatoria. LGPD compliant.',
+   stats:['4 niveis','LGPD compliant','DPA obrigatorio'],
+   col:'#ffb340',
+   detail:{title:'Classificacao de dados para stack AI-First',eye:'DADOS & LGPD · SEMANA 1',
+   why:'Quando um dado passa pelo Claude, GPT ou Gemini, ele sai do perimetro da empresa. A classificacao define o que pode sair, com qual protecao, e o que nunca pode sair.',
+   how:'PUBLICO — posts, marketing: qualquer API. INTERNO — manuais, processos: com DPA assinado. CONFIDENCIAL — dados de clientes: com pseudo-anonimizacao. RESTRITO — CPF, dados financeiros, saude: nunca vai para API externa, redaction obrigatoria.',
+   impact:'Compliance com LGPD Art. 7 (base legal), Art. 46 (transferencia internacional) e Art. 48 (notificacao ANPD em 72h). DPA com Claude, OpenAI e Google garante que dados nao sao usados para treino de modelos.',
+   actions:'1. Criar planilha de classificacao na semana 1. 2. Assinar DPA com todos os fornecedores de IA. 3. Implementar regex DLP no n8n para CPF, CNPJ, email.',
+   stats:[{l:'NIVEIS',v:'4'},{l:'BASE LEGAL',v:'LGPD Art. 7'},{l:'DPA',v:'Obrigatorio'},{l:'DLP',v:'Regex n8n + AWS Bedrock'}]}},
+  {ico:'🤖',mod:'agentes',nome:'RBAC por Agente',badge:'gb-age',badgeLabel:'AGENTES',
+   desc:'Cada agente acessa apenas o necessario para sua funcao. Principio do menor privilegio. Protege o colaborador.',
+   stats:['Por funcao','Nao por pessoa','Menor privilegio'],
+   col:'#b06eff',
+   detail:{title:'RBAC por funcao de agente — nao por pessoa',eye:'CONTROLE DE ACESSO · SEMANA 1',
+   why:'O controle de acesso e por tipo de agente, nao por colaborador. Nenhuma pessoa e monitorada — o controle esta no que o sistema automatizado pode ou nao fazer.',
+   how:'Agente de Analise: read-only Data Warehouse, executa queries, nao modifica dados. Agente de Conteudo: gera rascunhos, nao publica sem aprovacao humana. Agente de Vendas: read-only CRM, envia email, nao acessa dados financeiros. Agente de Codigo: cria e refatora, nao faz deploy em producao.',
+   impact:'O RBAC protege o colaborador. Se um agente de vendas nao tem acesso a dados financeiros, o colaborador nao pode ser acusado de vazar esses dados.',
+   actions:'1. Mapear todos os agentes do stack. 2. Definir permissoes por funcao no n8n — credenciais no vault. 3. Configurar LiteLLM self-hosted como AI gateway.',
+   stats:[{l:'CONTROLE',v:'Por funcao de agente'},{l:'PESSOAS MONITORADAS',v:'Nenhuma'},{l:'GATEWAY',v:'LiteLLM self-hosted'},{l:'CUSTO',v:'R$ 0'}]}},
+  {ico:'🛡',mod:'agentes',nome:'Prompt Injection Defense',badge:'gb-age',badgeLabel:'AGENTES',
+   desc:'3 camadas entre canais de entrada (WhatsApp, webhooks) e os agentes. Regex + Guardrails + Context Shaping.',
+   stats:['3 camadas','n8n template','AWS Bedrock'],
+   col:'#b06eff',
+   detail:{title:'Prompt injection: 3 camadas de protecao',eye:'SEGURANCA · SEMANA 1',
+   why:'Prompt injection via WhatsApp ou webhook pode fazer agentes exfiltrarem dados ou executarem acoes nao autorizadas. A protecao acontece antes que a mensagem chegue ao modelo.',
+   how:'CAMADA 1 — Regex no n8n: bloqueia padroes como ignore previous instructions, override system, scripts XSS. Template gratuito n8n.io/workflows/7453. CAMADA 2 — AWS Bedrock Guardrails: classificacao semantica de intencao, filtro de PII, bloqueio de topicos restritos. CAMADA 3 — Context Shaping: conteudo do usuario nunca entra no system prompt — sempre como dado, nao como instrucao.',
+   impact:'Pipeline protegido contra ataques externos e internos. Regra de ouro: user content nunca modifica system prompt.',
+   actions:'1. Importar template n8n 7453 — 2 horas, R$ 0. 2. Configurar AWS Bedrock Guardrails — R$ 50/mes. 3. Revisar todos os prompts para garantir context shaping.',
+   stats:[{l:'CAMADAS',v:'3'},{l:'CUSTO CAMADA 1',v:'R$ 0'},{l:'CUSTO CAMADA 2',v:'~R$ 50/mes'},{l:'TEMPLATE N8N',v:'7453'}]}},
+  {ico:'🚨',mod:'incidentes',nome:'Resposta a Incidentes',badge:'gb-inc',badgeLabel:'INCIDENTES',
+   desc:'Runbook para quando agente executa acao nao autorizada. Rollback, isolamento e notificacao ANPD em 72h.',
+   stats:['Runbook pronto','Rollback n8n','72h ANPD'],
+   col:'#ff3d6e',
+   detail:{title:'Runbook de resposta a incidentes de IA',eye:'INCIDENTES · CRIAR NA SEMANA 1',
+   why:'Incidentes com agentes de IA sao tratados como incidentes de sistema — nao como erro humano, salvo evidencia contraria.',
+   how:'0-15 min: isolar o agente (pausar workflow, revogar tokens). 15-60 min: identificar root cause (prompt injection? credencial exposta?). 1-24h: rollback para versao estavel, reativar com monitoramento. SE ENVOLVE DADOS PESSOAIS: notificar ANPD em ate 72h conforme LGPD Art. 48.',
+   impact:'Nenhum colaborador sera responsabilizado sem investigacao completa do audit trail. A rastreabilidade existe para esclarecer, nao para punir.',
+   actions:'1. Criar runbook de 1 pagina na semana 1 — R$ 0. 2. Configurar backup automatico de workflows n8n. 3. Implementar alertas no Slack para anomalias.',
+   stats:[{l:'CONTENCAO',v:'0-15 min'},{l:'ANPD',v:'72h se dados pessoais'},{l:'ROLLBACK',v:'n8n export/import'},{l:'CUSTO',v:'R$ 0'}]}},
+  {ico:'📊',mod:'frameworks',nome:'NIST AI RMF',badge:'gb-frm',badgeLabel:'FRAMEWORKS',
+   desc:'Framework gratuito para gestao de riscos de IA. 4 funcoes: Govern, Map, Measure, Manage. Fazer no onboarding.',
+   stats:['Gratuito','30 dias','4 funcoes'],
+   col:'#7070a0',
+   detail:{title:'NIST AI RMF — framework de risco para onboarding',eye:'FRAMEWORKS · 30 DIAS',
+   why:'O NIST AI RMF e o framework mais usado para gestao de riscos de IA em 2026. E gratuito e serve como base para documentacao de maturidade para clientes enterprise.',
+   how:'GOVERN: politica de uso de IA + DPA com fornecedores. MAP: documentar riscos de cada agente. MEASURE: metricas de tokens, custo, erros, anomalias. MANAGE: guardrails + DLP + plano de resposta.',
+   impact:'Com NIST AI RMF documentado, voce chega em due diligence de cliente enterprise com 1 pagina de resumo de governanca. Para 90% dos casos, suficiente sem certificacao.',
+   actions:'1. Baixar checklist em nist.gov/ai/rmf — gratuito. 2. Mapear cada agente para os 4 dominios — 1 semana. 3. Criar resumo de 1 pagina para reunioes.',
+   stats:[{l:'CUSTO',v:'R$ 0'},{l:'TEMPO',v:'1 semana onboarding'},{l:'RECONHECIMENTO',v:'Internacional'},{l:'CERTIFICACAO',v:'Nao obrigatoria'}]}},
+  {ico:'🏆',mod:'frameworks',nome:'ISO 42001 e SOC 2',badge:'gb-frm',badgeLabel:'FRAMEWORKS',
+   desc:'Certificacoes enterprise. ISO 42001 em 12-18 meses, R$ 30-80k. SOC 2 apenas se cliente regulado exigir.',
+   stats:['12-18 meses','R$ 30-80k','Somente se exigido'],
+   col:'#7070a0',
+   detail:{title:'ISO 42001 e SOC 2 — quando valem a pena',eye:'CERTIFICACOES · PLANEJAR FUTURO',
+   why:'Certificacoes tem custo alto e tempo longo. A decisao deve ser guiada por demanda real de clientes, nao por precaucao generica.',
+   how:'ISO 42001: norma para AI Management System. Custo: R$ 30-80k. Tempo: 12-18 meses. Vale quando clientes enterprise de setores regulados exigem como criterio de vendor. SOC 2 Type II: auditoria de seguranca para provedores de servicos. Custo: R$ 40-150k. Tempo: 6-12 meses.',
+   impact:'Para 90% dos casos, NIST AI RMF documentado + DPAs + politica de IA e suficiente. ISO e SOC 2 sao para quando o cliente formalmente exige.',
+   actions:'1. Comecar com NIST AI RMF agora. 2. Criar roadmap ISO 42001 se pipeline enterprise exigir. 3. Avaliar SOC 2 apenas com demanda concreta.',
+   stats:[{l:'ISO 42001',v:'R$ 30-80k / 12-18 meses'},{l:'SOC 2',v:'R$ 40-150k / 6-12 meses'},{l:'QUANDO',v:'Apenas se cliente exigir'},{l:'ALTERNATIVA',v:'NIST AI RMF gratis'}]}},
+];
+
+var _govFilter = 'all';
+function filterGov(mod,btn){
+  _govFilter = mod;
+  document.querySelectorAll('#s7 .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderGov();
+}
+function renderGov(){
+  var el = document.getElementById('govGrid');
+  if(!el) return;
+  var h = '';
+  for(var i=0;i<GOV.length;i++){
+    var g = GOV[i];
+    if(_govFilter !== 'all' && g.mod !== _govFilter) continue;
+    var stats = '';
+    for(var j=0;j<g.stats.length;j++) stats += '<span class="gs">'+g.stats[j]+'</span>';
+    h += '<div class="gov-card gls '+g.mod+'" onclick="openModal(GOV['+i+'])">';
+    h += '<div class="gov-top"><div class="gov-ico">'+g.ico+'</div><div class="gov-name">'+g.nome+'</div>';
+    h += '<span class="gov-badge '+g.badge+'">'+g.badgeLabel+'</span></div>';
+    h += '<div class="gov-desc">'+g.desc+'</div>';
+    h += '<div class="gov-stats">'+stats+'</div></div>';
+  }
+  el.innerHTML = h || '<div style="color:var(--t3);padding:20px">Nenhum item.</div>';
+}
 // ── INIT ──
 buildStore();
 renderDecision();
@@ -1280,6 +1426,7 @@ renderSquad();
 renderEmg();
 renderDT();
 initCosts();
+renderGov();
 </script>
 </body>
 </html>
