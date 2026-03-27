@@ -1554,24 +1554,205 @@ var _GSET={
 
 function generateGovDoc(){
   var s=_gSel.setor,p=_gSel.perfil,c=_gSel.cultura,st=_GSET[s],hi=st.alta;
-  var intro=c==='informal'
-    ?'Esta politica comeca pela liberdade. A governanca de IA nao existe para controlar pessoas — existe para garantir que agentes automatizados operem com seguranca, para que as pessoas trabalhem com mais autonomia, nao menos.'
-    :c==='formal'
-    ?'Este documento complementa as politicas de seguranca existentes, aplicando principios de governanca ao contexto de stacks de IA e agentes automatizados. A estrutura segue os 4 dominios do NIST AI RMF: Govern, Map, Measure, Manage.'
-    :'Esta politica foi criada para um momento de transicao: estabelece clareza sobre como a IA sera usada, o que e monitorado e o que nao e, e como as pessoas podem trabalhar com autonomia dentro de um ambiente seguro.';
 
-  var libs=['Usar qualquer ferramenta de IA para rascunhos, brainstorming e pesquisa pessoal sem supervisao',
+  // ── INTRO por cultura ──
+  var intro = c==='informal'
+    ? 'Esta politica comeca pela liberdade. A governanca de IA nao existe para controlar pessoas — existe para garantir que agentes automatizados operem com seguranca, para que as pessoas trabalhem com mais autonomia. Nao ha monitoramento de conversas. Nao ha vigilancia. As restricoes existem onde regulacao obriga ou onde um agente poderia causar dano real sem supervisao humana.'
+    : c==='transicao'
+    ? 'Esta politica foi criada para um momento de transicao. Nao e um documento definitivo — e um ponto de partida. Nas proximas semanas, o time vai revisar e ajustar juntos. O objetivo e construir clareza coletiva sobre o que a IA pode e nao pode fazer, sem impor controle de cima para baixo. Um Comite de IA sera formado nos primeiros 30 dias para conduzir esse processo.'
+    : 'Este documento formaliza o uso de inteligencia artificial dentro da organizacao, complementando as politicas de seguranca e compliance ja existentes. Todos os colaboradores devem assinar ciencia desta politica. A politica sera revisada anualmente ou sempre que houver mudanca relevante no stack ou na regulacao aplicavel.';
+
+  // ── AVISOS CRITICOS por setor ──
+  var alertas = [];
+  if(s==='igaming') alertas = [
+    '<strong>KYC obrigatorio:</strong> nenhum agente pode processar dados de cliente sem verificacao de identidade concluida',
+    '<strong>Localizacao do apostador e dado RESTRITO</strong> — anti-lavagem de dinheiro. Nunca vai para API externa',
+    '<strong>IA nao pode fazer targeting de apostadores vulneraveis</strong> — vedado pela Secap (Lei 14.790/2023)',
+    '<strong>Logs de transacao obrigatorios por 5 anos</strong> — nao 90 dias. Configurar retencao corretamente',
+    '<strong>Zero tolerancia para prompt injection</strong> — agentes tem acesso a sistemas de pagamento',
+  ];
+  else if(s==='financeiro') alertas = [
+    '<strong>Decisao automatizada que afeta credito exige explicacao ao cliente</strong> — LGPD Art. 20 e Bacen',
+    '<strong>Dados de scoring de credito sao RESTRITOS</strong> mesmo internamente — nao compartilhar entre agentes',
+    '<strong>Open Finance:</strong> dados de outras instituicoes exigem consentimento explicito renovavel',
+    '<strong>Logs de auditoria obrigatorios por 10 anos</strong> — configurar retencao conforme regulacao Bacen',
+    '<strong>Qualquer decisao automatizada relevante precisa de trilha auditavel</strong> — LGPD Art. 20',
+  ];
+  else if(s==='saude') alertas = [
+    '<strong>Prontuario eletronico: NUNCA para API externa</strong> — sem excecao, sem pseudo-anonimizacao',
+    '<strong>IA nao pode emitir diagnostico ou prescricao</strong> — vedado pelo CFM Res. 2.314/2022',
+    '<strong>Dados de saude sao sensiveis LGPD Art. 11</strong> — base legal diferente, consentimento especifico',
+    '<strong>Agente nao pode inferir condicao de saude de texto</strong> — mesmo que o usuario mencione',
+    '<strong>Consentimento especifico e obrigatorio</strong> para qualquer tratamento de dado por sistema de IA',
+  ];
+  else if(s==='juridico') alertas = [
+    '<strong>Sigilo profissional absoluto</strong> — nenhum dado de cliente vai para API externa, sem excecao',
+    '<strong>IA nao pode assinar pecas juridicas</strong> — vedado pelo Estatuto da OAB',
+    '<strong>Dados de processo sao RESTRITOS</strong> mesmo entre advogados do mesmo escritorio',
+    '<strong>Comunicacoes com cliente: nunca processadas por modelo externo</strong> — risco de quebra de sigilo',
+  ];
+  else if(s==='educacao') alertas = [
+    '<strong>Menores de 18: consentimento parental obrigatorio</strong> para qualquer dado pessoal',
+    '<strong>IA nao pode tomar decisoes automaticas sobre desempenho</strong> sem revisao humana obrigatoria',
+    '<strong>ECA: protecao de dados de crianca e absoluta</strong> — qualquer vazamento e crime',
+    '<strong>Dados de aluno sao sensiveis</strong> — base legal LGPD exige consentimento especifico',
+  ];
+  else if(s==='rh') alertas = [
+    '<strong>Dados trabalhistas sao sigilosos</strong> — salario, beneficios e historico nao vao para API externa',
+    '<strong>IA nao pode tomar decisoes de contratacao ou demissao sozinha</strong> — revisao humana obrigatoria',
+    '<strong>Dados de saude ocupacional sao sensiveis</strong> — LGPD Art. 11',
+  ];
+  else alertas = [
+    '<strong>LGPD se aplica a todos os dados pessoais</strong> — mapear antes de conectar qualquer fonte a um agente',
+    '<strong>DPA obrigatorio com todos os fornecedores de IA</strong> — clausula nao treino',
+  ];
+
+  // ── LIBERDADES por perfil ──
+  var libs = [
+    'Usar qualquer ferramenta de IA para rascunhos, brainstorming e pesquisa pessoal sem supervisao',
     'Conversar com Claude, ChatGPT ou Gemini sobre qualquer tema profissional livremente',
     'Experimentar ferramentas novas fora dos pipelines criticos',
-    'Usar IA para aprendizado e desenvolvimento pessoal',
-    'Criar conteudo com IA sem aprovacao previa — desde que nao envolva dados restritos'];
-  if(p==='tecnico'){ libs.push('Criar scripts e automacoes pessoais com IA para ganho de produtividade proprio'); libs.push('Usar APIs de modelos diretamente para prototipagem sem restricao de ferramenta'); }
+    'Criar conteudo com IA sem aprovacao previa — desde que nao envolva dados restritos',
+  ];
+  if(p==='tecnico'){
+    libs.push('Usar APIs de modelos diretamente para prototipagem — sem restricao de ferramenta');
+    libs.push('Criar workflows no n8n em ambiente de desenvolvimento sem aprovacao previa');
+    libs.push('Instalar e testar novas ferramentas de IA no ambiente de dev livremente');
+  } else if(p==='misto'){
+    libs.push('Time de negocios pode usar outputs dos agentes sem entender como funcionam internamente');
+    libs.push('Sugerir novos casos de uso para o time tecnico — sem precisar implementar');
+  } else {
+    libs.push('Usar as ferramentas de IA aprovadas pelo time de TI sem conhecimento tecnico');
+    libs.push('Pedir ajuda ao time tecnico para qualquer duvida sobre o que os agentes fazem');
+  }
   if(c==='informal') libs.push('Testar e compartilhar descobertas de ferramentas novas com o time livremente');
 
+  // ── RESPONSABILIDADES por perfil ──
+  var resps = [];
+  if(p==='tecnico') resps = [
+    '<strong>Testar prompt injection</strong> antes de qualquer deploy em producao',
+    '<strong>Nunca colocar API keys em codigo</strong> — sempre no vault do n8n',
+    '<strong>Documentar todo workflow novo</strong> com: o que faz, quais dados acessa, quais acoes dispara',
+    '<strong>Avisar o time</strong> antes de conectar qualquer nova fonte de dados a um agente',
+  ];
+  else if(p==='misto') resps = [
+    '<strong>Time tecnico:</strong> gerenciar agentes, aprovar configuracoes, responder a incidentes',
+    '<strong>Time de negocios:</strong> validar outputs antes de usar em decisoes criticas',
+    '<strong>Aprovacao de workflow:</strong> dev cria, negocio valida, ambos assinam antes de producao',
+    '<strong>Treinamento obrigatorio</strong> para time de negocios sobre o que cada agente faz e nao faz',
+  ];
+  else resps = [
+    '<strong>Usar apenas ferramentas aprovadas pelo time de TI</strong> — nao instalar por conta propria',
+    '<strong>Nao inserir dados restritos</strong> em nenhuma ferramenta de IA sem orientacao do time tecnico',
+    '<strong>Reportar comportamentos estranhos</strong> dos agentes imediatamente ao responsavel tecnico',
+    '<strong>Treinamento obrigatorio</strong> antes de usar qualquer ferramenta de IA no trabalho',
+  ];
+
+  // ── GOVERNANÇA por cultura ──
+  var govOp = [];
+  if(c==='formal') govOp = [
+    'Politica publicada no repositorio oficial de documentos corporativos',
+    'Assinatura de ciencia obrigatoria para todos os colaboradores',
+    'Revisao anual obrigatoria — ou quando houver mudanca relevante no stack',
+    'Incidentes reportados ao Comite de Governanca dentro de 24h',
+    'Auditoria interna de conformidade a cada 6 meses',
+  ];
+  else if(c==='informal') govOp = [
+    'Documento vivo — qualquer colaborador pode sugerir mudancas via canal dedicado',
+    'Comunicado via Slack/reuniao de time — sem assinatura formal exigida',
+    'Revisao quando houver mudanca relevante no stack ou nova regulacao aplicavel',
+    'Incidentes comunicados no canal de engenharia imediatamente',
+  ];
+  else govOp = [
+    'Fase 1 (agora): regras minimas para nao quebrar nada enquanto o stack e construido',
+    'Fase 2 (30-60 dias): Comite de IA formado para revisar e ajustar com o time',
+    'Fase 3 (90 dias): politica definitiva publicada e comunicada formalmente',
+    'Revisao quinzenal nas primeiras 8 semanas — depois anual',
+  ];
+
+  // ── RETENCAO DE LOGS por setor ──
+  var retencao = s==='financeiro' ? '10 anos (Bacen)'
+    : s==='igaming' ? '5 anos (Secap/PLD)'
+    : s==='saude' ? '20 anos (CFM — prontuario)'
+    : s==='juridico' ? 'Enquanto o processo estiver ativo + 5 anos'
+    : '90 dias (padrao LGPD)';
+
+  // ── DADOS table rows ──
+  var dadosRows = hi ? [
+    ['Publico','Posts, marketing, conteudo publico','<span class="tok-ok">SIM</span>','Nenhuma'],
+    ['Interno','Manuais, processos, analises internas','<span class="tok-ok">SIM</span>','DPA assinado com fornecedor'],
+    ['Confidencial','Nome, email, telefone de clientes','<span class="tok-warn">COM RESTRICAO</span>','Pseudo-anonimizacao obrigatoria'],
+    ['Restrito','CPF, dados financeiros, dados de saude, senhas, '+( s==='igaming'?'localizacao do apostador':s==='saude'?'prontuario eletronico':s==='juridico'?'dados de processo':'dados sensiveis'),'<span class="tok-no">NAO</span>','Redaction obrigatoria — nunca vai para API externa'],
+  ] : [
+    ['Publico','Posts, marketing, conteudo publico','<span class="tok-ok">SIM</span>','Nenhuma'],
+    ['Interno','Manuais, processos, analises','<span class="tok-ok">SIM</span>','DPA assinado'],
+    ['Confidencial','Dados de clientes e colaboradores','<span class="tok-warn">COM RESTRICAO</span>','Pseudo-anonimizacao'],
+    ['Restrito','CPF, senhas, dados sensiveis','<span class="tok-no">NAO</span>','Redaction obrigatoria'],
+  ];
+
+  // ── AGENTES por setor e perfil ──
+  var agentes = [
+    ['Agente de Analise','Read-only DW','Queries, metricas, alertas','Modificar dados, acessar dados de cliente'],
+    ['Agente de Conteudo','Read dados publicos','Gerar rascunhos, posts','Publicar sem aprovacao humana'],
+    ['Agente de Vendas','Read-only CRM','Email, atualizar pipeline','Acessar financeiro, excluir registros'],
+    ['Agente de Research','Read fontes autorizadas','Pesquisar, compilar','Acessar sistemas internos'],
+  ];
+  if(p==='tecnico'||p==='misto'){
+    agentes.push(['Agente de Codigo','Read codebase, Write branches','Criar, refatorar, revisar','Deploy producao, acessar secrets']);
+    agentes.push(['Agente de Automacao','APIs no vault n8n','Executar workflows aprovados','Modificar workflows sem aprovacao']);
+  }
+  if(s==='igaming') agentes.push(['Agente de KYC/Compliance','Read-only dados cadastrais','Verificar identidade, alertar PLD','Aprovar cadastro automaticamente, acessar pagamentos']);
+  if(s==='financeiro') agentes.push(['Agente de Compliance Bacen','Read-only logs + circulares','Verificar aderencia, gerar relatorios','Alterar politicas, aprovar operacoes']);
+  if(s==='saude') agentes.push(['Agente de Triagem','Read-only dados anonimizados','Classificar urgencia, direcionar','Emitir diagnostico, acessar prontuario']);
+  if(s==='juridico') agentes.push(['Agente de Research Juridico','Read bases publicas de jurisprudencia','Pesquisar precedentes, resumir','Acessar dados de cliente, assinar documentos']);
+  if(s==='rh') agentes.push(['Agente de RH','Read-only dados anonimizados de colaboradores','Gerar metricas, identificar padroes','Tomar decisoes de contratacao/demissao']);
+
+  // ── FORNECEDORES ──
+  var forn = [
+    ['Claude (Anthropic)','Nao por padrao (Pro+)','<span class="tok-ok">Seguro</span>','Pro+ nao treina com seus dados'],
+    ['GPT (OpenAI)','Sim por padrao na API','<span class="tok-warn">Ativar opt-out</span>','Disable model training nas settings'],
+    ['Gemini (Google)','Nao para Workspace/Enterprise','<span class="tok-ok">Seguro</span>','Usar Google AI Pro ou Enterprise'],
+    ['DeepSeek','Incerto (origem chinesa)','<span class="tok-warn">Verificar</span>',hi?'<strong>NAO usar</strong> em setor regulado — substituir por Llama':'Self-host ou verificar terms'],
+  ];
+
+  // ── CHECKLIST customizado ──
+  var c1 = [
+    chkG('Classificar todos os dados em 4 niveis — incluindo '+( s==='saude'?'prontuarios como RESTRITO absoluto': s==='igaming'?'localizacao e transacoes como RESTRITOS': s==='juridico'?'dados de processo como RESTRITOS':'dados de clientes como CONFIDENCIAIS'),'gp-now'),
+    chkG('Assinar DPA com fornecedores de IA — clausula nao treino obrigatoria','gp-now'),
+    chkG('Implementar protecao de prompt injection no n8n (template n8n.io/workflows/7453)','gp-now'),
+    chkG('Configurar RBAC por funcao de agente — credenciais no vault, nao no codigo','gp-now'),
+    chkG('Criar runbook de resposta a incidentes com fluxo de 4 passos','gp-now'),
+    chkG('Comunicar ao time o que E e o que NAO E monitorado — antes de qualquer implementacao','gp-now'),
+  ];
+  if(p==='naotecnico'||p==='misto') c1.push(chkG('Realizar treinamento obrigatorio para todos os colaboradores antes de liberar uso das ferramentas','gp-now'));
+  if(hi) c1.push(chkG('Configurar retencao de logs: '+retencao+' — nao usar configuracao padrao de 90 dias','gp-now'));
+
+  var c2 = [
+    chkG('Instalar Langfuse self-hosted para audit trail de acoes dos agentes — R$ 0','gp-soon'),
+    chkG('Configurar LiteLLM self-hosted como AI gateway — controle centralizado — R$ 0','gp-soon'),
+    chkG('Regex DLP no n8n para CPF, CNPJ, email antes de enviar para APIs externas','gp-soon'),
+    chkG('Mapear NIST AI RMF para cada agente do stack (nist.gov/ai/rmf — gratuito)','gp-soon'),
+    chkG('Alertas automaticos: volume anormal de tokens, acesso fora do horario','gp-soon'),
+  ];
+  if(hi) c2.push(chkG('AWS Bedrock Guardrails — filtro semantico de PII e prompt injection — ~R$ 50/mes','gp-soon'));
+  if(s==='saude') c2.push(chkG('Implementar camada adicional de redaction para dados de saude antes de qualquer processamento','gp-soon'));
+  if(s==='igaming') c2.push(chkG('Configurar monitoramento de comportamento compulsivo conforme exigencia Secap','gp-soon'));
+  if(p==='misto') c2.push(chkG('Criar processo formal de aprovacao: dev cria workflow, negocio valida, ambos aprovam antes de producao','gp-soon'));
+
+  var c3 = [
+    chkG('Criar resumo de governanca de 1 pagina para due diligence de clientes','gp-future'),
+    chkG('Documentar NIST AI RMF completo com todos os controles implementados','gp-future'),
+  ];
+  if(hi) c3.push(chkG('Avaliar ISO 42001 para 12-18 meses — R$ 30-80k — apenas se cliente enterprise exigir','gp-future'));
+  if(s==='financeiro'||s==='saude') c3.push(chkG('Assessment de seguranca independente — recomendado para clientes regulados do setor','gp-future'));
+  if(c==='formal') c3.push(chkG('Auditoria interna de conformidade semestral com checklist NIST AI RMF','gp-future'));
+  if(c==='transicao') c3.push(chkG('Politica definitiva publicada e comunicada formalmente apos revisao com o time (90 dias)','gp-future'));
+
+  // ── HELPERS ──
   function ul(arr){ return '<ul class="gov-ul">'+arr.map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'; }
   function tbl(head,rows){
     return '<table class="gov-table"><thead><tr>'+head.map(function(h){ return '<th>'+h+'</th>'; }).join('')+'</tr></thead><tbody>'
-      +rows.map(function(r){ return '<tr>'+r.map(function(c,i){ return '<td'+(i===0?' style="color:var(--t1);font-weight:600"':'')+'>'+c+'</td>'; }).join('')+'</tr>'; }).join('')
+      +rows.map(function(r){ return '<tr>'+r.map(function(v,i){ return '<td'+(i===0?' style="color:var(--t1);font-weight:600"':'')+'>'+v+'</td>'; }).join('')+'</tr>'; }).join('')
       +'</tbody></table>';
   }
   function sec(n,ico,ttl,body,open){
@@ -1580,138 +1761,102 @@ function generateGovDoc(){
       +'<div class="gov-sec-title">'+ttl+'</div><div class="gov-sec-arr">'+(open?'▲':'▼')+'</div></div>'
       +'<div class="gov-sec-body'+(open?' open':'')+'">'+body+'</div></div>';
   }
-  function chk(txt,pri){ return '<div class="gov-check-item"><div class="gov-chk" onclick="govChk(this)"></div><div class="gov-check-text">'+txt+'</div><div class="gov-pri '+pri+'">'+(pri==='gp-now'?'SEMANA 1':pri==='gp-soon'?'MES 1-2':'FUTURO')+'</div></div>'; }
 
-  var dadosRows=hi?[
-    ['Publico','Posts, marketing','<span class="tok-ok">SIM</span>','Nenhuma'],
-    ['Interno','Manuais, processos','<span class="tok-ok">SIM</span>','DPA assinado'],
-    ['Confidencial','Nome, email, telefone','<span class="tok-warn">COM RESTRICAO</span>','Pseudo-anonimizacao'],
-    ['Restrito','CPF, dados financeiros, saude','<span class="tok-no">NAO</span>','Redaction obrigatoria'],
-  ]:[
-    ['Publico','Posts, marketing','<span class="tok-ok">SIM</span>','Nenhuma'],
-    ['Interno','Manuais, processos','<span class="tok-ok">SIM</span>','DPA assinado'],
-    ['Confidencial','Dados de clientes','<span class="tok-warn">COM RESTRICAO</span>','Pseudo-anonimizacao'],
-    ['Restrito','CPF, senhas','<span class="tok-no">NAO</span>','Redaction obrigatoria'],
-  ];
-
-  var agentes=[
-    ['Agente de Analise','Read-only DW','Queries, metricas, alertas','Modificar dados'],
-    ['Agente de Conteudo','Read dados publicos','Gerar rascunhos, posts','Publicar sem aprovacao humana'],
-    ['Agente de Vendas','Read-only CRM','Email, atualizar pipeline','Acessar financeiro, excluir'],
-    ['Agente de Research','Read web autorizado','Pesquisar, compilar','Acessar sistemas internos'],
-    ['Agente de Codigo','Read codebase','Criar, refatorar','Deploy em producao, secrets'],
-    ['Agente de Automacao','APIs no vault n8n','Executar workflows aprovados','Modificar workflows'],
-  ];
-  if(hi) agentes.push(['Agente de Compliance','Read-only logs','Verificar aderencia','Alterar politicas']);
-
-  var forn=[
-    ['Claude (Anthropic)','Nao por padrao (Pro+)','<span class="tok-ok">Seguro</span>','Pro+ nao treina com seus dados'],
-    ['GPT (OpenAI)','Sim por padrao na API','<span class="tok-warn">Ativar opt-out</span>','Disable model training nas settings'],
-    ['Gemini (Google)','Nao para Workspace/Enterprise','<span class="tok-ok">Seguro</span>','Usar Google AI Pro ou Enterprise'],
-    ['DeepSeek','Incerto (origem chinesa)','<span class="tok-warn">Verificar</span>','Self-host ou verificar terms'],
-  ];
-
-  var c1=[
-    chk('Classificar todos os dados em 4 niveis (Publico / Interno / Confidencial / Restrito)','gp-now'),
-    chk('Assinar DPA com fornecedores de IA — clausula nao treino obrigatoria','gp-now'),
-    chk('Implementar protecao de prompt injection no n8n (template n8n.io/workflows/7453)','gp-now'),
-    chk('Configurar RBAC por funcao de agente — credenciais no vault, nao no codigo','gp-now'),
-    chk('Criar runbook de resposta a incidentes (4 passos em 1 pagina)','gp-now'),
-    chk('Comunicar ao time o que E e o que NAO E monitorado antes de qualquer implementacao','gp-now'),
-  ];
-  var c2=[
-    chk('Instalar Langfuse self-hosted — audit trail de acoes dos agentes — R$ 0','gp-soon'),
-    chk('Configurar LiteLLM self-hosted como AI gateway — controle centralizado — R$ 0','gp-soon'),
-    chk('Regex DLP no n8n para CPF, CNPJ, email antes de enviar para APIs externas','gp-soon'),
-    chk('Mapear NIST AI RMF para cada agente (nist.gov/ai/rmf — gratuito)','gp-soon'),
-    chk('Alertas automaticos: volume anormal de tokens, acesso fora do horario comercial','gp-soon'),
-  ];
-  if(hi) c2.push(chk('AWS Bedrock Guardrails — filtro semantico de PII e prompt injection — ~R$ 50/mes','gp-soon'));
-  var c3=[
-    chk('Criar resumo de governanca de 1 pagina para due diligence de clientes','gp-future'),
-    chk('Documentar NIST AI RMF completo com todos os controles implementados','gp-future'),
-  ];
-  if(hi){
-    c3.push(chk('Avaliar ISO 42001 para 12-18 meses — R$ 30-80k — apenas se cliente enterprise exigir','gp-future'));
-    c3.push(chk('Avaliar Nightfall AI DLP ou Strac AI DLP se pipeline regulado exigir formalmente','gp-future'));
-  } else {
-    c3.push(chk('Avaliar certificacoes de seguranca apenas com demanda concreta de cliente enterprise','gp-future'));
-  }
-
-  var h='<div class="gov-doc-header">'
+  // ── BUILD DOCUMENT ──
+  var h = '<div class="gov-doc-header">'
     +'<div class="gov-doc-title">Politica de Uso de Inteligencia Artificial</div>'
-    +'<div class="gov-doc-sub">'+st.label+' · '+new Date().toLocaleDateString('pt-BR')+'</div>'
+    +'<div class="gov-doc-sub">'+st.label+' · '+(p==='tecnico'?'Time Tecnico':p==='misto'?'Time Misto':'Time Nao Tecnico')+' · '+(c==='formal'?'Cultura Formal':c==='informal'?'Cultura Informal':'Em Transicao')+' · '+new Date().toLocaleDateString('pt-BR')+'</div>'
     +'<div class="gov-doc-tags">'
     +'<div class="gov-dtag gov-dtag-s">'+st.label.toUpperCase()+'</div>'
     +'<div class="gov-dtag gov-dtag-p">'+(p==='tecnico'?'TECNICO':p==='misto'?'MISTO':'NAO TECNICO')+'</div>'
     +'<div class="gov-dtag gov-dtag-c">'+(c==='formal'?'FORMAL':c==='informal'?'INFORMAL':'EM TRANSICAO')+'</div>'
     +'<div class="gov-dtag" style="background:rgba(255,61,110,.12);color:var(--red);border:1px solid rgba(255,61,110,.25)">RISCO '+st.risco+'</div>'
-    +'</div></div>'
+    +'<div class="gov-dtag" style="background:rgba(112,112,160,.12);color:var(--t3);border:1px solid rgba(112,112,160,.25)">LOGS: '+retencao+'</div>'
+    +'</div></div>';
 
-    +sec('01','🟢','COMECANDO PELA LIBERDADE',
-      '<div class="gov-freedom"><div class="gov-box-label" style="color:var(--green)">PRINCIPIO CENTRAL</div>'
-      +'<p class="gov-p">'+intro+'</p></div>'
-      +'<p class="gov-p">As restricoes aqui descritas sao impostas por <strong>regulacao ou por risco tecnico real</strong> — nao por escolha organizacional. Onde nao ha risco ou obrigacao legal, ha liberdade total.</p>'
-    ,true)
+  if(alertas.length){
+    h += '<div class="gov-restrict" style="margin-bottom:12px"><div class="gov-box-label" style="color:var(--red)">ALERTAS CRITICOS — '+st.label.toUpperCase()+'</div>'+ul(alertas)+'</div>';
+  }
 
-    +sec('02','✅','O QUE VOCE PODE FAZER LIVREMENTE',
-      '<div class="gov-freedom"><div class="gov-box-label" style="color:var(--green)">ZONAS DE LIBERDADE — SEM MONITORAMENTO</div>'+ul(libs)+'</div>'
-      +'<p class="gov-p" style="font-size:11px;color:var(--t3)">Estas atividades nunca serao monitoradas, auditadas ou reportadas. Sao de uso pessoal e profissional livre.</p>'
-    )
+  h += sec('01','🟢','COMECANDO PELA LIBERDADE',
+    '<div class="gov-freedom"><div class="gov-box-label" style="color:var(--green)">PRINCIPIO CENTRAL</div>'
+    +'<p class="gov-p">'+intro+'</p></div>'
+    +'<p class="gov-p">As restricoes aqui descritas sao impostas por <strong>regulacao ou por risco tecnico real</strong> — nao por escolha organizacional. Onde nao ha risco ou obrigacao legal, ha liberdade total.</p>'
+    +(alertas.length ? '<p class="gov-p" style="color:var(--red)">⚠ Este setor tem <strong>'+alertas.length+' alertas criticos</strong> de compliance — ver secao de alertas acima.</p>' : '')
+  ,true);
 
-    +sec('03','🔍','O QUE E E O QUE NAO E AUDITADO',
-      '<p class="gov-p">O audit trail registra <strong>acoes dos agentes automatizados</strong> — nao conversas de pessoas.</p>'
-      +tbl(['REGISTRADO','POR QUE','AUDITADO'],[
-        ['Qual agente executou qual acao','Rastreabilidade do sistema','<span class="tok-ok">SIM</span>'],
-        ['Timestamp e workflow ID','Diagnostico de incidentes','<span class="tok-ok">SIM</span>'],
-        ['Modelo de IA usado e tokens','Controle de custo','<span class="tok-ok">SIM</span>'],
-        ['Conteudo de conversas pessoais','—','<span class="tok-no">NUNCA</span>'],
-        ['Mensagens WhatsApp e apps pessoais','—','<span class="tok-no">NUNCA</span>'],
-      ])
-      +'<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">POR QUE ISSO PROTEGE VOCE</div>'
-      +'<p class="gov-p">Se um agente enviou um email errado, o log mostra que foi o agente — nao a pessoa. <strong>A rastreabilidade existe para esclarecer, nao para punir.</strong></p></div>'
-    )
+  h += sec('02','✅','O QUE VOCE PODE FAZER LIVREMENTE',
+    '<div class="gov-freedom"><div class="gov-box-label" style="color:var(--green)">ZONAS DE LIBERDADE — SEM MONITORAMENTO</div>'+ul(libs)+'</div>'
+    +'<p class="gov-p" style="font-size:11px;color:var(--t3)">Estas atividades nunca serao monitoradas, auditadas ou reportadas. Sao de uso pessoal e profissional livre de cada colaborador.</p>'
+  );
 
-    +sec('04','📋','CLASSIFICACAO DE DADOS E LGPD',
-      '<p class="gov-p">4 niveis definem o que pode ir para APIs externas e o que precisa de protecao especial.</p>'
-      +tbl(['NIVEL','EXEMPLOS','API EXTERNA?','ACAO'],dadosRows)
-      +'<div class="gov-warn"><div class="gov-box-label" style="color:var(--gold)">OBRIGACOES — '+st.label.toUpperCase()+'</div>'
-      +ul(st.regs)+'</div>'
-      +tbl(['FORNECEDOR','TREINA COM DADOS?','STATUS','ACAO'],forn)
-    )
+  h += sec('03','📌','RESPONSABILIDADES POR PERFIL',
+    '<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">RESPONSABILIDADES — '+(p==='tecnico'?'TIME TECNICO':p==='misto'?'TIMES TECNICO E DE NEGOCIOS':'TIME NAO TECNICO')+'</div>'+ul(resps)+'</div>'
+  );
 
-    +sec('05','🤖','CONTROLE DE ACESSO POR AGENTE',
-      '<p class="gov-p">Controle por <strong>tipo de agente</strong>, nao por colaborador. Nenhuma pessoa e monitorada.</p>'
-      +tbl(['TIPO','ACESSO','PODE FAZER','NAO PODE'],agentes)
-      +'<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">COMO ISSO PROTEGE VOCE</div>'
-      +ul(['Voce nao sera responsabilizado por acoes de um agente que nao controlava',
-        'RBAC impede que agente de vendas vaze dados financeiros — e impede que voce seja culpado',
-        'Credenciais ficam no vault criptografado — nenhum colaborador tem acesso direto as API keys'])
-      +'</div>'
-    )
+  h += sec('04','🔍','O QUE E E O QUE NAO E AUDITADO',
+    '<p class="gov-p">O audit trail registra <strong>acoes dos agentes automatizados</strong> — nao conversas de pessoas.</p>'
+    +tbl(['REGISTRADO','POR QUE','AUDITADO'],[
+      ['Qual agente executou qual acao','Rastreabilidade e responsabilizacao do sistema','<span class="tok-ok">SIM</span>'],
+      ['Timestamp, workflow ID, origem','Diagnostico de incidentes e auditoria','<span class="tok-ok">SIM</span>'],
+      ['Modelo de IA usado e tokens consumidos','Controle de custo e performance','<span class="tok-ok">SIM</span>'],
+      ['Conteudo de conversas pessoais','—','<span class="tok-no">NUNCA</span>'],
+      ['Mensagens WhatsApp e apps pessoais','—','<span class="tok-no">NUNCA</span>'],
+      ['Dados de uso de ferramentas pessoais','—','<span class="tok-no">NUNCA</span>'],
+    ])
+    +'<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">POR QUE ISSO PROTEGE VOCE</div>'
+    +'<p class="gov-p">Se um agente enviou um email errado, o log mostra que foi o agente — nao a pessoa. <strong>A rastreabilidade existe para esclarecer, nao para punir.</strong></p></div>'
+  );
 
-    +sec('06','🛡','PROTECAO CONTRA ATAQUES',
-      '<p class="gov-p">3 camadas entre os canais de entrada e os agentes que executam acoes reais.</p>'
-      +tbl(['CAMADA','FERRAMENTA','O QUE FAZ','CUSTO'],[
-        ['1 — Regex','n8n template 7453','Detecta instrucoes maliciosas, XSS, data URI attacks','<span class="tok-ok">R$ 0</span>'],
-        ['2 — Guardrails LLM',hi?'AWS Bedrock Guardrails':'Portkey / Bedrock','Classificacao semantica de intencao, filtro de PII',hi?'~R$ 50/mes':'R$ 0-250/mes'],
-        ['3 — Context Shaping','Design de prompts','User content NUNCA entra no system prompt — sempre como dado','<span class="tok-ok">R$ 0</span>'],
-      ])
-      +'<div class="gov-restrict"><div class="gov-box-label" style="color:var(--red)">REGRA DE OURO</div>'
-      +'<p class="gov-p"><strong>User content nunca modifica system prompt.</strong> Todo conteudo de entrada chega como dado, nao como instrucao. Esta regra impede 90% dos ataques de prompt injection.</p></div>'
-    )
+  h += sec('05','📋','CLASSIFICACAO DE DADOS E LGPD',
+    '<p class="gov-p">4 niveis definem o que pode ir para APIs externas.</p>'
+    +tbl(['NIVEL','EXEMPLOS','API EXTERNA?','ACAO'],dadosRows)
+    +'<div class="gov-warn"><div class="gov-box-label" style="color:var(--gold)">OBRIGACOES — '+st.label.toUpperCase()+'</div>'
+    +ul(st.regs)+'</div>'
+    +tbl(['FORNECEDOR','TREINA COM DADOS?','STATUS','ACAO'],forn)
+  );
 
-    +sec('07','🚨','RESPOSTA A INCIDENTES',
-      '<div class="gov-restrict"><div class="gov-box-label" style="color:var(--red)">FLUXO DE RESPOSTA</div>'
-      +ul(['<strong>0-15 min:</strong> Pausar workflow n8n e revogar tokens de API do agente comprometido',
-        '<strong>15-60 min:</strong> Identificar root cause — prompt injection? credencial exposta? erro de configuracao?',
-        '<strong>1-24h:</strong> Rollback para versao estavel (n8n export/import), reativar com monitoramento reforcado',
-        hi?'<strong>Se envolve dados pessoais:</strong> Notificar ANPD em ate 72h conforme LGPD Art. 48 — documentar tudo':'<strong>Se envolve dados pessoais:</strong> Avaliar notificacao ANPD conforme LGPD Art. 48'])
-      +'</div><p class="gov-p">Nenhum colaborador sera responsabilizado sem investigacao completa do audit trail.</p>'
-    )
+  h += sec('06','🤖','CONTROLE DE ACESSO POR AGENTE',
+    '<p class="gov-p">Controle por <strong>tipo de agente</strong>, nao por colaborador. Nenhuma pessoa e monitorada — o controle esta no que o sistema automatizado pode ou nao fazer.</p>'
+    +tbl(['TIPO DE AGENTE','ACESSO','PODE FAZER','NAO PODE FAZER'],agentes)
+    +'<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">COMO ISSO PROTEGE VOCE</div>'
+    +ul(['Voce nao sera responsabilizado por acoes de um agente que nao controlava',
+      'RBAC impede que agente de vendas acesse dados financeiros — e impede que voce seja culpado por isso',
+      'Credenciais ficam no vault criptografado — nenhum colaborador tem acesso direto as API keys de producao'])
+    +'</div>'
+  );
 
-    +'<div class="gov-sec"><div class="gov-sec-hdr" onclick="govSec(this)">'
-    +'<div class="gov-sec-num">08</div><div class="gov-sec-icon">✔️</div>'
+  h += sec('07','🛡','PROTECAO CONTRA ATAQUES',
+    '<p class="gov-p">3 camadas entre os canais de entrada (WhatsApp, webhooks, email) e os agentes que executam acoes reais.</p>'
+    +tbl(['CAMADA','FERRAMENTA','O QUE FAZ','CUSTO'],[
+      ['1 — Regex','n8n template 7453','Detecta instrucoes maliciosas, XSS, data URI attacks','<span class="tok-ok">R$ 0</span>'],
+      ['2 — Guardrails LLM',hi?'AWS Bedrock Guardrails':'Portkey ou Bedrock','Classificacao semantica de intencao, filtro de PII',hi?'~R$ 50/mes':'R$ 0-250/mes'],
+      ['3 — Context Shaping','Design de prompts','User content NUNCA entra no system prompt','<span class="tok-ok">R$ 0</span>'],
+    ])
+    +'<div class="gov-restrict"><div class="gov-box-label" style="color:var(--red)">REGRA DE OURO</div>'
+    +'<p class="gov-p"><strong>User content nunca modifica system prompt.</strong> Todo conteudo de entrada chega como dado, nao como instrucao. Esta regra impede 90% dos ataques de prompt injection.</p></div>'
+  );
+
+  h += sec('08','🚨','RESPOSTA A INCIDENTES',
+    '<div class="gov-restrict"><div class="gov-box-label" style="color:var(--red)">FLUXO DE RESPOSTA</div>'
+    +ul(['<strong>0-15 min:</strong> Pausar workflow n8n e revogar tokens do agente comprometido',
+      '<strong>15-60 min:</strong> Identificar root cause — prompt injection? Credencial exposta? Erro de config?',
+      '<strong>1-24h:</strong> Rollback para versao estavel (n8n export/import), reativar com monitoramento reforcado',
+      hi ? '<strong>Se envolve dados pessoais:</strong> Notificar ANPD em ate 72h — LGPD Art. 48. Documentar tudo com timestamp.'
+         : '<strong>Se envolve dados pessoais:</strong> Avaliar necessidade de notificacao ANPD conforme LGPD Art. 48'])
+    +'</div>'
+    +'<p class="gov-p">Nenhum colaborador sera responsabilizado por incidente sem investigacao completa do audit trail.</p>'
+  );
+
+  h += sec('09','📐','OPERACAO DESTA POLITICA',
+    '<div class="gov-info"><div class="gov-box-label" style="color:var(--blue)">'+(c==='formal'?'GOVERNANCA FORMAL':c==='informal'?'GOVERNANCA INFORMAL':'GOVERNANCA EM TRANSICAO')+'</div>'
+    +ul(govOp)+'</div>'
+    +'<div class="gov-warn"><div class="gov-box-label" style="color:var(--gold)">RETENCAO DE LOGS — '+retencao+'</div>'
+    +'<p class="gov-p">Configurar retencao conforme obrigacao do setor. Logs com retencao menor que o exigido constituem violacao regulatoria, nao apenas falha tecnica.</p></div>'
+  );
+
+  h += '<div class="gov-sec"><div class="gov-sec-hdr" onclick="govSec(this)">'
+    +'<div class="gov-sec-num">10</div><div class="gov-sec-icon">✔️</div>'
     +'<div class="gov-sec-title">CHECKLIST DE IMPLEMENTACAO</div><div class="gov-sec-arr">▼</div></div>'
     +'<div class="gov-sec-body">'
     +'<div class="gov-prog"><div class="gov-prog-fill" id="govProgFill" style="width:0%"></div></div>'
@@ -1726,18 +1871,8 @@ function generateGovDoc(){
   doc.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ── INIT ──
-buildStore();
-renderDecision();
-renderPulse();
-renderIntel();
-renderRanking();
-renderBullets();
-renderSquad();
-renderEmg();
-renderDT();
-initCosts();
-renderGov();
+function chkG(txt,pri){ return '<div class="gov-check-item"><div class="gov-chk" onclick="govChk(this)"></div><div class="gov-check-text">'+txt+'</div><div class="gov-pri '+pri+'">'+(pri==='gp-now'?'SEMANA 1':pri==='gp-soon'?'MES 1-2':'FUTURO')+'</div></div>'; }
+
 </script>
 </body>
 </html>
