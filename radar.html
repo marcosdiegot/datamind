@@ -484,70 +484,66 @@ footer a{color:var(--green);text-decoration:none}
 
 <div class="sec" id="s6">
 
-  <div class="gls" style="padding:14px 18px;margin-bottom:20px">
-    <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px">💡 O modelo AI-First correto: gateway único + roteamento inteligente</div>
-    <div style="font-size:11px;color:var(--t2);line-height:1.65">O stack opera em duas camadas distintas. <strong style="color:var(--t1)">Camada de decisao humana:</strong> ferramentas premium onde voce interage diretamente (Claude Max, Manus, Gamma). <strong style="color:var(--t1)">Camada de execucao em volume:</strong> APIs baratas onde os agentes e automacoes rodam (DeepSeek, Llama, Gemini Flash via OpenRouter). Nao e contradicao — e arquitetura. O custo baixo vem de onde roda em volume, nao de onde voce pensa.</div>
+  <!-- MANIFESTO -->
+  <div style="margin-bottom:28px;padding:20px 24px;background:linear-gradient(135deg,rgba(0,229,160,.05),rgba(77,159,255,.03));border:1px solid rgba(0,229,160,.15);border-radius:16px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,160,.5),transparent)"></div>
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--green);margin-bottom:10px">PRINCÍPIO AI-FIRST</div>
+    <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:8px">Você não compra software. Você monta times.</div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.75">Cada departamento opera com agentes construídos do zero — LLM certo para cada função, orquestrador aberto, memória própria. Sem lock-in. Sem licença por usuário. Sem feature que você não pediu. O custo cai, o controle sobe e o time aprende com seus dados, não com os de outra empresa.</div>
   </div>
 
-  <div class="slabel">00 · ARQUITETURA DE CUSTO — COMO O STACK FUNCIONA</div>
-  <div id="arquiteturaBlock" style="margin-bottom:28px"></div>
+  <!-- BLOCO 1: STACK DE CUSTO -->
+  <div class="slabel">01 · COMO O STACK AI-FIRST FUNCIONA — CUSTO REAL</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Duas camadas distintas. Na camada humana você usa os melhores modelos sem limite. Na camada de execução em volume os agentes rodam pelo menor custo. Não é contradição — é arquitetura.</div>
+  <div id="stackCustoBlock" style="margin-bottom:28px"></div>
 
-  <div class="slabel">01 · AS 3 ASSINATURAS JUSTIFICADAS</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Apenas onde há interação humana intensa, processo estruturado ou acesso a funcionalidade exclusiva da assinatura.</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px" id="assinaturasBlock"></div>
+  <!-- BLOCO 2: MODELOS POR FUNÇÃO -->
+  <div class="slabel">02 · MODELOS — QUAL USAR EM CADA FUNÇÃO</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Preços reais de Mar 2026 via OpenRouter. Calculado para tarefa média de 7k tokens. Escolha o modelo pelo que ele faz melhor, não pelo hype.</div>
+  <div id="modelosFuncaoBlock" style="margin-bottom:28px"></div>
 
-  <div class="slabel">02 · MODELOS NO GATEWAY — CUSTO REAL POR TAREFA</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Preços reais de Mar 2026 via OpenRouter. Calculado para tarefa média de 7k tokens (5k input + 2k output).</div>
-  <div id="modelosBlock" style="margin-bottom:28px"></div>
+  <!-- BLOCO 3: TIMES DE AGENTES -->
+  <div class="slabel">03 · TIMES DE AGENTES — QUEM FAZ O QUÊ</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:16px">Cada departamento opera com um time de agentes. Selecione o porte e o departamento para ver os agentes, o que executam e quando precisam de supervisão humana.</div>
 
-  <div class="slabel">03 · CALCULADORA — CUSTO MENSAL POR VOLUME DE TAREFAS</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Selecione o volume mensal de cada tipo de tarefa. Veja o custo otimizado (modelo certo para cada tarefa) vs tudo no premium.</div>
-  <div id="calcBlock" style="margin-bottom:28px"></div>
-
-  <div class="slabel">04 · QUANDO ESCALAR — SINAIS E GATILHOS</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Indicadores de quando o plano atual ficou pequeno ou quando está pagando mais do que deveria.</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px" id="threshGrid"></div>
-
-
-
-  <!-- SECTION: TIMES DE AGENTES -->
-<div class="slabel" style="margin-top:32px">06 · TIMES DE AGENTES POR DEPARTAMENTO</div>
-<div style="font-size:11px;color:var(--t2);margin-bottom:16px;line-height:1.6">Cada departamento opera com um time de agentes de IA. Selecione o porte da empresa e o departamento para ver os agentes disponíveis, o que executam e quando precisam de supervisão humana.</div>
-
-<!-- FILTROS -->
-<div class="fb" style="margin-bottom:8px">
-  <span class="fl">PORTE</span>
-  <button class="fbtn on" onclick="taSetPorte('all',this)">TODOS</button>
-  <button class="fbtn" onclick="taSetPorte('pme',this)">PME</button>
-  <button class="fbtn" onclick="taSetPorte('mid',this)">MID-MARKET</button>
-  <button class="fbtn" onclick="taSetPorte('enterprise',this)">ENTERPRISE</button>
-</div>
-<div class="fb" style="margin-bottom:8px">
-  <span class="fl">DECISÃO</span>
-  <button class="fbtn on" onclick="taSetBadge('all',this)">TODOS</button>
-  <button class="fbtn" onclick="taSetBadge('auto',this)">✅ AUTOMATIZAR</button>
-  <button class="fbtn" onclick="taSetBadge('loop',this)">🔄 HUMANO NO LOOP</button>
-</div>
-<div class="fb" style="margin-bottom:16px">
-  <span class="fl">MATURIDADE</span>
-  <button class="fbtn on" onclick="taSetStatus('all',this)">TODOS</button>
-  <button class="fbtn" onclick="taSetStatus('producao',this)">EM PRODUÇÃO</button>
-  <button class="fbtn" onclick="taSetStatus('adocao',this)">EM ADOÇÃO</button>
-  <button class="fbtn" onclick="taSetStatus('emergente',this)">EMERGENTE</button>
-</div>
-
-<!-- DEPARTAMENTOS -->
-<div id="taDeptGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:20px"></div>
-
-<!-- AGENTES DO DEPARTAMENTO SELECIONADO -->
-<div id="taAgenteSection" style="display:none">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-    <button onclick="taCloseDept()" style="font-family:var(--mono);font-size:10px;color:var(--t3);cursor:pointer;padding:5px 12px;border:1px solid var(--rim);border-radius:20px;background:var(--g)">← VOLTAR</button>
-    <div id="taDeptTitle" style="font-size:14px;font-weight:700;color:var(--t1)"></div>
-    <div id="taDeptCount" style="font-family:var(--mono);font-size:10px;color:var(--t3)"></div>
+  <div class="fb" id="taPorteFb" style="margin-bottom:8px">
+    <span class="fl">PORTE</span>
+    <button class="fbtn on" onclick="taSetPorte('all',this)">TODOS</button>
+    <button class="fbtn" onclick="taSetPorte('pme',this)">PME</button>
+    <button class="fbtn" onclick="taSetPorte('mid',this)">MID-MARKET</button>
+    <button class="fbtn" onclick="taSetPorte('enterprise',this)">ENTERPRISE</button>
   </div>
-  <div id="taAgenteGrid" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div class="fb" id="taBadgeFb" style="margin-bottom:8px">
+    <span class="fl">DECISÃO</span>
+    <button class="fbtn on" onclick="taSetBadge('all',this)">TODOS</button>
+    <button class="fbtn" onclick="taSetBadge('auto',this)">✅ AUTOMATIZAR</button>
+    <button class="fbtn" onclick="taSetBadge('loop',this)">🔄 HUMANO NO LOOP</button>
+  </div>
+  <div class="fb" id="taStatusFb" style="margin-bottom:20px">
+    <span class="fl">MATURIDADE</span>
+    <button class="fbtn on" onclick="taSetStatus('all',this)">TODOS</button>
+    <button class="fbtn" onclick="taSetStatus('producao',this)">EM PRODUÇÃO</button>
+    <button class="fbtn" onclick="taSetStatus('adocao',this)">EM ADOÇÃO</button>
+    <button class="fbtn" onclick="taSetStatus('emergente',this)">EMERGENTE</button>
+  </div>
+
+  <div id="taDeptGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px"></div>
+  <div id="taAgenteSection" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <button onclick="taCloseDept()" style="font-family:var(--mono);font-size:10px;color:var(--t3);cursor:pointer;padding:5px 12px;border:1px solid var(--rim);border-radius:20px;background:var(--g)">← VOLTAR</button>
+      <div id="taDeptTitle" style="font-size:14px;font-weight:700;color:var(--t1)"></div>
+      <div id="taDeptCount" style="font-family:var(--mono);font-size:10px;color:var(--t3)"></div>
+    </div>
+    <div id="taAgenteGrid" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+
+  <!-- BLOCO 4: ROI -->
+  <div class="slabel" style="margin-top:28px">04 · CALCULADORA DE ROI — QUANTO VOCÊ ECONOMIZA</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Informe o número de pessoas em cada área. Veja o custo atual estimado vs o custo do time de agentes equivalente.</div>
+  <div id="roiBlock" style="margin-bottom:8px"></div>
+
 </div>
+
 
 <div class="sec" id="s7">
   <div class="slabel" style="margin-bottom:20px">GERADOR DE POLÍTICA DE IA — DATAMIND</div>
@@ -985,8 +981,8 @@ function addClick(container, cls){
 
 
 // ── CUSTOS MODULE ──
-var USD_BRL = 5.80;
-var _calcProject = 'analytics';
+
+
 
 // ─────────────────────────────────────────────
 // BLOCO 1: CUSTO OPERACIONAL
@@ -996,127 +992,18 @@ var _calcProject = 'analytics';
 // Modelo validado pelo squad: Mar 2026
 // ═══════════════════════════════════════════════
 var USD_BRL = 5.80;
-var _calcVolume = 100;
+
 
 // ─────────────────────────────────────────────
 // DADOS: MODELOS NO OPENROUTER
 // Preços reais de Mar 2026 (por 1M tokens)
 // ─────────────────────────────────────────────
-var MODELS = [
-  {
-    id:'deepseek',
-    name:'DeepSeek Chat',
-    provider:'DeepSeek via OpenRouter',
-    tier:'economico',
-    input:0.32, output:0.89,
-    uso:'80% das tarefas: rascunhos, validações, estruturação, summarização',
-    qualidade:'Excelente para tarefas estruturadas. 80-90% da qualidade do Claude/GPT por 5-10% do custo.',
-    quando:'Padrão do gateway. Usar em tudo que não exige reasoning profundo.',
-    cor:'#00e5a0'
-  },
-  {
-    id:'llama',
-    name:'Llama 3.3 70B',
-    provider:'Meta via OpenRouter / Groq',
-    tier:'economico',
-    input:0.18, output:0.40,
-    uso:'Validações, checklists, formatação, tarefas repetitivas em volume',
-    qualidade:'Ótimo para tarefas bem definidas. Open-source — zero lock-in.',
-    quando:'Volume alto de tarefas simples. Via Groq: velocidade máxima para agents em tempo real.',
-    cor:'#4d9fff'
-  },
-  {
-    id:'gemini_flash',
-    name:'Gemini 2.5 Flash',
-    provider:'Google via OpenRouter',
-    tier:'economico',
-    input:0.30, output:2.50,
-    uso:'Geração de apresentações, conteúdo visual, rascunhos longos',
-    qualidade:'Ótimo para geração de conteúdo estruturado. Mais barato que Flash direto do Google.',
-    quando:'Tarefas de geração de conteúdo onde velocidade e custo importam.',
-    cor:'#00e5a0'
-  },
-  {
-    id:'claude_sonnet',
-    name:'Claude Sonnet 4.6',
-    provider:'Anthropic via OpenRouter',
-    tier:'premium',
-    input:3.00, output:15.00,
-    uso:'Análises complexas, propostas, raciocínio crítico, orchestration tasks',
-    qualidade:'Topo de linha para reasoning e escrita. Usar quando qualidade máxima é obrigatória.',
-    quando:'20% das tarefas mais críticas. Nunca como padrão — apenas quando justificado.',
-    cor:'#b06eff'
-  },
-  {
-    id:'gpt4o',
-    name:'GPT-5.4',
-    provider:'OpenAI via OpenRouter',
-    tier:'premium',
-    input:2.50, output:10.00,
-    uso:'Validação quantitativa, modelagem, segundo nível de revisão',
-    qualidade:'Excelente para tarefas matemáticas e estruturadas. Break-even com Plus: 615 tarefas/mês.',
-    quando:'Validações críticas onde Claude não é suficiente. Abaixo de 615 tarefas/mês: API sempre mais barata.',
-    cor:'#4d9fff'
-  },
-  {
-    id:'grok3',
-    name:'Grok-3',
-    provider:'xAI via OpenRouter',
-    tier:'premium',
-    input:3.00, output:15.00,
-    uso:'Monitoramento de tendências do X, análise de comportamento de mercado',
-    qualidade:'Caro. Usar SOMENTE para tarefas que exigem contexto X/Twitter — o diferencial real.',
-    quando:'Fluxos específicos de inteligência de mercado via X. Não usar como LLM genérico.',
-    cor:'#ff3d6e'
-  },
-  {
-    id:'perplexity',
-    name:'Perplexity Sonar',
-    provider:'Perplexity API',
-    tier:'pesquisa',
-    input:1.00, output:5.00,
-    uso:'Research automatizado com citações, briefings de projeto, alimentar o radar',
-    qualidade:'Único modelo com web search integrado e citações verificáveis. $0.04-0.06 por pesquisa.',
-    quando:'Sempre que o agente precisar de dados externos com fonte. $5/1k buscas adicional.',
-    cor:'#ff7b4e'
-  }
-];
+
 
 // ─────────────────────────────────────────────
 // DADOS: 3 ASSINATURAS JUSTIFICADAS
 // ─────────────────────────────────────────────
-var SUBSCRIPTIONS = [
-  {
-    name:'Claude Max 20x',
-    usd:200,
-    cor:'#b06eff',
-    icon:'⚡',
-    motivo:'Uso humano intenso 6-8h/dia',
-    calculo:'API equivalente custaria $3.000-8.000+/mês. Max 20x é 18x mais barato para uso humano contínuo.',
-    alternativa:'Sem alternativa viável para uso humano diário intenso.',
-    regra:'Se usar Claude menos de 3h/dia: Pro ($20) é suficiente. Se usar via Manus principalmente: Max 5x ($100).'
-  },
-  {
-    name:'Manus',
-    usd:39,
-    cor:'#ffb340',
-    icon:'🧠',
-    motivo:'Orquestrador — interação humana estruturada',
-    calculo:'Sem API pública de token. Créditos por tarefa. Processo: briefing → reunião de stack → rodadas de refinação → finalização.',
-    alternativa:'Não há substituto direto. É o ponto de entrada humano para o squad.',
-    regra:'Plus ($199) apenas se rodar múltiplos projetos paralelos com alto volume de créditos.'
-  },
-  {
-    name:'Gamma Pro',
-    usd:20,
-    cor:'#c084fc',
-    icon:'📊',
-    motivo:'Acesso à API v1.0 + apresentações premium',
-    calculo:'API v1.0 só disponível em Pro+. ~$0.50-1 por deck gerado via n8n. Free tier: 400 créditos vitalícios — acaba em dias de uso profissional.',
-    alternativa:'Gemini Flash via n8n para slides em Markdown ($0.001/deck) — sem design automático.',
-    regra:'Se não gerar apresentações para clientes regularmente: use Gemini Flash + template próprio.'
-  }
-];
+
 
 // ─────────────────────────────────────────────
 // DADOS: TAREFAS POR TIPO
@@ -1203,260 +1090,28 @@ function fmtBRL(usd) { return 'R$'+(usd*USD_BRL).toFixed(usd*USD_BRL<1?2:0); }
 // ─────────────────────────────────────────────
 // RENDER PRINCIPAL
 // ─────────────────────────────────────────────
-function initCosts() {
-  renderArquitetura();
-  renderAssinaturas();
-  renderModelosTabela();
-  renderCalculadora();
-  renderThresholds();
-}
+
 
 // BLOCO 0: ARQUITETURA
-function renderArquitetura() {
-  var el = document.getElementById('arquiteturaBlock');
-  if(!el) return;
-  var h = '';
 
-  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">';
-
-  // Coluna esquerda: o modelo
-  h += '<div>';
-  h += '<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:12px">O MODELO CORRETO</div>';
-  var steps = [
-    {icon:'👤',label:'Você',desc:'Entra com o projeto no Manus'},
-    {icon:'🧠',label:'Manus',desc:'Orquestra o squad — propõe reunião de stack, rodadas de refinação'},
-    {icon:'⚡',label:'OpenRouter',desc:'Gateway único → roteia para o modelo certo pelo menor custo'},
-    {icon:'🤖',label:'Squad via API',desc:'Claude, Gemini, DeepSeek, Perplexity, Grok — pagos por token consumido'},
-    {icon:'📦',label:'n8n',desc:'Automações, pipelines, entregas recorrentes'},
-  ];
-  steps.forEach(function(s,i) {
-    h += '<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">';
-    h += '<div style="width:32px;height:32px;border-radius:8px;background:var(--gm);border:1px solid var(--rim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+s.icon+'</div>';
-    h += '<div><div style="font-size:12px;font-weight:600;color:var(--t1)">'+s.label+'</div><div style="font-size:11px;color:var(--t2)">'+s.desc+'</div></div>';
-    h += '</div>';
-    if(i<steps.length-1) h += '<div style="width:1px;height:10px;background:var(--rim);margin-left:15px;margin-bottom:2px"></div>';
-  });
-  h += '</div>';
-
-  // Coluna direita: princípios
-  h += '<div>';
-  h += '<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px">REGRAS DO STACK</div>';
-  var rules = [
-    ['CAMADA 1: Decisao humana — ferramentas premium', 'Claude Max 20x, Manus, Gamma Pro. Onde voce interage diretamente. Assinatura justificada pela intensidade de uso humano — nao pelo volume de tokens.'],
-    ['CAMADA 2: Execucao em volume — APIs baratas', 'DeepSeek, Llama, Gemini Flash via OpenRouter. Onde agentes e automacoes rodam. 80% das tarefas por $0.001-0.01 cada. Aqui o custo e baixo de proposito.'],
-    ['A logica: nao e contradicao, e arquitetura', 'Premium onde humano decide. Barato onde maquina executa. As duas camadas trabalham juntas — Manus (premium) orquestra, DeepSeek (barato) executa.'],
-    ['OpenRouter como gateway da camada 2', 'Um endpoint para n8n e agentes. 658+ modelos. Troca de modelo sem mudar codigo. Zero lock-in.'],
-    ['20% das tarefas da camada 2 sao criticas', 'Claude Sonnet / GPT-5.4 quando reasoning complexo e obrigatorio. Nunca como padrao — apenas quando justificado por resultado.'],
-    ['Custo cai todo mes', 'LLM pricing caiu 80-90% em 2 anos. Revise o stack a cada trimestre. A camada 2 fica mais barata automaticamente.'],
-  ];
-  rules.forEach(function(r) {
-    h += '<div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid var(--gold)">';
-    h += '<div style="font-size:11px;font-weight:600;color:var(--t1);margin-bottom:3px">'+r[0]+'</div>';
-    h += '<div style="font-size:10px;color:var(--t2)">'+r[1]+'</div>';
-    h += '</div>';
-  });
-  h += '</div>';
-
-  h += '</div>';
-
-  // Banner de custo total estimado
-  h += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">';
-  var totals = [
-    {label:'ASSINATURAS FIXAS',val:'R$'+Math.round((200+39+20)*USD_BRL).toLocaleString('pt-BR'),sub:'Camada decisao humana · Claude Max + Manus + Gamma Pro',cor:'var(--green)'},
-    {label:'API MENSAL (100 tarefas/tipo)',val:'R$80-180',sub:'Camada execucao em volume · DeepSeek + Llama + Gemini Flash',cor:'var(--blue)'},
-    {label:'TOTAL STACK COMPLETO',val:'R$1.500-2.100',sub:'vs R$3.500+ em assinaturas puras',cor:'var(--gold)'},
-  ];
-  totals.forEach(function(t) {
-    h += '<div style="padding:14px 16px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--rim)">';
-    h += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:6px">'+t.label+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:20px;font-weight:700;color:'+t.cor+'">'+t.val+'</div>';
-    h += '<div style="font-size:10px;color:var(--t3);margin-top:3px">'+t.sub+'</div>';
-    h += '</div>';
-  });
-  h += '</div>';
-
-  el.innerHTML = h;
-}
 
 // BLOCO 1: 3 ASSINATURAS
-function renderAssinaturas() {
-  var el = document.getElementById('assinaturasBlock');
-  if(!el) return;
-  var h = '';
 
-  SUBSCRIPTIONS.forEach(function(s) {
-    h += '<div class="gl" style="padding:18px 20px">';
-    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
-    h += '<div style="font-size:22px">'+s.icon+'</div>';
-    h += '<div><div style="font-size:14px;font-weight:700;color:var(--t1)">'+s.name+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:22px;font-weight:700;color:'+s.cor+'">R$'+Math.round(s.usd*USD_BRL)+'<span style="font-size:11px;font-weight:400;color:var(--t3)">/mês</span></div></div>';
-    h += '<div style="margin-left:auto;text-align:right"><div style="font-family:var(--mono);font-size:10px;color:var(--t3);opacity:.6">US$'+s.usd+'/mês</div></div>';
-    h += '</div>';
-    h += '<div style="font-size:11px;font-weight:600;color:var(--t1);margin-bottom:6px">Por quê assinatura?</div>';
-    h += '<div style="font-size:11px;color:var(--t2);line-height:1.65;margin-bottom:8px">'+s.calculo+'</div>';
-    h += '<div style="font-size:10px;color:var(--gold);padding:8px 10px;background:rgba(255,179,64,.06);border-radius:6px;border-left:2px solid var(--gold);margin-bottom:6px">⚡ '+s.regra+'</div>';
-    h += '<div style="font-size:10px;color:var(--t3)">Alternativa: '+s.alternativa+'</div>';
-    h += '</div>';
-  });
-
-  el.innerHTML = h;
-}
 
 // BLOCO 2: MODELOS NO GATEWAY
-function renderModelosTabela() {
-  var el = document.getElementById('modelosBlock');
-  if(!el) return;
-  var h = '';
 
-  var tiers = [
-    {id:'economico',label:'CAMADA ECONÔMICA — 80% das tarefas',cor:'var(--green)',bg:'rgba(0,229,160,.04)'},
-    {id:'premium',label:'CAMADA PREMIUM — 20% das tarefas críticas',cor:'var(--gold)',bg:'rgba(255,179,64,.04)'},
-    {id:'pesquisa',label:'CAMADA DE PESQUISA — research com web',cor:'var(--blue)',bg:'rgba(77,159,255,.04)'}
-  ];
-
-  tiers.forEach(function(tier) {
-    var tierModels = MODELS.filter(function(m){return m.tier===tier.id;});
-    h += '<div style="margin-bottom:16px;border-radius:12px;border:1px solid rgba(255,255,255,.06);overflow:hidden">';
-    h += '<div style="padding:10px 16px;background:'+tier.bg+';border-bottom:1px solid rgba(255,255,255,.06)">';
-    h += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+tier.cor+'">'+tier.label+'</div>';
-    h += '</div>';
-
-    tierModels.forEach(function(m) {
-      var cost50 = calcTaskCost(m,5000,2000,m.id==='perplexity'?0.005:0)*50;
-      var cost200 = calcTaskCost(m,5000,2000,m.id==='perplexity'?0.005:0)*200;
-      h += '<div style="display:grid;grid-template-columns:200px 1fr auto auto;gap:16px;align-items:start;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)">';
-      h += '<div>';
-      h += '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px">'+m.name+'</div>';
-      h += '<div style="font-size:10px;color:var(--t3)">'+m.provider+'</div>';
-      h += '<div style="font-family:var(--mono);font-size:9px;margin-top:4px;color:var(--t3);opacity:.7">US$'+m.input+' / US$'+m.output+' por 1M (ref.)</div>';
-      h += '</div>';
-      h += '<div style="font-size:10px;color:var(--t2);line-height:1.6">'+m.uso+'</div>';
-      h += '<div style="text-align:right;white-space:nowrap">';
-      h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:2px">50 tarefas/mês</div>';
-      h += '<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:'+m.cor+'">'+fmtBRL(cost50)+'</div>';
-      h += '<div style="font-size:9px;color:var(--t3);opacity:.6">'+fmtUSD(cost50)+' (ref.)</div>';
-      h += '</div>';
-      h += '<div style="text-align:right;white-space:nowrap">';
-      h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:2px">200 tarefas/mês</div>';
-      h += '<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:'+m.cor+'">'+fmtBRL(cost200)+'</div>';
-      h += '<div style="font-size:9px;color:var(--t3);opacity:.6">'+fmtUSD(cost200)+' (ref.)</div>';
-      h += '</div>';
-      h += '</div>';
-    });
-    h += '</div>';
-  });
-
-  el.innerHTML = h;
-}
 
 // BLOCO 3: CALCULADORA POR TIPO DE TAREFA
-function renderCalculadora() {
-  var el = document.getElementById('calcBlock');
-  if(!el) return;
-  var vol = _calcVolume;
-  var h = '';
 
-  h += '<div style="margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">';
-  h += '<div style="font-size:12px;color:var(--t2)">Volume mensal de cada tipo de tarefa:</div>';
-  [25,50,100,200,500].forEach(function(v) {
-    var on = v===vol;
-    h += '<button onclick="setCalcVol('+v+',this)" style="font-family:var(--mono);font-size:11px;padding:5px 14px;border-radius:20px;border:1px solid '+(on?'var(--green)':'var(--rim)')+';background:'+(on?'rgba(0,229,160,.12)':'transparent')+';color:'+(on?'var(--green)':'var(--t3)')+';cursor:pointer">'+v+' tarefas</button>';
-  });
-  h += '</div>';
 
-  var totalOtimizado = 0, totalFragmentado = 0;
 
-  h += '<div class="gl" style="padding:0;overflow:hidden">';
-  h += '<table style="width:100%;border-collapse:collapse">';
-  h += '<thead><tr style="border-bottom:1px solid var(--rim)">';
-  h += '<th style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);padding:10px 14px;text-align:left">TIPO DE TAREFA</th>';
-  h += '<th style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);padding:10px 14px;text-align:left">MODELO RECOMENDADO</th>';
-  h += '<th style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);padding:10px 14px;text-align:right">CUSTO/TAREFA</th>';
-  h += '<th style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--green);padding:10px 14px;text-align:right">OTIMIZADO/MÊS</th>';
-  h += '<th style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--red);padding:10px 14px;text-align:right">SÓ PREMIUM/MÊS</th>';
-  h += '</tr></thead><tbody>';
-
-  TASK_TYPES.forEach(function(t) {
-    var m = getModel(t.modelo_recomendado);
-    var mPremium = getModel('claude_sonnet');
-    if(!m) return;
-    var costTask = calcTaskCost(m, t.tokens_input, t.tokens_output, t.extra_por_tarefa||0);
-    var costTaskPremium = calcTaskCost(mPremium, t.tokens_input, t.tokens_output, 0);
-    var costMes = costTask * vol;
-    var costMesPremium = costTaskPremium * vol;
-    totalOtimizado += costMes;
-    totalFragmentado += costMesPremium;
-
-    h += '<tr style="border-bottom:1px solid rgba(255,255,255,.04)">';
-    h += '<td style="padding:10px 14px"><div style="font-size:12px;font-weight:600;color:var(--t1)">'+t.icon+' '+t.name+'</div><div style="font-size:10px;color:var(--t3)">'+t.descricao+'</div></td>';
-    h += '<td style="padding:10px 14px"><div style="font-size:11px;font-weight:600;color:'+m.cor+'">'+m.name+'</div><div style="font-size:10px;color:var(--t3)">'+m.provider+'</div></td>';
-    h += '<td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;color:'+m.cor+'">'+fmtBRL(costTask)+'<div style="font-size:9px;color:var(--t3);opacity:.6">'+fmtUSD(costTask)+'</div></td>';
-    h += '<td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green)">'+fmtBRL(costMes)+'<div style="font-size:9px;color:var(--t3);opacity:.6">'+fmtUSD(costMes)+'</div></td>';
-    h += '<td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--red)">'+fmtBRL(costMesPremium)+'<div style="font-size:9px;color:var(--t3);opacity:.6">'+fmtUSD(costMesPremium)+'</div></td>';
-    h += '</tr>';
-  });
-
-  var saving = totalFragmentado > 0 ? Math.round((1 - totalOtimizado/totalFragmentado)*100) : 0;
-
-  h += '<tr style="border-top:1px solid var(--rim);background:rgba(255,255,255,.02)">';
-  h += '<td colspan="3" style="padding:12px 14px;font-family:var(--mono);font-size:10px;color:var(--t1)">TOTAL API MENSAL ('+vol+' tarefas por tipo)</td>';
-  h += '<td style="padding:12px 14px;text-align:right;font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green)">'+fmtBRL(totalOtimizado)+'<div style="font-size:9px;color:var(--t3);opacity:.6">'+fmtUSD(totalOtimizado)+'</div></td>';
-  h += '<td style="padding:12px 14px;text-align:right;font-family:var(--mono);font-size:15px;color:var(--red)">'+fmtBRL(totalFragmentado)+'<div style="font-size:9px;opacity:.6">'+fmtUSD(totalFragmentado)+'</div></td>';
-  h += '</tr>';
-  h += '</tbody></table></div>';
-
-  h += '<div style="margin-top:12px;padding:12px 16px;background:rgba(0,229,160,.05);border:1px solid rgba(0,229,160,.15);border-radius:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">';
-  h += '<div style="font-size:11px;color:var(--t2)">Roteamento inteligente (80% econômico + 20% premium) vs tudo no Claude Sonnet</div>';
-  h += '<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green)">'+saving+'% de economia nas APIs</div>';
-  h += '</div>';
-
-  el.innerHTML = h;
-}
-
-function setCalcVol(v, el) {
-  _calcVolume = v;
-  var btns = document.querySelectorAll('#calcBlock button');
-  for(var i=0;i<btns.length;i++) {
-    btns[i].style.borderColor = 'var(--rim)';
-    btns[i].style.background = 'transparent';
-    btns[i].style.color = 'var(--t3)';
-  }
-  el.style.borderColor = 'var(--green)';
-  el.style.background = 'rgba(0,229,160,.12)';
-  el.style.color = 'var(--green)';
-  renderCalculadora();
-}
 
 // ─────────────────────────────────────────────
 // THRESHOLDS (mantido do v2)
 // ─────────────────────────────────────────────
-var THRESHOLDS = [
-  {tool:'Claude Pro → Max 5x',now:'Claude Pro $20/mês',trigger:'Quando bater no limite de mensagens mais de 3x/semana ou usar Claude 4+ horas/dia',pct:60,action:'Upgrade para Max 5x ($100). Breakeven: +133k tokens input/dia.'},
-  {tool:'Claude Max 5x → Max 20x',now:'Claude Max 5x $100/mês',trigger:'Quando rodar projetos de cliente em paralelo ou usar Claude Code intensivamente',pct:50,action:'Max 20x ($200) se uso API equivalente ultrapassar $200/mês.'},
-  {tool:'OpenRouter Free → Pago',now:'OpenRouter BYOK — zero custo de gateway',trigger:'Quando volume de chamadas ultrapassar 1M requests/mês',pct:15,action:'5% de platform fee apenas acima de 1M req/mês. Para consultor solo: provavelmente nunca paga fee.'},
-  {tool:'Modelo econômico → Premium',now:'DeepSeek/Llama para 80% das tarefas',trigger:'Quando qualidade do output não for suficiente para entrega crítica de cliente',pct:40,action:'Escale para Claude Sonnet ou GPT-4o apenas nessa tarefa específica. Não troque o padrão.'},
-  {tool:'Manus Starter → Plus',now:'Manus Starter $39/mês',trigger:'Quando rodar 3+ projetos paralelos simultâneos ou créditos acabarem antes do mês',pct:35,action:'Plus ($199/mês). Avalie se volume de projetos justifica o custo.'},
-  {tool:'Gamma Pro → Business',now:'Gamma Pro $20/mês',trigger:'Quando gerar mais de 50 decks/mês ou precisar de colaboração de equipe',pct:25,action:'Business plan com volume maior de API. Raro para consultor solo.'},
-  {tool:'n8n Starter → Pro',now:'n8n Starter $24/mês — 5k execuções',trigger:'Quando projetos de cliente rodarem pipelines em produção no mesmo workspace',pct:55,action:'Pro ($60) para 50k execuções. Ou workspace separado onde o cliente paga.'},
-  {tool:'Grok API → Limitar uso',now:'Grok-3 $3/$15 por 1M tokens',trigger:'Se custo mensal do Grok ultrapassar $15 sem resultado claro de inteligência de mercado',pct:70,action:'Substituir por Perplexity Sonar + busca no X manual. Grok só vale para X-specific tasks.'},
-];
 
-function renderThresholds() {
-  var el = document.getElementById('threshGrid');
-  if(!el) return;
-  var h = '';
-  THRESHOLDS.forEach(function(t) {
-    var col = t.pct>65?'var(--red)':t.pct>45?'var(--gold)':'var(--green)';
-    h += '<div style="padding:14px 16px;border-radius:10px;border:1px solid var(--rim);background:var(--g)">';
-    h += '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px">'+t.tool+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:8px">Agora: '+t.now+'</div>';
-    h += '<div style="height:3px;border-radius:3px;background:rgba(255,255,255,.08);margin-bottom:8px"><div style="width:'+t.pct+'%;height:100%;border-radius:3px;background:'+col+'"></div></div>';
-    h += '<div style="font-size:10px;color:var(--t2);margin-bottom:6px">🔔 '+t.trigger+'</div>';
-    h += '<div style="font-size:10px;color:'+col+';font-family:var(--mono)">→ '+t.action+'</div>';
-    h += '</div>';
-  });
-  el.innerHTML = h;
-}
+
+
 
 // ── INIT ──
 buildStore();
@@ -2681,27 +2336,214 @@ const TIMES_AGENTES = [
 ];
 
 
+
+// ══════════════════════════════════════════════
+// ABA CUSTOS — NOVO JS
+// ══════════════════════════════════════════════
+
+function initCosts() {
+  renderStackCusto();
+  renderModelosFuncao();
+  renderROI();
+  if (document.getElementById('taDeptGrid')) taRender();
+}
+
+// ── BLOCO 1: STACK DE CUSTO ──
+function renderStackCusto() {
+  var el = document.getElementById('stackCustoBlock');
+  if (!el) return;
+
+  var camadas = [
+    {
+      cor: 'var(--green)',
+      bg: 'rgba(0,229,160,.04)',
+      border: 'rgba(0,229,160,.15)',
+      label: 'CAMADA HUMANA — onde você pensa',
+      desc: 'Você interage diretamente. Use o melhor modelo sem limitação. O custo é fixo, não por token.',
+      itens: [
+        {icon:'⚡', nome:'Claude Max', funcao:'Orquestração, raciocínio, documentos complexos', custo:'R$1.160/mês', tipo:'Assinatura'},
+        {icon:'🤖', nome:'Manus', funcao:'Execução autônoma de projetos end-to-end', custo:'Incluso no plano', tipo:'Assinatura'},
+        {icon:'🔍', nome:'Perplexity Pro', funcao:'Research com fontes em tempo real', custo:'R$116/mês', tipo:'Assinatura'},
+      ]
+    },
+    {
+      cor: 'var(--blue)',
+      bg: 'rgba(77,159,255,.04)',
+      border: 'rgba(77,159,255,.15)',
+      label: 'CAMADA DE EXECUÇÃO — onde os agentes trabalham',
+      desc: 'Agentes rodando em volume via OpenRouter. Você paga por token consumido, não por assento.',
+      itens: [
+        {icon:'🧠', nome:'DeepSeek R1', funcao:'80% das tarefas de análise e geração em volume', custo:'~R$0,05/tarefa', tipo:'API via OpenRouter'},
+        {icon:'🎨', nome:'Gemini 3.1 Flash', funcao:'Visual, multimodal, geração de interfaces', custo:'~R$0,03/tarefa', tipo:'API via OpenRouter'},
+        {icon:'⚡', nome:'GPT-5.4 Standard', funcao:'Automação complexa, computer use, 1M ctx', custo:'~R$0,18/tarefa', tipo:'API via OpenRouter'},
+        {icon:'⚙️', nome:'n8n self-hosted', funcao:'Orquestrador de todos os agentes', custo:'~R$80/mês VPS', tipo:'Self-hosted'},
+      ]
+    },
+    {
+      cor: 'var(--gold)',
+      bg: 'rgba(255,179,64,.04)',
+      border: 'rgba(255,179,64,.15)',
+      label: 'CAMADA DE MEMÓRIA — onde os agentes aprendem',
+      desc: 'Vector DB e knowledge graph corporativo. Os agentes aprendem com seus dados, não com dados genéricos.',
+      itens: [
+        {icon:'📓', nome:'NotebookLM', funcao:'Síntese de documentos proprietários sem alucinação', custo:'Gratuito', tipo:'Google'},
+        {icon:'🗄️', nome:'Qdrant / Weaviate', funcao:'Vector DB para RAG e memória de longo prazo', custo:'~R$50-200/mês', tipo:'Self-hosted ou cloud'},
+      ]
+    }
+  ];
+
+  var h = '';
+  camadas.forEach(function(c) {
+    h += '<div style="margin-bottom:14px;border-radius:14px;border:1px solid '+c.border+';overflow:hidden">';
+    h += '<div style="padding:12px 18px;background:'+c.bg+';border-bottom:1px solid '+c.border+'">';
+    h += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:'+c.cor+';margin-bottom:3px">'+c.label+'</div>';
+    h += '<div style="font-size:11px;color:var(--t2)">'+c.desc+'</div>';
+    h += '</div>';
+    c.itens.forEach(function(it) {
+      h += '<div style="display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.04)">';
+      h += '<span style="font-size:18px">'+it.icon+'</span>';
+      h += '<div><div style="font-size:12px;font-weight:600;color:var(--t1)">'+it.nome+'</div>';
+      h += '<div style="font-size:10px;color:var(--t3)">'+it.funcao+'</div></div>';
+      h += '<div style="text-align:right"><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:'+c.cor+'">'+it.custo+'</div>';
+      h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3)">'+it.tipo+'</div></div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  });
+
+  el.innerHTML = h;
+}
+
+// ── BLOCO 2: MODELOS POR FUNÇÃO ──
+function renderModelosFuncao() {
+  var el = document.getElementById('modelosFuncaoBlock');
+  if (!el) return;
+
+  var funcoes = [
+    {funcao:'Raciocínio complexo e orquestração', modelo:'Claude Sonnet 4.6', custo_tarefa:'R$0,12', quando:'Frameworks, síntese, decisões editoriais', cor:'#b06eff'},
+    {funcao:'Automação de desktop e workflows longos', modelo:'GPT-5.4', custo_tarefa:'R$0,18', quando:'Computer use, 1M tokens, multiagente', cor:'#00e5a0'},
+    {funcao:'Visual, design e multimodal', modelo:'Gemini 3.1', custo_tarefa:'R$0,04', quando:'SVG, UI, imagem, vídeo, Flash-Lite', cor:'#4d9fff'},
+    {funcao:'Inteligência social e tempo real', modelo:'Grok 4.20', custo_tarefa:'R$0,04', quando:'Monitoramento X, notícias < 30 dias', cor:'#ff3d6e'},
+    {funcao:'Research com fontes citadas', modelo:'Perplexity Sonar', custo_tarefa:'R$0,00', quando:'Validação de dados, mercado, benchmarks', cor:'#4d9fff'},
+    {funcao:'Volume — análise e geração em escala', modelo:'DeepSeek R1', custo_tarefa:'R$0,05', quando:'80% das tarefas rotineiras de agentes', cor:'#00e5a0'},
+    {funcao:'Código aberto e privacidade total', modelo:'Llama 3.3 70B', custo_tarefa:'R$0,01', quando:'Dados sensíveis, on-premise, LGPD', cor:'#ffb340'},
+  ];
+
+  var h = '<div style="display:flex;flex-direction:column;gap:6px">';
+  funcoes.forEach(function(f) {
+    h += '<div class="gls" style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:12px 16px">';
+    h += '<div>';
+    h += '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px">'+f.funcao+'</div>';
+    h += '<div style="font-size:10px;color:var(--t3)">'+f.quando+'</div>';
+    h += '</div>';
+    h += '<div style="font-family:var(--mono);font-size:11px;font-weight:600;color:'+f.cor+';white-space:nowrap">'+f.modelo+'</div>';
+    h += '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--green);text-align:right;min-width:56px">'+f.custo_tarefa+'</div>';
+    h += '</div>';
+  });
+  h += '</div>';
+
+  el.innerHTML = h;
+}
+
+// ── BLOCO 4: CALCULADORA DE ROI ──
+var _roiDepts = {
+  financeiro: 0, rh: 0, vendas: 0, marketing: 0,
+  operacoes: 0, juridico: 0, ti: 0, atendimento: 0
+};
+
+var _roiConfig = {
+  financeiro: {label:'Financeiro / Controladoria', icon:'💰', salario_medio:8500, automacao:0.65},
+  rh:         {label:'RH / People',               icon:'👥', salario_medio:6500, automacao:0.55},
+  vendas:     {label:'Comercial / Vendas',         icon:'📈', salario_medio:7000, automacao:0.50},
+  marketing:  {label:'Marketing',                  icon:'📣', salario_medio:6500, automacao:0.60},
+  operacoes:  {label:'Operações / Supply Chain',   icon:'⚙️', salario_medio:7500, automacao:0.50},
+  juridico:   {label:'Jurídico / Compliance',      icon:'⚖️', salario_medio:12000, automacao:0.55},
+  ti:         {label:'TI / Dados',                 icon:'💻', salario_medio:9000, automacao:0.55},
+  atendimento:{label:'Atendimento / CS',           icon:'🎧', salario_medio:4500, automacao:0.70},
+};
+
+function renderROI() {
+  var el = document.getElementById('roiBlock');
+  if (!el) return;
+
+  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:20px">';
+
+  Object.keys(_roiConfig).forEach(function(key) {
+    var cfg = _roiConfig[key];
+    var val = _roiDepts[key] || 0;
+    h += '<div class="gls" style="padding:14px 16px">';
+    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    h += '<span style="font-size:18px">'+cfg.icon+'</span>';
+    h += '<div style="font-size:12px;font-weight:600;color:var(--t1)">'+cfg.label+'</div>';
+    h += '</div>';
+    h += '<div style="display:flex;align-items:center;gap:8px">';
+    h += '<div style="font-size:10px;color:var(--t3);white-space:nowrap">Pessoas na área:</div>';
+    h += '<input type="number" min="0" max="999" value="'+val+'" ';
+    h += 'style="width:60px;background:rgba(255,255,255,.06);border:1px solid var(--rim);border-radius:6px;color:var(--t1);font-family:var(--mono);font-size:13px;font-weight:700;padding:4px 8px;text-align:center" ';
+    h += 'oninput="updateROI(\''+key+'\',this.value)" />';
+    h += '</div>';
+    h += '</div>';
+  });
+
+  h += '</div>';
+  h += '<div id="roiResultado" style="display:none"></div>';
+  el.innerHTML = h;
+}
+
+function updateROI(key, val) {
+  _roiDepts[key] = parseInt(val) || 0;
+  calcROI();
+}
+
+function calcROI() {
+  var totalPessoas = Object.values(_roiDepts).reduce(function(a, b) { return a + b; }, 0);
+  if (totalPessoas === 0) {
+    document.getElementById('roiResultado').style.display = 'none';
+    return;
+  }
+
+  var custoAtual = 0, economiaTotal = 0;
+  Object.keys(_roiDepts).forEach(function(key) {
+    var n = _roiDepts[key] || 0;
+    var cfg = _roiConfig[key];
+    var custo = n * cfg.salario_medio * 1.7; // encargos ~70%
+    custoAtual += custo;
+    economiaTotal += custo * cfg.automacao;
+  });
+
+  var custoAgentes = totalPessoas * 300; // custo médio stack por agente equivalente
+  var economiaLiquida = economiaTotal - custoAgentes;
+  var roi = custoAgentes > 0 ? Math.round((economiaLiquida / custoAgentes) * 100) : 0;
+
+  var res = document.getElementById('roiResultado');
+  res.style.display = 'block';
+  res.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">' +
+    roiCard('CUSTO HUMANO ATUAL', 'R$' + Math.round(custoAtual/1000) + 'k/mês', 'Salários + encargos (~70%) estimados', 'var(--red)') +
+    roiCard('CUSTO DO TIME DE AGENTES', 'R$' + Math.round(custoAgentes/1000) + 'k/mês', 'Stack completo equivalente', 'var(--blue)') +
+    roiCard('ECONOMIA MENSAL ESTIMADA', 'R$' + Math.round(economiaLiquida/1000) + 'k/mês', 'Funções automatizáveis por área', 'var(--green)') +
+    roiCard('ROI DO STACK', roi + 'x', 'Retorno sobre investimento em agentes', 'var(--gold)') +
+    '</div>' +
+    '<div style="font-size:10px;color:var(--t3);line-height:1.6;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--rim)">' +
+    '⚠️ Estimativa baseada em salários médios de mercado BR Mar 2026 + encargos de 70%. Automação varia por área (50-70%). Não inclui custo de implementação (tipicamente 2-4x o custo mensal do stack). Use como referência de ordem de grandeza.' +
+    '</div>';
+}
+
+function roiCard(label, valor, sub, cor) {
+  return '<div style="background:rgba(255,255,255,.03);border:1px solid var(--rim);border-radius:12px;padding:16px 18px">' +
+    '<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:6px">' + label + '</div>' +
+    '<div style="font-family:var(--mono);font-size:24px;font-weight:700;color:' + cor + ';margin-bottom:4px">' + valor + '</div>' +
+    '<div style="font-size:10px;color:var(--t3)">' + sub + '</div>' +
+    '</div>';
+}
+
+
 // ── TIMES DE AGENTES ──
 let taPorte = 'all', taBadge = 'all', taStatus = 'all', taOpenDept = null, taOpenAgente = null;
 
-function taSetPorte(v, btn) {
-  taPorte = v;
-  document.querySelectorAll('#s6 .fb:nth-of-type(1) .fbtn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  taRender();
-}
-function taSetBadge(v, btn) {
-  taBadge = v;
-  document.querySelectorAll('#s6 .fb:nth-of-type(2) .fbtn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  taRender();
-}
-function taSetStatus(v, btn) {
-  taStatus = v;
-  document.querySelectorAll('#s6 .fb:nth-of-type(3) .fbtn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  taRender();
-}
+
+
+
 
 function taFilterAgentes(agentes) {
   return agentes.filter(a => {
