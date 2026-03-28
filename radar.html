@@ -510,24 +510,45 @@ footer a{color:var(--green);text-decoration:none}
 
 
 
-  <div class="slabel" style="margin-top:28px">05 · TIME DE AGENTES — CUSTO POR FUNÇÃO</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Selecione a função para ver o modelo ideal, custo estimado e quando escalar. Baseado em volume médio de 200 tarefas/mês por função.</div>
-  <div class="fb" id="agenteFuncFb" style="margin-bottom:16px">
-    <span class="fl">FUNÇÃO</span>
-    <button class="fbtn on" onclick="filterAgente('all',this)">TODAS</button>
-    <button class="fbtn" onclick="filterAgente('analise',this)">ANÁLISE</button>
-    <button class="fbtn" onclick="filterAgente('research',this)">RESEARCH</button>
-    <button class="fbtn" onclick="filterAgente('conteudo',this)">CONTEÚDO</button>
-    <button class="fbtn" onclick="filterAgente('execucao',this)">EXECUÇÃO</button>
-    <button class="fbtn" onclick="filterAgente('monitoramento',this)">MONITOR.</button>
-    <button class="fbtn" onclick="filterAgente('comercial',this)">COMERCIAL</button>
-    <button class="fbtn" onclick="filterAgente('conhecimento',this)">CONHECIM.</button>
-    <button class="fbtn" onclick="filterAgente('apresentacao',this)">APRESENT.</button>
-    <button class="fbtn" onclick="filterAgente('codigo',this)">CÓDIGO</button>
-    <button class="fbtn" onclick="filterAgente('custo_minimo',this)">CUSTO MÍN.</button>
-  </div>
-  <div id="agenteGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+  <!-- SECTION: TIMES DE AGENTES -->
+<div class="slabel" style="margin-top:32px">06 · TIMES DE AGENTES POR DEPARTAMENTO</div>
+<div style="font-size:11px;color:var(--t2);margin-bottom:16px;line-height:1.6">Cada departamento opera com um time de agentes de IA. Selecione o porte da empresa e o departamento para ver os agentes disponíveis, o que executam e quando precisam de supervisão humana.</div>
+
+<!-- FILTROS -->
+<div class="fb" style="margin-bottom:8px">
+  <span class="fl">PORTE</span>
+  <button class="fbtn on" onclick="taSetPorte('all',this)">TODOS</button>
+  <button class="fbtn" onclick="taSetPorte('pme',this)">PME</button>
+  <button class="fbtn" onclick="taSetPorte('mid',this)">MID-MARKET</button>
+  <button class="fbtn" onclick="taSetPorte('enterprise',this)">ENTERPRISE</button>
 </div>
+<div class="fb" style="margin-bottom:8px">
+  <span class="fl">DECISÃO</span>
+  <button class="fbtn on" onclick="taSetBadge('all',this)">TODOS</button>
+  <button class="fbtn" onclick="taSetBadge('auto',this)">✅ AUTOMATIZAR</button>
+  <button class="fbtn" onclick="taSetBadge('loop',this)">🔄 HUMANO NO LOOP</button>
+</div>
+<div class="fb" style="margin-bottom:16px">
+  <span class="fl">MATURIDADE</span>
+  <button class="fbtn on" onclick="taSetStatus('all',this)">TODOS</button>
+  <button class="fbtn" onclick="taSetStatus('producao',this)">EM PRODUÇÃO</button>
+  <button class="fbtn" onclick="taSetStatus('adocao',this)">EM ADOÇÃO</button>
+  <button class="fbtn" onclick="taSetStatus('emergente',this)">EMERGENTE</button>
+</div>
+
+<!-- DEPARTAMENTOS -->
+<div id="taDeptGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:20px"></div>
+
+<!-- AGENTES DO DEPARTAMENTO SELECIONADO -->
+<div id="taAgenteSection" style="display:none">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+    <button onclick="taCloseDept()" style="font-family:var(--mono);font-size:10px;color:var(--t3);cursor:pointer;padding:5px 12px;border:1px solid var(--rim);border-radius:20px;background:var(--g)">← VOLTAR</button>
+    <div id="taDeptTitle" style="font-size:14px;font-weight:700;color:var(--t1)"></div>
+    <div id="taDeptCount" style="font-family:var(--mono);font-size:10px;color:var(--t3)"></div>
+  </div>
+  <div id="taAgenteGrid" style="display:flex;flex-direction:column;gap:8px"></div>
+</div>
+
 <div class="sec" id="s7">
   <div class="slabel" style="margin-bottom:20px">GERADOR DE POLÍTICA DE IA — DATAMIND</div>
 
@@ -724,51 +745,9 @@ const DATA_TOOLS = [
 ];
 
 
-const AGENTES = [
-  {func:'analise',icon:'📊',nome:'Análise de Dados',modelo:'DeepSeek R1 via OpenRouter',custo_tarefa:'R$0,08',custo_mes:'R$16',quando_escalar:'Quando análise exigir raciocínio sobre 100k+ tokens: migrar para GPT-5.4',detalhes:'Análise de datasets, geração de insights, interpretação de métricas. DeepSeek R1 cobre 90% dos casos com custo 8x menor que GPT-5.4.',tags:['DeepSeek R1','OpenRouter','Raciocínio']},
-  {func:'research',icon:'🔍',nome:'Research de Mercado',modelo:'Perplexity Pro',custo_tarefa:'R$0,00',custo_mes:'R$0 (assinatura)',quando_escalar:'Volume acima de 500 queries/mês: avaliar API Perplexity ($20/mês)',detalhes:'Pesquisa externa com fontes citadas. Perplexity Pro via assinatura cobre volume de consultoria sem custo por query.',tags:['Perplexity','Fontes','Grátis na assinatura']},
-  {func:'conteudo',icon:'✍️',nome:'Geração de Conteúdo',modelo:'Claude Sonnet 4.6 via API',custo_tarefa:'R$0,12',custo_mes:'R$24',quando_escalar:'Volume acima de 500 peças/mês: avaliar Haiku 4.5 para rascunhos',detalhes:'Posts LinkedIn, documentos de proposta, relatórios. Sonnet 4.6 mantém qualidade editorial. Haiku para rascunhos em volume.',tags:['Claude Sonnet','API','Editorial']},
-  {func:'execucao',icon:'⚙️',nome:'Execução Autônoma',modelo:'Manus (assinatura)',custo_tarefa:'R$0,00',custo_mes:'R$0 (assinatura)',quando_escalar:'Projetos simultâneos acima de 5: avaliar instância dedicada',detalhes:'Projetos end-to-end: pesquisa, codificação, deploy. Manus via assinatura cobre execução autônoma sem custo por tarefa.',tags:['Manus','End-to-end','Grátis na assinatura']},
-  {func:'monitoramento',icon:'👁️',nome:'Monitoramento de IA',modelo:'Arize AI (free tier)',custo_tarefa:'R$0,00',custo_mes:'R$0 (free tier)',quando_escalar:'Modelos em produção com >1k chamadas/dia: Arize Pro (~$200/mês)',detalhes:'Monitoramento de drift, alucinação e custo de LLMs. Free tier do Arize cobre estágios iniciais de produção.',tags:['Arize','LLM Obs','Free tier']},
-  {func:'comercial',icon:'💼',nome:'Inteligência Comercial',modelo:'Grok 4.20 via API',custo_tarefa:'R$0,04',custo_mes:'R$8',quando_escalar:'Análise de contratos e documentos longos: migrar para GPT-5.4 1M ctx',detalhes:'Monitoramento de tendências de mercado, social listening, inteligência de concorrentes. Grok com acesso real-time ao X.',tags:['Grok 4.20','Real-time','Social']},
-  {func:'conhecimento',icon:'📓',nome:'Base de Conhecimento',modelo:'NotebookLM (gratuito)',custo_tarefa:'R$0,00',custo_mes:'R$0 (gratuito)',quando_escalar:'Mais de 50 notebooks ativos ou time >5 pessoas: NotebookLM Plus',detalhes:'Síntese de documentos proprietários sem alucinação. NotebookLM gratuito cobre uso individual de consultoria.',tags:['NotebookLM','Síntese','Gratuito']},
-  {func:'apresentacao',icon:'🎨',nome:'Apresentações e Visual',modelo:'Gemini 3.1 + Gamma',custo_tarefa:'R$0,05',custo_mes:'R$10',quando_escalar:'Entregas client-facing de alto risco: usar Claude + PowerPoint via MCP',detalhes:'Gemini 3.1 para visual e SVG, Gamma para estrutura de slides. Combinação cobre 80% das apresentações de consultoria.',tags:['Gemini 3.1','Gamma','Visual']},
-  {func:'codigo',icon:'💻',nome:'Geração de Código',modelo:'Claude Code + Sonnet 4.6',custo_tarefa:'R$0,15',custo_mes:'R$30',quando_escalar:'Projetos com >10k linhas ou multiagente: Claude Code Max ($100/mês)',detalhes:'Desenvolvimento de dashboards, automações, pipelines. Claude Code com Sonnet 4.6 cobre projetos de consultoria padrão.',tags:['Claude Code','Sonnet 4.6','Dev']},
-  {func:'custo_minimo',icon:'💰',nome:'Stack Custo Mínimo',modelo:'Mix: free tiers + OpenRouter',custo_tarefa:'—',custo_mes:'R$88/mês total',quando_escalar:'Quando volume crescer: adicionar Claude API (~R$50/mês) e Grok API (~R$8/mês)',detalhes:'Stack completo operando no custo mínimo: Claude Max R$50 + Manus assinatura R$0 + Perplexity Pro R$0 + NotebookLM R$0 + OpenRouter R$38.',tags:['Custo mínimo','Otimizado','Stack completo']},
-];
 
-function filterAgente(func, btn) {
-  document.querySelectorAll('#agenteFuncFb .fbtn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  const grid = document.getElementById('agenteGrid');
-  const filtered = func === 'all' ? AGENTES : AGENTES.filter(a => a.func === func);
-  grid.innerHTML = filtered.map(a => `
-    <div class="gls" style="padding:16px 18px;cursor:default">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <span style="font-size:22px">${a.icon}</span>
-        <div>
-          <div style="font-size:13px;font-weight:700;color:var(--t1)">${a.nome}</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">${a.modelo}</div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-        <div style="background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.15);border-radius:8px;padding:8px 10px;text-align:center">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:3px">CUSTO/TAREFA</div>
-          <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--green)">${a.custo_tarefa}</div>
-        </div>
-        <div style="background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:8px;padding:8px 10px;text-align:center">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:3px">CUSTO/MÊS</div>
-          <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--blue)">${a.custo_mes}</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:8px">${a.detalhes}</div>
-      <div style="font-size:10px;color:var(--gold);font-family:var(--mono);margin-bottom:8px">⚡ ${a.quando_escalar}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:4px">${a.tags.map(t => `<span class="es">${t}</span>`).join('')}</div>
-    </div>
-  `).join('');
-}
+
 // init
-filterAgente('all', document.querySelector('#agenteFuncFb .fbtn'));
 
 ;
 
@@ -2025,6 +2004,872 @@ renderEmg();
 renderDT();
 initCosts();
 renderGov();
+
+const TIMES_AGENTES = [
+  {
+    id:'financeiro', icon:'💰', nome:'Financeiro / Controladoria',
+    desc:'Fechamento contábil, conciliação, AP/AR, fluxo de caixa, relatórios e valuation',
+    agentes:[
+      {nome:'Agente de Conciliação Bancária', cargo:'Analista Financeiro IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'n8n + Nibo/Omie/Conta Azul', custo_mes:'R$80-200',
+       impacto:'-70% tempo · -95% erros de lançamento',
+       executa:'Importa extratos automaticamente, classifica transações por categoria, identifica inconsistências e lança no ERP. Gera relatório de exceções para revisão humana.',
+       quando_humano:'Transações acima do limite configurado ou categorias ambíguas',
+       kpi:'Taxa de conciliação automática > 95%',
+       risco:'Baixo'},
+      {nome:'Agente de Contas a Pagar', cargo:'Assistente AP IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'n8n + SAP/Oracle/Totvs', custo_mes:'R$100-300',
+       impacto:'-60% tempo da equipe AP · ROI 340% no 1º ano',
+       executa:'Processa notas fiscais via OCR, valida contra PO, agenda pagamentos conforme política, envia alertas de vencimento, registra no ERP.',
+       quando_humano:'NFs sem PO correspondente ou divergência acima de 5%',
+       kpi:'% de NFs processadas sem intervenção > 85%',
+       risco:'Baixo'},
+      {nome:'Agente de Contas a Receber', cargo:'Assistente AR IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'n8n + CRM + ERP + WhatsApp API', custo_mes:'R$100-250',
+       impacto:'-55% tempo de cobrança · +20% taxa de recuperação',
+       executa:'Monitora vencimentos, dispara cobranças personalizadas por canal (email/WhatsApp/SMS), registra promessas de pagamento, escala inadimplência para humano.',
+       quando_humano:'Inadimplência acima de 30 dias ou valor acima do limite',
+       kpi:'DSO (Days Sales Outstanding) reduzido em 15-25%',
+       risco:'Baixo'},
+      {nome:'Agente de Fechamento Contábil', cargo:'Controller IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'SAP S/4HANA + Joule / Oracle Fusion AI', custo_mes:'R$500-2000',
+       impacto:'-40-50% tempo de fechamento mensal',
+       executa:'Consolida lançamentos, valida balancete, detecta anomalias antes do fechamento, gera razões e conciliações, prepara pacote para aprovação do controller.',
+       quando_humano:'Toda aprovação final — agente prepara, humano valida e assina',
+       kpi:'Fechamento concluído até D+3 (vs D+7 atual)',
+       risco:'Médio'},
+      {nome:'Agente de Previsão de Fluxo de Caixa', cargo:'Analista de FP&A IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Power BI Copilot + Python + Excel Copilot', custo_mes:'R$200-500',
+       impacto:'+35% precisão nas previsões · cenários automáticos',
+       executa:'Analisa histórico de recebimentos e pagamentos, incorpora sazonalidade e contratos futuros, gera projeção de 13 semanas com cenários pessimista/base/otimista.',
+       quando_humano:'Decisões de captação, investimento ou antecipação de recebíveis',
+       kpi:'MAPE (erro médio de previsão) < 10%',
+       risco:'Médio'},
+      {nome:'Agente de Relatórios Gerenciais', cargo:'Analista de BI IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Power BI Copilot / Tableau Pulse / Looker + Gemini', custo_mes:'R$150-400',
+       impacto:'-81% tempo por relatório (4h → 45min)',
+       executa:'Consolida dados de múltiplas fontes mensalmente, gera DRE/BP/fluxo automaticamente, detecta variações acima do threshold, distribui para stakeholders.',
+       quando_humano:'Variações acima de X% vs budget exigem comentário do CFO',
+       kpi:'Relatórios entregues até D+2 sem intervenção manual',
+       risco:'Baixo'},
+      {nome:'Agente de Emissão Fiscal', cargo:'Assistente Tributário IA',
+       porte:['pme','mid'], status:'producao', badge:'auto',
+       ferramenta:'Nibo / Domínio Sistemas / NFe.io + n8n', custo_mes:'R$80-200',
+       impacto:'3-5x mais clientes com mesma equipe contábil',
+       executa:'Extrai faturamento do período, calcula impostos conforme regime tributário, gera guias DAS/DARF/ICMS, emite NFs, envia por WhatsApp com lembrete de vencimento.',
+       quando_humano:'Mudanças de regime, planejamento tributário, malha fina',
+       kpi:'Guias emitidas até D-5 do vencimento sem falhas',
+       risco:'Baixo'},
+      {nome:'Agente de Auditoria de Despesas', cargo:'Auditor Interno IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'SAP Concur + AI / agents com visão computacional', custo_mes:'R$300-800',
+       impacto:'-60% tempo de auditoria · detecção de fraudes em tempo real',
+       executa:'Valida conformidade de reembolsos com política, usa visão computacional para ler NFs físicas, detecta padrões anômalos e duplicidades, gera relatório de exceções.',
+       quando_humano:'Toda exceção identificada é escalada para gestor da área',
+       kpi:'% de despesas não conformes detectadas automaticamente > 90%',
+       risco:'Médio'},
+      {nome:'Agente de Valuation e Modelagem', cargo:'Analista M&A IA',
+       porte:['enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'Excel Copilot + Bloomberg Terminal AI + agents customizados', custo_mes:'R$500-1500',
+       impacto:'-50% tempo de modelagem financeira',
+       executa:'Constrói modelos DCF a partir de premissas definidas, busca múltiplos de mercado comparáveis, simula cenários M&A, gera apresentação executiva com sensibilidades.',
+       quando_humano:'Todas as premissas e conclusões — agente modela, humano decide',
+       kpi:'Modelo completo em 4h vs 2 dias atual',
+       risco:'Alto'},
+      {nome:'Agente de Budget e Forecast', cargo:'Analista de Planning IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Anaplan / IBM Planning Analytics + AI', custo_mes:'R$400-1000',
+       impacto:'-60% tempo de consolidação do budget',
+       executa:'Coleta inputs dos gestores via formulário/chat, consolida premissas, detecta inconsistências, gera versão consolidada para revisão do CFO.',
+       quando_humano:'Aprovação de premissas macro e alocações estratégicas',
+       kpi:'Ciclo de budget reduzido de 6 semanas para 3 semanas',
+       risco:'Médio'},
+      {nome:'Agente de Provisões e Accruals', cargo:'Contador IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'SAP / Oracle + agentes customizados', custo_mes:'R$300-700',
+       impacto:'-50% tempo de cálculo de provisões mensais',
+       executa:'Calcula provisões de férias, 13º, PLR e outras obrigações automaticamente, registra accruals no ERP, gera memória de cálculo para auditoria.',
+       quando_humano:'Revisão final pelo controller antes do fechamento',
+       kpi:'Provisões calculadas e lançadas até D+1 do fechamento',
+       risco:'Médio'},
+      {nome:'Agente de Compliance Fiscal', cargo:'Analista Fiscal IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'SPED + Receita Federal APIs + n8n', custo_mes:'R$200-600',
+       impacto:'-70% tempo de conferência fiscal · zero multas por atraso',
+       executa:'Monitora obrigações acessórias (SPED, ECF, EFD), valida documentos fiscais contra SEFAZ, detecta inconsistências, alerta prazos com 10 dias de antecedência.',
+       quando_humano:'Retificações e interpretações de normas tributárias',
+       kpi:'100% das obrigações entregues no prazo',
+       risco:'Médio'},
+    ]
+  },
+  {
+    id:'rh', icon:'👥', nome:'RH / People',
+    desc:'Recrutamento, onboarding, folha, performance, benefícios e engajamento',
+    agentes:[
+      {nome:'Agente de Triagem de Candidatos', cargo:'Recrutador IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Gupy / Kenoby + n8n + LinkedIn API', custo_mes:'R$100-400',
+       impacto:'-80% tempo de triagem · -50% time-to-hire',
+       executa:'Analisa CVs contra requisitos da vaga, cruza hard skills, soft skills e fit cultural, ranqueia candidatos com scorecard, agenda entrevistas automaticamente.',
+       quando_humano:'Entrevistas técnicas e avaliação cultural final',
+       kpi:'Time-to-hire reduzido em 50%; qualidade dos contratados estável ou melhor',
+       risco:'Baixo'},
+      {nome:'Agente de Entrevistas Iniciais', cargo:'Entrevistador IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Gupy Entrevistas / HireVue + GPT-5.4', custo_mes:'R$200-600',
+       impacto:'-40% tempo de recrutadores em discovery inicial',
+       executa:'Conduz entrevistas estruturadas por texto ou voz, avalia respostas com rubrica padronizada, gera scorecard por competência, entrega relatório para o hiring manager.',
+       quando_humano:'Segunda etapa — entrevista técnica ou cultural com humano obrigatória',
+       kpi:'Correlação entre score do agente e avaliação humana > 80%',
+       risco:'Médio'},
+      {nome:'Agente de Onboarding', cargo:'Especialista de Integração IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Buk / Gupy Onboarding + WhatsApp/Teams API', custo_mes:'R$100-300',
+       impacto:'+26% eNPS nos primeiros 90 dias · -60% tempo do RH',
+       executa:'Cria trilha personalizada por cargo e senioridade, envia materiais no timing correto, responde dúvidas 24/7, verifica acessos e equipamentos, agenda interações com o time.',
+       quando_humano:'Reunião de alinhamento com gestor direto no D+1 e D+30',
+       kpi:'Conclusão da trilha > 90%; NPS de onboarding > 8',
+       risco:'Baixo'},
+      {nome:'Agente de Benefícios', cargo:'Assistente de Benefícios IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Buk / Totvs RH + WhatsApp API', custo_mes:'R$80-200',
+       impacto:'-70% tickets no RH sobre benefícios',
+       executa:'Responde dúvidas sobre plano de saúde, VR/VA, férias, FGTS e outros benefícios via chat 24/7, processa solicitações de alteração, encaminha casos complexos.',
+       quando_humano:'Exceções de política e casos que exigem aprovação de gestor',
+       kpi:'% de dúvidas resolvidas sem escalonamento > 80%',
+       risco:'Baixo'},
+      {nome:'Agente de Validação de Folha', cargo:'Analista de Folha IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'Totvs / Senior / ADP + agentes de validação', custo_mes:'R$200-500',
+       impacto:'-50% tempo de conferência de folha',
+       executa:'Valida lançamentos de horas, afastamentos e variáveis, detecta inconsistências contra contratos e convenções coletivas, gera relatório de pendências antes do fechamento.',
+       quando_humano:'Aprovação final da folha e envio para banco obrigatoriamente humano',
+       kpi:'% de inconsistências detectadas antes do fechamento > 95%',
+       risco:'Médio'},
+      {nome:'Agente de Avaliação de Desempenho', cargo:'Analista de People Analytics IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Gupy Performance / Culture Amp + AI + agentes de análise de texto', custo_mes:'R$200-600',
+       impacto:'-40% tempo de gestores no ciclo de avaliação',
+       executa:'Coleta feedbacks 360° via formulário conversacional, analisa padrões nas respostas, gera relatório de competências por colaborador, sugere PDI personalizado.',
+       quando_humano:'Calibração de notas e decisões de promoção/desligamento sempre com humano',
+       kpi:'Taxa de conclusão do ciclo de avaliação > 95%',
+       risco:'Médio'},
+      {nome:'Agente de Offboarding', cargo:'Especialista de Desligamento IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'n8n + ITSM + RH + Active Directory', custo_mes:'R$150-400',
+       impacto:'-60% tempo de processo de desligamento',
+       executa:'Orquestra checklist de desligamento — revogação de acessos, coleta de equipamentos, entrevista de saída conversacional, cálculo de verbas rescisórias para validação.',
+       quando_humano:'Homologação rescisória e assinatura de documentos obrigatoriamente humano',
+       kpi:'100% dos acessos revogados em até 2h do desligamento',
+       risco:'Médio'},
+      {nome:'Agente de Engajamento', cargo:'Analista de Clima IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'Agents com análise de padrões Teams/Slack + pesquisas', custo_mes:'R$300-800',
+       impacto:'+15-20% retenção de talentos críticos',
+       executa:'Aplica pesquisas de pulso quinzenais, detecta padrões de isolamento ou sobrecarga, analisa sentimento em canais de comunicação, sugere intervenções ao gestor.',
+       quando_humano:'Toda intervenção com colaborador é conduzida por humano — agente apenas alerta',
+       kpi:'eNPS trimestral; turnover voluntário reduzido',
+       risco:'Alto — privacidade'},
+      {nome:'Agente de Recrutamento Interno', cargo:'Analista de Mobilidade IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'Gupy + LinkedIn + n8n', custo_mes:'R$100-300',
+       impacto:'-40% tempo para preencher vagas internas',
+       executa:'Monitora vagas abertas, cruza com perfis internos e avaliações de desempenho, notifica colaboradores elegíveis, coleta interesse e encaminha ao RH.',
+       quando_humano:'Entrevista e decisão final sempre com gestor e HRBP',
+       kpi:'% de vagas preenchidas internamente aumenta 20%',
+       risco:'Baixo'},
+      {nome:'Agente de People Analytics', cargo:'Analista de Dados de RH IA',
+       porte:['enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Power BI + Copilot + Python + dados de RH', custo_mes:'R$400-1000',
+       impacto:'Insights preditivos sobre turnover, produtividade e gaps de competência',
+       executa:'Consolida dados de RH, produtividade e finanças, gera modelos preditivos de turnover e performance, entrega dashboard executivo com alertas e recomendações.',
+       quando_humano:'Decisões estratégicas de workforce planning',
+       kpi:'Acurácia do modelo de predição de turnover > 75%',
+       risco:'Médio'},
+    ]
+  },
+  {
+    id:'vendas', icon:'📈', nome:'Comercial / Vendas',
+    desc:'Prospecção, qualificação, CRM, proposta, forecast e retenção',
+    agentes:[
+      {nome:'Agente de Prospecção Outbound', cargo:'SDR IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Apollo / Clay / Leads2b + n8n + LinkedIn Sales Navigator', custo_mes:'R$200-600',
+       impacto:'+45% taxa de resposta · -60% tempo de SDRs',
+       executa:'Identifica leads pelo ICP, enriquece dados (cargo, empresa, tech stack), personaliza mensagens com contexto real, dispara cadências multicanal (email/LinkedIn/WhatsApp).',
+       quando_humano:'Resposta do lead ou agendamento de reunião — humano assume',
+       kpi:'Reuniões agendadas/mês por SDR IA vs humano',
+       risco:'Baixo'},
+      {nome:'Agente de Qualificação de Leads', cargo:'Pré-vendas IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Leads2b LIA / Drift + GPT-5.4', custo_mes:'R$150-400',
+       impacto:'+30% conversão MQL→SQL · -50% tempo de discovery',
+       executa:'Conduz discovery via chat ou voz, aplica framework BANT/MEDDIC, calcula score de fit, agenda reunião para executivo de vendas com briefing completo.',
+       quando_humano:'Toda negociação comercial é conduzida por humano',
+       kpi:'% de SQLs que avançam para proposta > 60%',
+       risco:'Baixo'},
+      {nome:'Agente de CRM', cargo:'Assistente de Vendas IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Agendor / Salesforce Einstein / HubSpot AI', custo_mes:'R$100-300',
+       impacto:'-50% tempo administrativo de vendedores',
+       executa:'Registra atividades automaticamente, atualiza estágios do funil, transcreve calls e extrai próximos passos, sugere ações baseadas no histórico da conta.',
+       quando_humano:'Decisões de desconto, exceções contratuais e relacionamento estratégico',
+       kpi:'% de registros atualizados automaticamente > 90%',
+       risco:'Baixo'},
+      {nome:'Agente de Geração de Propostas', cargo:'Analista Comercial IA',
+       porte:['pme','mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'PandaDoc + AI / Gamma + n8n + DocuSign', custo_mes:'R$150-400',
+       impacto:'-70% tempo de criação · propostas em 15min vs 3h',
+       executa:'Recebe briefing da reunião, gera proposta personalizada com escopo, preço e termos, formata no template da empresa, envia para aprovação interna antes de enviar ao cliente.',
+       quando_humano:'Aprovação da proposta antes do envio ao cliente sempre obrigatória',
+       kpi:'Tempo médio de geração de proposta < 30min',
+       risco:'Baixo'},
+      {nome:'Agente de Forecast de Vendas', cargo:'Analista de Revenue IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Salesforce Einstein / Agendor AI + Power BI', custo_mes:'R$200-500',
+       impacto:'+25-35% precisão do forecast · -80% tempo de consolidação',
+       executa:'Analisa pipeline, histórico de fechamentos e sazonalidade, prevê probabilidade de fechamento por oportunidade, consolida forecast mensal/trimestral.',
+       quando_humano:'Revisão do forecast com liderança comercial — agente apresenta, humano ajusta',
+       kpi:'MAPE do forecast < 15%',
+       risco:'Médio'},
+      {nome:'Agente de Follow-up', cargo:'Assistente de Relacionamento IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'HubSpot / ActiveCampaign + n8n + Gmail/WhatsApp', custo_mes:'R$100-250',
+       impacto:'+20% taxa de fechamento · zero leads esquecidos',
+       executa:'Dispara follow-ups no timing certo, envia conteúdos relevantes por estágio do funil, reengaja leads frios com sequências personalizadas.',
+       quando_humano:'Lead responde ou demonstra interesse — humano retoma o contato',
+       kpi:'% de oportunidades com follow-up em até 24h = 100%',
+       risco:'Baixo'},
+      {nome:'Agente de Retenção e Expansão', cargo:'Customer Success IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Gainsight / ChurnZero + agentes preditivos', custo_mes:'R$300-800',
+       impacto:'-15-25% churn · +10-15% expansão de receita',
+       executa:'Monitora sinais de risco (queda de uso, tickets, NPS), calcula health score, identifica oportunidades de upsell/cross-sell, alerta CSM com plano de ação sugerido.',
+       quando_humano:'Toda conversa de retenção ou expansão com o cliente é feita por humano',
+       kpi:'Churn rate e NRR (Net Revenue Retention)',
+       risco:'Médio'},
+      {nome:'Agente de Análise de Calls', cargo:'Coach de Vendas IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'Gong / Chorus / Leads2b LIA', custo_mes:'R$300-700',
+       impacto:'+18% eficácia de vendas · onboarding de novos vendedores 40% mais rápido',
+       executa:'Transcreve e analisa calls de vendas, identifica padrões de sucesso e falha, gera scorecard por vendedor, sugere melhorias de pitch personalizadas.',
+       quando_humano:'Coaching e feedback sempre conduzido pelo gestor de vendas',
+       kpi:'Win rate do time; ramp time de novos vendedores',
+       risco:'Baixo'},
+      {nome:'Agente de Inteligência Competitiva', cargo:'Analista de Market Intel IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'Crayon / Klue + Perplexity + n8n', custo_mes:'R$200-500',
+       impacto:'Battlecards atualizados automaticamente · vendedores 30% mais preparados',
+       executa:'Monitora movimentos de concorrentes (pricing, lançamentos, contratações), atualiza battlecards, alerta equipe comercial sobre mudanças relevantes.',
+       quando_humano:'Decisões de posicionamento e resposta estratégica',
+       kpi:'Freshness dos battlecards; win rate em deals competitivos',
+       risco:'Baixo'},
+      {nome:'Agente de Comissionamento', cargo:'Analista de Comp & Ben Comercial IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Salesforce + n8n + ERP financeiro', custo_mes:'R$200-500',
+       impacto:'-70% tempo de cálculo e -90% disputas de comissão',
+       executa:'Calcula comissões automaticamente conforme regras e exceções da política, gera extrato individual para cada vendedor, detecta inconsistências antes do pagamento.',
+       quando_humano:'Aprovação final e disputas escaladas para gestor comercial',
+       kpi:'% de cálculos aprovados sem contestação > 95%',
+       risco:'Médio'},
+    ]
+  },
+  {
+    id:'marketing', icon:'📣', nome:'Marketing',
+    desc:'Conteúdo, SEO, campanhas, performance, geração de leads e monitoramento',
+    agentes:[
+      {nome:'Agente de Criação de Conteúdo', cargo:'Redator IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'GPT-5.4 / Gemini 3.1 + Jasper + n8n', custo_mes:'R$100-300',
+       impacto:'-80% tempo de criação · economia de US$47k/ano por equipe',
+       executa:'Pesquisa pautas com base em dados de SEO e tendências, escreve artigos, posts e roteiros de vídeo otimizados, gera variações para A/B, atualiza conteúdos antigos.',
+       quando_humano:'Revisão editorial e aprovação antes de publicar — especialmente temas sensíveis',
+       kpi:'Volume de conteúdo publicado; tráfego orgânico gerado',
+       risco:'Baixo'},
+      {nome:'Agente de SEO', cargo:'Especialista de SEO IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'SEMrush AI / Ahrefs AI + agentes customizados n8n', custo_mes:'R$150-400',
+       impacto:'+40-60% tráfego orgânico em 6 meses',
+       executa:'Pesquisa palavras-chave, audita site, gera schema markup, monitora rankings diariamente, identifica oportunidades de link building, sugere pautas com maior potencial.',
+       quando_humano:'Decisões de arquitetura do site e estratégia de link building',
+       kpi:'Posição média no Google; tráfego orgânico mensal',
+       risco:'Baixo'},
+      {nome:'Agente de Gestão de Mídia Paga', cargo:'Especialista de Paid Media IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'Meta Ads AI + Google Performance Max + n8n APIs', custo_mes:'R$200-600',
+       impacto:'-40% tempo de setup · +25% ROAS',
+       executa:'Cria criativos e textos de anúncios, configura públicos, monitora performance em tempo real, pausa anúncios com ROI negativo, redistribui budget automaticamente.',
+       quando_humano:'Aprovação de criativos e decisões de budget acima do limite configurado',
+       kpi:'ROAS; CPL (custo por lead); CPA',
+       risco:'Médio'},
+      {nome:'Agente de Performance Analytics', cargo:'Analista de Marketing IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Power BI Copilot + Looker Studio AI + n8n + BigQuery', custo_mes:'R$150-400',
+       impacto:'-70% tempo de reporting · insights em tempo real',
+       executa:'Consolida dados de todas as fontes (Meta, Google, email, CRM), gera dashboards automaticamente, detecta anomalias e queda de performance, envia alertas com contexto.',
+       quando_humano:'Interpretação estratégica e decisões de reposicionamento',
+       kpi:'Tempo de geração do relatório semanal < 30min',
+       risco:'Baixo'},
+      {nome:'Agente de Lead Generation', cargo:'Especialista de Inbound IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'RD Station / HubSpot + n8n + chatbots', custo_mes:'R$150-400',
+       impacto:'+50-80% conversão de landing pages',
+       executa:'Otimiza formulários e CTAs com testes A/B, opera chatbot de qualificação no site, entrega leads qualificados para vendas com score e contexto completo.',
+       quando_humano:'Estratégia de conteúdo e decisões de ICP',
+       kpi:'Volume de MQLs; custo por MQL',
+       risco:'Baixo'},
+      {nome:'Agente de Email Marketing', cargo:'Especialista de CRM Marketing IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'ActiveCampaign / RD Station AI + n8n + SendGrid', custo_mes:'R$100-300',
+       impacto:'+30-40% open rate · +20% CTR',
+       executa:'Segmenta base por comportamento e estágio do funil, personaliza assuntos e conteúdos por segmento, executa testes A/B automaticamente, otimiza horário de envio.',
+       quando_humano:'Aprovação das campanhas estratégicas antes do envio',
+       kpi:'Open rate; CTR; conversão de email para oportunidade',
+       risco:'Baixo'},
+      {nome:'Agente de Social Media', cargo:'Analista de Social IA',
+       porte:['pme','mid'], status:'adocao', badge:'loop',
+       ferramenta:'Buffer / Hootsuite AI + Gemini 3.1 + n8n', custo_mes:'R$100-300',
+       impacto:'-60% tempo de criação e agendamento de posts',
+       executa:'Gera posts adaptados para cada plataforma (LinkedIn, Instagram, X), agenda no melhor horário, monitora engajamento, repropõe conteúdos de alto desempenho.',
+       quando_humano:'Aprovação de posts antes da publicação — especialmente em crises',
+       kpi:'Engajamento médio por post; crescimento de seguidores',
+       risco:'Médio'},
+      {nome:'Agente de Monitoramento de Marca', cargo:'Analista de Brand Intel IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'Brandwatch / Talkwalker AI + n8n + APIs sociais', custo_mes:'R$300-800',
+       impacto:'-80% tempo de monitoramento · alertas de crise em minutos',
+       executa:'Monitora menções em todas as plataformas 24/7, analisa sentimento, categoriza por tema, alerta equipe de comunicação para crises em tempo real.',
+       quando_humano:'Gestão de crise e resposta pública sempre conduzida por humano',
+       kpi:'MTTR (tempo de resposta a crises); share of voice',
+       risco:'Baixo'},
+      {nome:'Agente de Visual e Design', cargo:'Designer IA',
+       porte:['pme','mid'], status:'adocao', badge:'loop',
+       ferramenta:'Gemini 3.1 + Canva AI + Figma AI', custo_mes:'R$100-300',
+       impacto:'-70% tempo de produção de assets visuais',
+       executa:'Gera banners, posts, infográficos e apresentações a partir de briefs, adapta para múltiplos formatos e plataformas, mantém consistência com o brand guide.',
+       quando_humano:'Aprovação de peças antes de publicar e campanhas de alto impacto',
+       kpi:'Tempo de produção de assets; volume por sprint',
+       risco:'Baixo'},
+    ]
+  },
+  {
+    id:'operacoes', icon:'⚙️', nome:'Operações / Supply Chain',
+    desc:'Demanda, estoque, logística, fornecedores, S&OP e compliance fiscal',
+    agentes:[
+      {nome:'Agente de Previsão de Demanda', cargo:'Analista de Demand Planning IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'Slimstock / SAP IBP / Oracle SCM AI', custo_mes:'R$500-1500',
+       impacto:'+35% precisão de forecast · -19% estoque médio (caso B2W)',
+       executa:'Analisa histórico de vendas, sazonalidade, promoções e variáveis externas (clima, eventos), ajusta previsões automaticamente, gera relatório de exceções para revisão.',
+       quando_humano:'Lançamentos de produtos e mudanças de estratégia comercial',
+       kpi:'MAPE (erro de previsão) < 15%; nível de serviço > 95%',
+       risco:'Médio'},
+      {nome:'Agente de Controle de Estoque', cargo:'Analista de Estoque IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Slimstock + agentes com aprendizado por reforço', custo_mes:'R$300-800',
+       impacto:'-23% custo de frete (Magalu) · -31% tempo ocioso (Sequoia)',
+       executa:'Monitora níveis de estoque em tempo real, ajusta pontos de reposição, gera ordens de compra automáticas dentro dos limites, antecipa rupturas com 7 dias de antecedência.',
+       quando_humano:'Ordens acima do limite de valor ou itens estratégicos',
+       kpi:'Fill rate; giro de estoque; stockout rate',
+       risco:'Baixo'},
+      {nome:'Agente de Roteirização', cargo:'Analista de Logística IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Routex / TruckPad AI + Google OR-Tools + agentes', custo_mes:'R$300-700',
+       impacto:'-15-30% custo de combustível · -23% custo total de frete',
+       executa:'Otimiza rotas de entrega considerando trânsito, restrições de veículo e janelas de entrega, reajusta rotas em tempo real por ocorrências, consolida cargas.',
+       quando_humano:'Ocorrências graves na rota e decisões de modal de transporte',
+       kpi:'OTIF; custo por km; emissão de CO2',
+       risco:'Baixo'},
+      {nome:'Agente de Gestão de Fornecedores', cargo:'Analista de Compras IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'SAP Ariba AI / Coupa + n8n', custo_mes:'R$400-1000',
+       impacto:'-40% tempo de compras · -15% custo de aquisição',
+       executa:'Monitora performance de fornecedores (qualidade, prazo, preço), detecta riscos de desabastecimento, automatiza RFQs, compara propostas e recomenda fornecedor.',
+       quando_humano:'Negociações estratégicas e contratos acima do limite de valor',
+       kpi:'OTIF de fornecedores; saving em compras',
+       risco:'Médio'},
+      {nome:'Agente de S&OP', cargo:'Analista de Planejamento Integrado IA',
+       porte:['enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'SAP IBP / Slimstock AI + Power BI', custo_mes:'R$600-1500',
+       impacto:'-50% tempo de reuniões S&OP · decisões mais rápidas',
+       executa:'Coleta inputs das áreas (comercial, supply, financeiro), consolida números, detecta gaps entre demanda e capacidade, gera cenários e agenda reunião com pauta estruturada.',
+       quando_humano:'Reunião de S&OP com tomada de decisão pelos líderes de área',
+       kpi:'Aderência do plano vs realizado; tempo do ciclo S&OP',
+       risco:'Médio'},
+      {nome:'Agente de OTIF', cargo:'Analista de Performance Logística IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Power BI Copilot + n8n + ERP + transportadoras', custo_mes:'R$200-500',
+       impacto:'+10-15% OTIF · alertas proativos antes da entrega falhar',
+       executa:'Monitora status de todas as entregas em tempo real, detecta atrasos antes que ocorram, aciona transportadora automaticamente, notifica cliente e atualiza ERP.',
+       quando_humano:'Ocorrências críticas e reclamações formais de clientes',
+       kpi:'OTIF %; tempo médio de resolução de ocorrências',
+       risco:'Baixo'},
+      {nome:'Agente de Logística Reversa', cargo:'Analista de Devoluções IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'auto',
+       ferramenta:'Agentes orquestradores n8n + ERP + transportadoras', custo_mes:'R$200-500',
+       impacto:'-60% tempo de processamento de devoluções',
+       executa:'Autoriza devoluções conforme política, gera etiquetas de retorno, rastreia mercadoria em trânsito, processa reembolso ou troca no ERP, atualiza estoque automaticamente.',
+       quando_humano:'Devoluções por defeito crítico ou fora da política padrão',
+       kpi:'Tempo médio de processamento de devolução < 48h',
+       risco:'Médio'},
+      {nome:'Agente de Compliance Fiscal Supply', cargo:'Analista Fiscal de Supply IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'NFe.io + Receita Federal APIs + n8n + RPA', custo_mes:'R$200-500',
+       impacto:'-70% tempo de conferência fiscal · zero multas por inconsistência',
+       executa:'Valida NFs e CT-es contra SEFAZ em tempo real, detecta inconsistências antes da entrada no estoque, monitora créditos de ICMS/PIS/COFINS, integra com SPED.',
+       quando_humano:'Retificações e interpretações de normas fiscais estaduais',
+       kpi:'% de documentos validados automaticamente > 98%',
+       risco:'Médio'},
+      {nome:'Agente de Planejamento de Capacidade', cargo:'Analista de Capacidade IA',
+       porte:['enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'SAP / Oracle SCM + simulação + Power BI', custo_mes:'R$500-1200',
+       impacto:'+20% utilização de capacidade produtiva · -15% horas extras',
+       executa:'Analisa capacidade instalada vs demanda planejada, identifica gargalos, simula cenários de expansão ou contração, recomenda ajustes de turno e linha.',
+       quando_humano:'Decisões de investimento em capacidade e contratações',
+       kpi:'OEE (Overall Equipment Effectiveness); utilização de capacidade',
+       risco:'Médio'},
+    ]
+  },
+  {
+    id:'juridico', icon:'⚖️', nome:'Jurídico / Compliance',
+    desc:'Contratos, due diligence, regulatório, LGPD, litígios e políticas internas',
+    agentes:[
+      {nome:'Agente de Análise de Contratos', cargo:'Advogado Revisador IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'GPTuri (Turivius) / LegalOne AI / Harvey AI', custo_mes:'R$300-1000',
+       impacto:'-60-70% tempo de revisão contratual',
+       executa:'Revisa cláusulas contra playbook da empresa, identifica riscos e desvios, sugere alterações de redação, compara versões e rastreia mudanças, gera relatório de riscos.',
+       quando_humano:'Toda aprovação final e negociação de cláusulas não padronizadas',
+       kpi:'Tempo médio de revisão; % de contratos sem pendências na aprovação',
+       risco:'Médio'},
+      {nome:'Agente de Due Diligence', cargo:'Analista Jurídico IA',
+       porte:['enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'GPTuri + Harvey AI + n8n + vector DB (RAG)', custo_mes:'R$800-2500',
+       impacto:'-80% tempo de due diligence em M&A e compliance',
+       executa:'Analisa milhares de documentos simultaneamente, extrai riscos e contingências, cruza com legislação vigente, gera relatório executivo com mapa de riscos por categoria.',
+       quando_humano:'Toda conclusão e recomendação final — agente apresenta, advogado assina',
+       kpi:'Completude do relatório; riscos identificados vs auditoria manual',
+       risco:'Médio'},
+      {nome:'Agente de Monitoramento Regulatório', cargo:'Analista de Compliance IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'GPTuri + agentes com scraping + RAG + n8n', custo_mes:'R$300-800',
+       impacto:'-90% tempo de monitoramento de mudanças legislativas',
+       executa:'Monitora Diário Oficial, ANPD, CVM, Banco Central e órgãos setoriais, detecta mudanças relevantes para o negócio, alerta jurídico com sumário de impacto.',
+       quando_humano:'Interpretação e definição de plano de adequação',
+       kpi:'Tempo entre publicação e alerta interno < 24h',
+       risco:'Baixo'},
+      {nome:'Agente de LGPD', cargo:'Encarregado de Dados IA (apoio)',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'OneTrust AI / MMCafé Alice (on-premise SP) + n8n', custo_mes:'R$200-600',
+       impacto:'-70% tempo de resposta a solicitações de titulares',
+       executa:'Recebe e valida solicitações de titulares (acesso, exclusão, portabilidade), verifica identidade, processa nos sistemas conforme procedimento, registra para auditoria.',
+       quando_humano:'Casos complexos, reclamações à ANPD e decisões de tratamento de dados',
+       kpi:'100% das solicitações respondidas dentro do prazo legal (15 dias)',
+       risco:'Baixo — se on-premise'},
+      {nome:'Agente de Gestão de Litígios', cargo:'Analista de Contencioso IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'Jurimetria AI + GPTuri + agentes customizados', custo_mes:'R$400-1000',
+       impacto:'+20-30% precisão em previsões de resultado de processos',
+       executa:'Monitora andamentos processuais automaticamente, prevê probabilidade de êxito baseado em jurisprudência, sugere estratégia (contestar, acordar, provisionar), calcula contingência.',
+       quando_humano:'Toda estratégia processual e decisão de acordo é definida pelo advogado',
+       kpi:'Acurácia das previsões; redução de provisões desnecessárias',
+       risco:'Médio'},
+      {nome:'Agente de Redação Jurídica', cargo:'Assistente Jurídico IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'GPTuri + Harvey AI + RAG com jurisprudência e normas', custo_mes:'R$300-800',
+       impacto:'-50% tempo de redação de petições e pareceres',
+       executa:'Gera minutas de petições, contratos, pareceres e notificações baseadas em modelos e precedentes, adapta ao caso concreto com dados fornecidos pelo advogado.',
+       quando_humano:'Revisão e assinatura obrigatória pelo advogado responsável — agente não assina',
+       kpi:'Tempo de produção de minutas; retrabalho na revisão',
+       risco:'Médio — risco de alucinações'},
+      {nome:'Agente de Treinamento de Compliance', cargo:'Instrutor de Compliance IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Agentes conversacionais WhatsApp/Teams + LMS', custo_mes:'R$150-400',
+       impacto:'+40% taxa de conclusão de treinamentos obrigatórios',
+       executa:'Cria trilhas de treinamento personalizadas por cargo, aplica quizzes e simulações, monitora conclusão, emite certificados, reporta para o DPO e compliance officer.',
+       quando_humano:'Atualização do conteúdo quando normas mudam',
+       kpi:'Taxa de conclusão > 95%; nota média nos quizzes',
+       risco:'Baixo'},
+      {nome:'Agente de Gestão de Políticas Internas', cargo:'Analista de Governança IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'n8n + SharePoint/Confluence + notificações Teams', custo_mes:'R$150-400',
+       impacto:'-60% tempo de atualização e distribuição de políticas',
+       executa:'Monitora mudanças regulatórias que impactam políticas internas, sugere atualizações de texto, notifica colaboradores impactados, registra aceite eletrônico.',
+       quando_humano:'Aprovação das políticas atualizadas pelo comitê jurídico',
+       kpi:'Tempo entre mudança regulatória e atualização da política < 30 dias',
+       risco:'Baixo'},
+      {nome:'Agente de KYC / Due Diligence de Clientes', cargo:'Analista de KYC IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Agentes com APIs Receita Federal + Serasa + BACEN + n8n', custo_mes:'R$300-800',
+       impacto:'-70% tempo de análise de cadastro · -80% fraudes não detectadas',
+       executa:'Valida dados cadastrais de clientes e fornecedores, cruza com listas restritivas (OFAC, PEP, sanções), analisa risco de compliance, gera relatório de aprovação ou alerta.',
+       quando_humano:'Casos de risco alto ou médio-alto exigem análise humana antes de aprovação',
+       kpi:'Tempo médio de KYC < 2h; taxa de falsos positivos',
+       risco:'Médio'},
+    ]
+  },
+  {
+    id:'ti', icon:'💻', nome:'TI / Dados',
+    desc:'SRE, code review, documentação, pipelines, observabilidade, acessos e cloud',
+    agentes:[
+      {nome:'Agente de Incident Response', cargo:'SRE IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'Datadog Bits AI / PagerDuty AI + RAG runbooks', custo_mes:'R$400-1000',
+       impacto:'-40-50% MTTR · triagem automática 24/7',
+       executa:'Monitora alertas em tempo real, correlaciona logs e métricas, consulta runbooks via RAG, executa remediações automáticas aprovadas (restart, rollback), escala com contexto completo.',
+       quando_humano:'Incidentes P1/P2 e remediações fora do runbook sempre com humano',
+       kpi:'MTTR (Mean Time to Recover); % de incidentes resolvidos automaticamente',
+       risco:'Médio'},
+      {nome:'Agente de Code Review', cargo:'Revisor de Código IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'GitHub Copilot / Cursor + GPT-5.4 + RAG (ADRs indexados)', custo_mes:'R$200-600',
+       impacto:'-50% tempo de review · +25% qualidade de código',
+       executa:'Revisa PRs contra guias de estilo e ADRs, detecta vulnerabilidades de segurança, identifica code smells, sugere melhorias com referências, bloqueia merge se crítico.',
+       quando_humano:'Revisão arquitetural e aprovação final de PRs críticos',
+       kpi:'Bugs em produção; tempo médio de review',
+       risco:'Baixo'},
+      {nome:'Agente de Documentação', cargo:'Technical Writer IA',
+       porte:['pme','mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'Mintlify / Confluence AI + RAG (codebase indexado)', custo_mes:'R$150-400',
+       impacto:'-70% tempo de documentação técnica',
+       executa:'Gera documentação de APIs, funções e sistemas a partir do código, mantém wikis sincronizadas com mudanças no repositório, cria runbooks para novos serviços.',
+       quando_humano:'Revisão e aprovação de documentação crítica',
+       kpi:'Coverage de documentação; freshness (docs desatualizadas)',
+       risco:'Baixo'},
+      {nome:'Agente de Pipelines de Dados', cargo:'Data Engineer IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'AgentSpec (16 agents) / Databricks AI + n8n', custo_mes:'R$400-1200',
+       impacto:'-60% tempo de desenvolvimento de pipelines ETL/ELT',
+       executa:'Gera código de pipeline a partir de especificações em linguagem natural, valida qualidade dos dados, cria testes automaticamente, prepara deploy com quality gates.',
+       quando_humano:'Revisão do código gerado e aprovação de deploy em produção',
+       kpi:'Tempo de desenvolvimento de pipeline; cobertura de testes',
+       risco:'Médio'},
+      {nome:'Agente de Observabilidade de Dados', cargo:'Data Reliability Engineer IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Monte Carlo / Arize AI / Datadog AI', custo_mes:'R$300-800',
+       impacto:'-50% tempo de investigação de problemas de dados',
+       executa:'Monitora qualidade e freshness de datasets em produção, detecta anomalias e drift automaticamente, faz RCA (root cause analysis), alerta engenheiro com diagnóstico.',
+       quando_humano:'Correção de dados e comunicação de impacto para o negócio',
+       kpi:'Tempo entre falha e detecção (MTTD) < 15min',
+       risco:'Baixo'},
+      {nome:'Agente de Gestão de Acessos', cargo:'IAM Engineer IA',
+       porte:['mid','enterprise'], status:'producao', badge:'loop',
+       ferramenta:'n8n + Okta / Azure AD + ServiceNow', custo_mes:'R$300-700',
+       impacto:'-70% tempo de provisionamento · zero acessos órfãos',
+       executa:'Provisiona e desprovisiona acessos no onboarding/offboarding, executa reviews periódicos de permissões, detecta excessos (least privilege), gera relatório para auditoria.',
+       quando_humano:'Acessos privilegiados (admin, produção) exigem aprovação dupla',
+       kpi:'Tempo de provisionamento < 1h; acessos excessivos detectados',
+       risco:'Médio — segurança'},
+      {nome:'Agente de Help Desk L1/L2', cargo:'Suporte TI IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Jira Service Management AI + agentes conversacionais Teams/Slack', custo_mes:'R$150-400',
+       impacto:'-60% volume de tickets L1 · resolução 24/7',
+       executa:'Resolve incidentes comuns (reset de senha, configuração de VPN, acesso a sistemas), executa scripts de remediação aprovados, escala L2 com diagnóstico completo.',
+       quando_humano:'Tickets L2 complexos e qualquer acesso a dados sensíveis',
+       kpi:'Taxa de resolução no primeiro contato; CSAT do suporte',
+       risco:'Baixo'},
+      {nome:'Agente de Otimização de Cloud', cargo:'FinOps Engineer IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'AWS Cost Explorer AI / Datadog Cloud Cost + agentes', custo_mes:'R$200-500',
+       impacto:'-20-30% gastos com cloud sem impacto em performance',
+       executa:'Analisa uso de recursos cloud continuamente, identifica instâncias ociosas e superdimensionadas, sugere rightsizing, reservas e savings plans, executa ações aprovadas.',
+       quando_humano:'Aprovação de desligamentos e mudanças de instâncias em produção',
+       kpi:'Gasto cloud mensal; utilização média de recursos',
+       risco:'Baixo'},
+      {nome:'Agente de Segurança (SIEM)', cargo:'Security Analyst IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Datadog Security AI / Sentinel + agentes de resposta', custo_mes:'R$400-1200',
+       impacto:'-60% tempo de investigação de alertas · detecção mais rápida',
+       executa:'Monitora eventos de segurança em tempo real, correlaciona indicadores de comprometimento, prioriza alertas por severidade, executa contenção inicial aprovada.',
+       quando_humano:'Toda resposta a incidente de segurança confirmado tem humano responsável',
+       kpi:'MTTD e MTTR de incidentes de segurança',
+       risco:'Médio'},
+      {nome:'Agente de Testes e QA', cargo:'QA Engineer IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'auto',
+       ferramenta:'GitHub Copilot + Playwright + agentes de test generation', custo_mes:'R$200-500',
+       impacto:'-50% tempo de criação de testes · +40% cobertura',
+       executa:'Gera casos de teste a partir de specs e código, executa suíte de testes automaticamente no pipeline CI/CD, detecta regressões, reporta com evidências.',
+       quando_humano:'Testes de aceitação do usuário e validação de requisitos de negócio',
+       kpi:'Cobertura de testes; taxa de regressões em produção',
+       risco:'Baixo'},
+    ]
+  },
+  {
+    id:'atendimento', icon:'🎧', nome:'Atendimento / Customer Success',
+    desc:'Triagem, resolução L1/L2, CSAT, churn, VoC, onboarding e renovações',
+    agentes:[
+      {nome:'Agente de Triagem', cargo:'Triador IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Zendesk AI / Intercom + n8n + GPT-5.4', custo_mes:'R$100-300',
+       impacto:'-50% tempo de triagem · roteamento preciso 24/7',
+       executa:'Classifica tickets por urgência, tema e complexidade, roteia para fila e agente correto, enriquece o ticket com histórico do cliente e contexto relevante antes de atribuir.',
+       quando_humano:'Toda interação com o cliente começa no agente e escala conforme necessidade',
+       kpi:'Precisão do roteamento > 90%; tempo de first response',
+       risco:'Baixo'},
+      {nome:'Agente de Resolução L1', cargo:'Atendente IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Zendesk AI / Intercom Fin / WhatsApp Business AI', custo_mes:'R$150-400',
+       impacto:'-67% tempo de resolução · economia R$34M/ano (caso TIM)',
+       executa:'Resolve 70-80% das consultas comuns via texto, voz ou imagem 24/7 — dúvidas, status de pedido, cancelamentos simples, reset de senha, consultas de saldo.',
+       quando_humano:'Casos que o agente não resolve em 2 tentativas ou quando cliente pede humano',
+       kpi:'Taxa de resolução sem escalonamento > 70%; CSAT',
+       risco:'Baixo'},
+      {nome:'Agente de Suporte L2', cargo:'Especialista de Suporte IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Zendesk + AI + Gong + RAG (knowledge base)', custo_mes:'R$200-500',
+       impacto:'-40% tempo de resolução L2 · agente humano mais eficiente',
+       executa:'Sugere soluções para casos complexos baseado na knowledge base indexada, transcreve e resume histórico do cliente, prepara briefing para o agente humano assumir.',
+       quando_humano:'Toda resolução L2 é executada pelo agente humano — IA apoia com contexto',
+       kpi:'Tempo médio de resolução L2; first contact resolution',
+       risco:'Baixo'},
+      {nome:'Agente de CSAT e NPS', cargo:'Analista de CX IA',
+       porte:['pme','mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Qualtrics AI / SurveyMonkey AI + n8n + BI', custo_mes:'R$150-400',
+       impacto:'-70% tempo de análise de pesquisas · insights em tempo real',
+       executa:'Dispara pesquisas no momento certo após interações, analisa respostas automaticamente, detecta temas recorrentes, identifica queda de satisfação, alerta equipe.',
+       quando_humano:'Resposta a clientes detratores e ações de recuperação',
+       kpi:'CSAT; NPS; tempo de resposta a detratores',
+       risco:'Baixo'},
+      {nome:'Agente de Churn Prediction', cargo:'Analista de Retenção IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Gainsight / ChurnZero + modelos de ML preditivo', custo_mes:'R$300-800',
+       impacto:'-15-25% churn · intervenção antes da decisão do cliente',
+       executa:'Monitora health score de cada conta (uso, engajamento, suporte, NPS), calcula probabilidade de churn, ranqueia contas em risco, sugere ação personalizada para o CSM.',
+       quando_humano:'Toda ação de retenção com o cliente é conduzida pelo CSM humano',
+       kpi:'Churn rate mensal; % de contas em risco salvas',
+       risco:'Médio'},
+      {nome:'Agente de Voz do Cliente', cargo:'Analista de VoC IA',
+       porte:['mid','enterprise'], status:'producao', badge:'auto',
+       ferramenta:'Qualtrics / Medallia AI + n8n + APIs de canais', custo_mes:'R$200-600',
+       impacto:'-60% tempo de consolidação de feedback · insights acionáveis',
+       executa:'Consolida feedback de todos os canais (chat, email, redes sociais, pesquisas, calls), categoriza por tema, detecta padrões e tendências, gera relatório mensal para produto.',
+       quando_humano:'Priorização de ações e comunicação dos insights para a liderança',
+       kpi:'Volume de insights acionáveis por ciclo; NPS por segmento',
+       risco:'Baixo'},
+      {nome:'Agente de Onboarding de Clientes', cargo:'Especialista de Adoção IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Intercom / Gainsight + agentes conversacionais WhatsApp', custo_mes:'R$200-500',
+       impacto:'+30% taxa de adoção nos primeiros 90 dias',
+       executa:'Guia novos clientes pela jornada de ativação, responde dúvidas de produto 24/7, agenda treinamentos, monitora marcos de adoção, alerta CSM se cliente travar.',
+       quando_humano:'QBR (quarterly business review) e decisões de expansão',
+       kpi:'Time-to-value; taxa de ativação em D+30',
+       risco:'Baixo'},
+      {nome:'Agente de Gestão de Renovações', cargo:'Analista de Renewals IA',
+       porte:['mid','enterprise'], status:'emergente', badge:'loop',
+       ferramenta:'n8n + CRM + billing + DocuSign', custo_mes:'R$200-500',
+       impacto:'+20% taxa de renovação automática · zero contratos esquecidos',
+       executa:'Monitora vencimentos com 90/60/30 dias de antecedência, envia propostas de renovação personalizadas, processa renovações automáticas dentro da política, escala risco.',
+       quando_humano:'Negociação de termos e renovações estratégicas de grandes contas',
+       kpi:'Taxa de renovação; receita de renovação vs meta',
+       risco:'Médio'},
+      {nome:'Agente de Escalação e Crise', cargo:'Especialista de CX Crítico IA',
+       porte:['mid','enterprise'], status:'adocao', badge:'loop',
+       ferramenta:'Zendesk + Slack + n8n + alertas multicanal', custo_mes:'R$150-400',
+       impacto:'-50% tempo de resposta a escalações críticas',
+       executa:'Detecta escalações de risco (cliente VIP insatisfeito, churn iminente, risco legal), aciona o responsável correto com contexto completo, acompanha resolução até o fechamento.',
+       quando_humano:'Toda escalação crítica é resolvida por humano — agente apenas orquestra e monitora',
+       kpi:'Tempo de resposta a escalações P1 < 1h; taxa de resolução',
+       risco:'Baixo'},
+    ]
+  },
+];
+
+
+// ── TIMES DE AGENTES ──
+let taPorte = 'all', taBadge = 'all', taStatus = 'all', taOpenDept = null, taOpenAgente = null;
+
+function taSetPorte(v, btn) {
+  taPorte = v;
+  document.querySelectorAll('#s6 .fb:nth-of-type(1) .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  taRender();
+}
+function taSetBadge(v, btn) {
+  taBadge = v;
+  document.querySelectorAll('#s6 .fb:nth-of-type(2) .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  taRender();
+}
+function taSetStatus(v, btn) {
+  taStatus = v;
+  document.querySelectorAll('#s6 .fb:nth-of-type(3) .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  taRender();
+}
+
+function taFilterAgentes(agentes) {
+  return agentes.filter(a => {
+    const porteOk = taPorte === 'all' || a.porte.includes(taPorte);
+    const badgeOk = taBadge === 'all' || a.badge === taBadge;
+    const statusOk = taStatus === 'all' || a.status === taStatus;
+    return porteOk && badgeOk && statusOk;
+  });
+}
+
+function taBadgeLabel(badge) {
+  if (badge === 'auto') return '<span style="background:rgba(0,229,160,.12);color:var(--green);border:1px solid rgba(0,229,160,.25);font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700">✅ AUTOMATIZAR</span>';
+  if (badge === 'loop') return '<span style="background:rgba(255,179,64,.1);color:var(--gold);border:1px solid rgba(255,179,64,.25);font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700">🔄 HUMANO NO LOOP</span>';
+  return '';
+}
+
+function taStatusLabel(status) {
+  const map = {
+    'producao': ['var(--green)', 'EM PRODUÇÃO'],
+    'adocao': ['var(--gold)', 'EM ADOÇÃO'],
+    'emergente': ['var(--blue)', 'EMERGENTE']
+  };
+  const [col, lbl] = map[status] || ['var(--t3)', status];
+  return `<span style="font-family:var(--mono);font-size:9px;color:${col}">● ${lbl}</span>`;
+}
+
+function taPorteIcons(porte) {
+  return porte.map(p => {
+    if (p === 'pme') return '<span style="font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(255,255,255,.05);color:var(--t3);border:1px solid var(--rim)">PME</span>';
+    if (p === 'mid') return '<span style="font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(77,159,255,.08);color:var(--blue);border:1px solid rgba(77,159,255,.2)">MID</span>';
+    if (p === 'enterprise') return '<span style="font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(176,110,255,.08);color:#b06eff;border:1px solid rgba(176,110,255,.2)">ENT</span>';
+    return '';
+  }).join(' ');
+}
+
+function taRender() {
+  const deptGrid = document.getElementById('taDeptGrid');
+  const agenteSection = document.getElementById('taAgenteSection');
+
+  if (taOpenDept) {
+    deptGrid.style.display = 'none';
+    agenteSection.style.display = 'block';
+    const dept = TIMES_AGENTES.find(d => d.id === taOpenDept);
+    const filtered = taFilterAgentes(dept.agentes);
+    document.getElementById('taDeptTitle').innerHTML = `${dept.icon} ${dept.nome}`;
+    document.getElementById('taDeptCount').textContent = `${filtered.length} agente${filtered.length !== 1 ? 's' : ''} com os filtros ativos`;
+    document.getElementById('taAgenteGrid').innerHTML = filtered.length === 0
+      ? '<div style="font-size:12px;color:var(--t3);padding:24px;text-align:center">Nenhum agente com esses filtros neste departamento.</div>'
+      : filtered.map(a => taAgenteCard(a)).join('');
+  } else {
+    deptGrid.style.display = 'grid';
+    agenteSection.style.display = 'none';
+    deptGrid.innerHTML = TIMES_AGENTES.map(dept => {
+      const filtered = taFilterAgentes(dept.agentes);
+      const total = dept.agentes.length;
+      const pct = Math.round(filtered.length / total * 100);
+      return `
+        <div class="gls" style="padding:16px 18px;cursor:pointer;transition:all .2s" 
+             onmouseenter="this.style.transform='translateY(-2px)';this.style.borderColor='var(--rimh)'"
+             onmouseleave="this.style.transform='';this.style.borderColor=''"
+             onclick="taOpenDeptFn('${dept.id}')">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">${dept.icon}</span>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--t1)">${dept.nome}</div>
+              <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:1px">${filtered.length} de ${total} agentes</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green)">${filtered.length}</div>
+          </div>
+          <div style="font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:10px">${dept.desc}</div>
+          <div style="height:3px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--green),#00d4ff);border-radius:3px;transition:width .3s"></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+}
+
+function taOpenDeptFn(id) {
+  taOpenDept = id;
+  taOpenAgente = null;
+  taRender();
+}
+
+function taCloseDept() {
+  taOpenDept = null;
+  taOpenAgente = null;
+  taRender();
+}
+
+function taAgenteCard(a) {
+  const isOpen = taOpenAgente === a.nome;
+  return `
+    <div class="gls" style="overflow:hidden;transition:all .2s">
+      <div onclick="taToggleAgente('${a.nome.replace(/'/g,"\\'")}',this)" 
+           style="padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            ${taBadgeLabel(a.badge)}
+            ${taStatusLabel(a.status)}
+          </div>
+          <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px">${a.nome}</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:6px">${a.cargo}</div>
+          <div style="font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green)">${a.impacto}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${taPorteIcons(a.porte)}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--t3)">${isOpen ? '▲' : '▼'}</div>
+        </div>
+      </div>
+      <div id="ta-detail-${a.nome.replace(/[^a-z0-9]/gi,'_')}" style="display:${isOpen ? 'block' : 'none'};padding:0 16px 16px">
+        <div style="height:1px;background:var(--rim);margin-bottom:14px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="background:rgba(0,229,160,.05);border:1px solid rgba(0,229,160,.12);border-radius:8px;padding:10px 12px">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">FERRAMENTA</div>
+            <div style="font-size:11px;color:var(--t1);font-weight:500;line-height:1.4">${a.ferramenta}</div>
+          </div>
+          <div style="background:rgba(77,159,255,.05);border:1px solid rgba(77,159,255,.12);border-radius:8px;padding:10px 12px">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">CUSTO/MÊS</div>
+            <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--blue)">${a.custo_mes}</div>
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:1px;margin-bottom:5px">O QUE EXECUTA</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.7">${a.executa}</div>
+        </div>
+        <div style="background:rgba(255,179,64,.05);border-left:2px solid var(--gold);padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:10px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--gold);margin-bottom:4px">QUANDO ACIONAR HUMANO</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.6">${a.quando_humano}</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:3px">KPI</div>
+            <div style="font-size:11px;color:var(--t1)">${a.kpi}</div>
+          </div>
+          <div style="background:${a.risco === 'Baixo' ? 'rgba(0,229,160,.08)' : a.risco.includes('Alto') ? 'rgba(255,61,110,.08)' : 'rgba(255,179,64,.08)'};
+                      border:1px solid ${a.risco === 'Baixo' ? 'rgba(0,229,160,.2)' : a.risco.includes('Alto') ? 'rgba(255,61,110,.2)' : 'rgba(255,179,64,.2)'};
+                      color:${a.risco === 'Baixo' ? 'var(--green)' : a.risco.includes('Alto') ? 'var(--red)' : 'var(--gold)'};
+                      font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:20px;font-weight:600">
+            RISCO ${a.risco.toUpperCase()}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function taToggleAgente(nome, el) {
+  const key = nome.replace(/[^a-z0-9]/gi,'_');
+  const detail = document.getElementById(`ta-detail-${key}`);
+  if (!detail) return;
+  const isOpen = detail.style.display !== 'none';
+  // fechar todos
+  document.querySelectorAll('[id^="ta-detail-"]').forEach(d => d.style.display = 'none');
+  if (!isOpen) {
+    detail.style.display = 'block';
+    taOpenAgente = nome;
+  } else {
+    taOpenAgente = null;
+  }
+  taRender();
+}
+
+// init times de agentes quando a aba custos for aberta
+const _origShow = typeof show === 'function' ? show : null;
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { if (document.getElementById('taDeptGrid')) taRender(); }, 100);
+});
+
 </script>
 </body>
 </html>
