@@ -502,40 +502,19 @@ footer a{color:var(--green);text-decoration:none}
   <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Preços reais de Mar 2026 via OpenRouter. Calculado para tarefa média de 7k tokens. Escolha o modelo pelo que ele faz melhor, não pelo hype.</div>
   <div id="modelosFuncaoBlock" style="margin-bottom:28px"></div>
 
-  <!-- BLOCO 3: TIMES DE AGENTES -->
-  <div class="slabel">03 · TIMES DE AGENTES — QUEM FAZ O QUÊ</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:16px">Cada departamento opera com um time de agentes. Selecione o porte e o departamento para ver os agentes, o que executam e quando precisam de supervisão humana.</div>
+  <!-- BLOCO 3: AGENTES OPERACIONAIS -->
+  <div class="slabel">03 · AGENTES OPERACIONAIS — EVENTO → AGENTE → RESULTADO</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:16px">Cada agente tem um gatilho, um input e um resultado mensurável. O custo é determinado pelo nível de raciocínio exigido — não pelo nome do modelo.</div>
 
-  <div class="fb" id="taPorteFb" style="margin-bottom:8px">
-    <span class="fl">PORTE</span>
-    <button class="fbtn on" onclick="taSetPorte('all',this)">TODOS</button>
-    <button class="fbtn" onclick="taSetPorte('pme',this)">PME</button>
-    <button class="fbtn" onclick="taSetPorte('mid',this)">MID-MARKET</button>
-    <button class="fbtn" onclick="taSetPorte('enterprise',this)">ENTERPRISE</button>
-  </div>
-  <div class="fb" id="taBadgeFb" style="margin-bottom:8px">
-    <span class="fl">DECISÃO</span>
-    <button class="fbtn on" onclick="taSetBadge('all',this)">TODOS</button>
-    <button class="fbtn" onclick="taSetBadge('auto',this)">✅ AUTOMATIZAR</button>
-    <button class="fbtn" onclick="taSetBadge('loop',this)">🔄 HUMANO NO LOOP</button>
-  </div>
-  <div class="fb" id="taStatusFb" style="margin-bottom:20px">
-    <span class="fl">MATURIDADE</span>
-    <button class="fbtn on" onclick="taSetStatus('all',this)">TODOS</button>
-    <button class="fbtn" onclick="taSetStatus('producao',this)">EM PRODUÇÃO</button>
-    <button class="fbtn" onclick="taSetStatus('adocao',this)">EM ADOÇÃO</button>
-    <button class="fbtn" onclick="taSetStatus('emergente',this)">EMERGENTE</button>
+  <div class="fb" id="taCamadaFb" style="margin-bottom:20px">
+    <span class="fl">CAMADA</span>
+    <button class="fbtn on" onclick="taSetCamada('all',this)">TODOS</button>
+    <button class="fbtn" onclick="taSetCamada('pesado',this)">RACIOCÍNIO PESADO</button>
+    <button class="fbtn" onclick="taSetCamada('especialista',this)">ESPECIALISTA</button>
+    <button class="fbtn" onclick="taSetCamada('volume',this)">VOLUME</button>
   </div>
 
-  <div id="taDeptGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px"></div>
-  <div id="taAgenteSection" style="display:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <button onclick="taCloseDept()" style="font-family:var(--mono);font-size:10px;color:var(--t3);cursor:pointer;padding:5px 12px;border:1px solid var(--rim);border-radius:20px;background:var(--g)">← VOLTAR</button>
-      <div id="taDeptTitle" style="font-size:14px;font-weight:700;color:var(--t1)"></div>
-      <div id="taDeptCount" style="font-family:var(--mono);font-size:10px;color:var(--t3)"></div>
-    </div>
-    <div id="taAgenteGrid" style="display:flex;flex-direction:column;gap:8px"></div>
-  </div>
+  <div id="taAgenteGrid" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
 
   <!-- BLOCO 4: ROI -->
   <div class="slabel" style="margin-top:28px">04 · CALCULADORA DE ROI — QUANTO VOCÊ ECONOMIZA</div>
@@ -2249,318 +2228,273 @@ var TA = [
   }
 ];
 
-// ── ESTADO ────────────────────────────────────────────────────
-var _taPorte = 'all';
-var _taBadge = 'all';
-var _taStatus = 'all';
-var _taDept = null;
-var _taAgente = null;
-
-// ── HELPERS ──────────────────────────────────────────────────
-function _badgeLabel(b) {
-  if (b === 'auto') return '<span style="background:rgba(0,229,160,.12);color:#00e5a0;border:1px solid rgba(0,229,160,.25);font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700">✅ AUTOMATIZAR</span>';
-  return '<span style="background:rgba(255,179,64,.1);color:#ffb340;border:1px solid rgba(255,179,64,.25);font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700">🔄 HUMANO NO LOOP</span>';
-}
-function _statusLabel(s) {
-  var m = {producao:['#00e5a0','EM PRODUÇÃO'], adocao:['#ffb340','EM ADOÇÃO'], emergente:['#4d9fff','EMERGENTE']};
-  var x = m[s] || ['#7070a0', s];
-  return '<span style="font-family:var(--mono);font-size:9px;color:'+x[0]+'">● '+x[1]+'</span>';
-}
-function _porteIcons(p) {
-  return p.map(function(x) {
-    if (x==='pme') return '<span style="font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(255,255,255,.05);color:#7070a0;border:1px solid rgba(255,255,255,.12)">PME</span>';
-    if (x==='mid') return '<span style="font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(77,159,255,.08);color:#4d9fff;border:1px solid rgba(77,159,255,.2)">MID</span>';
-    return '<span style="font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(176,110,255,.08);color:#b06eff;border:1px solid rgba(176,110,255,.2)">ENT</span>';
-  }).join(' ');
-}
-function _filter(agentes) {
-  return agentes.filter(function(a) {
-    var okP = _taPorte === 'all' || a.porte.indexOf(_taPorte) > -1;
-    var okB = _taBadge === 'all' || a.badge === _taBadge;
-    var okS = _taStatus === 'all' || a.status === _taStatus;
-    return okP && okB && okS;
-  });
-}
-
-// ── RENDER DEPT GRID ─────────────────────────────────────────
-function _renderDepts() {
-  var el = document.getElementById('taDeptGrid');
-  if (!el) return;
-  var h = '';
-  for (var i = 0; i < TA.length; i++) {
-    var d = TA[i];
-    var f = _filter(d.agentes);
-    var pct = Math.round(f.length / d.agentes.length * 100);
-    h += '<div class="gls" style="padding:16px 18px;cursor:pointer;transition:all .2s" onclick="window._taOpenDept(\''+d.id+'\')">';
-    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
-    h += '<span style="font-size:22px">'+d.icon+'</span>';
-    h += '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--t1)">'+d.nome+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3)">'+f.length+' de '+d.agentes.length+' agentes</div></div>';
-    h += '<div style="font-family:var(--mono);font-size:18px;font-weight:700;color:#00e5a0">'+f.length+'</div></div>';
-    h += '<div style="font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:10px">'+d.desc+'</div>';
-    h += '<div style="height:3px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">';
-    h += '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00e5a0,#00d4ff);border-radius:3px"></div></div>';
-    h += '</div>';
+// ── DADOS: 8 AGENTES OPERACIONAIS ───────────────────────────
+var TA_AGENTES = [
+  // ── RACIOCÍNIO PESADO ────────────────────────────────────
+  {
+    id:'transformation-planner',
+    camada:'pesado',
+    camadaLabel:'RACIOCÍNIO PESADO',
+    camadaCor:'#b06eff',
+    camadaBg:'rgba(176,110,255,.06)',
+    camadaBorder:'rgba(176,110,255,.2)',
+    nome:'Transformation Planner',
+    gatilho:'Nova necessidade de negócio ou dataset disponível',
+    input:'Descrição do problema + dados disponíveis + schemas existentes',
+    output:'Plano de transformação: models dbt, SQL, pipeline completo',
+    raciocinio:'PESADO',
+    custofx:'Alto',
+    custoCor:'#ff3d6e',
+    modelo:'Claude Sonnet 3.7 / Opus 4',
+    orquestrador:'n8n + dbt',
+    frequencia:'Baixa — disparado por projeto ou mudança estrutural',
+    humano:'Aprovação do plano antes de executar em produção',
+    resultado:'Pipeline funcional com lineage documentado'
+  },
+  {
+    id:'insight-generator',
+    camada:'pesado',
+    camadaLabel:'RACIOCÍNIO PESADO',
+    camadaCor:'#b06eff',
+    camadaBg:'rgba(176,110,255,.06)',
+    camadaBorder:'rgba(176,110,255,.2)',
+    nome:'Insight Generator',
+    gatilho:'Atualização de dataset ou fechamento de período',
+    input:'Dados agregados + histórico + contexto de negócio',
+    output:'Insights acionáveis: anomalias, tendências, drivers identificados',
+    raciocinio:'PESADO',
+    custofx:'Alto',
+    custoCor:'#ff3d6e',
+    modelo:'Claude Sonnet 3.7 / Gemini 2.0 Pro',
+    orquestrador:'Python (stats) + vector DB',
+    frequencia:'Diária ou por evento de negócio crítico',
+    humano:'Validação de insights antes de distribuir para stakeholders',
+    resultado:'Diagnóstico com causa-raiz e recomendação priorizada'
+  },
+  {
+    id:'decision-support',
+    camada:'pesado',
+    camadaLabel:'RACIOCÍNIO PESADO',
+    camadaCor:'#b06eff',
+    camadaBg:'rgba(176,110,255,.06)',
+    camadaBorder:'rgba(176,110,255,.2)',
+    nome:'Decision Support Agent',
+    gatilho:'Decisão crítica detectada — queda de KPI, evento de risco',
+    input:'Insights contextualizados + histórico + hipóteses alternativas',
+    output:'Recomendações priorizadas com trade-offs explícitos',
+    raciocinio:'PESADO',
+    custofx:'Alto',
+    custoCor:'#ff3d6e',
+    modelo:'Claude Sonnet 3.7 + memória (vector DB)',
+    orquestrador:'LangGraph / n8n + Python tools',
+    frequencia:'Baixa — eventos críticos ou revisões estratégicas',
+    humano:'Decisão final sempre humana — agente estrutura, humano decide',
+    resultado:'Briefing executivo com cenários e impacto estimado'
+  },
+  // ── ESPECIALISTA ─────────────────────────────────────────
+  {
+    id:'query-generator',
+    camada:'especialista',
+    camadaLabel:'ESPECIALISTA',
+    camadaCor:'#4d9fff',
+    camadaBg:'rgba(77,159,255,.06)',
+    camadaBorder:'rgba(77,159,255,.2)',
+    nome:'Query Generator (NL → SQL)',
+    gatilho:'Pergunta em linguagem natural de analista ou executivo',
+    input:'Pergunta + metadata das tabelas + catálogo semântico',
+    output:'SQL otimizado + explicação da lógica em linguagem simples',
+    raciocinio:'MÉDIO',
+    custofx:'Médio',
+    custoCor:'#ffb340',
+    modelo:'Claude Sonnet 3.7 / GPT-4o',
+    orquestrador:'Semantic layer (dbt metrics, Cube) + gateway',
+    frequencia:'Alta — múltiplas queries por dia por usuário',
+    humano:'Revisão em queries que tocam dados sensíveis ou financeiros',
+    resultado:'Query executável com contexto e caveats de interpretação'
+  },
+  {
+    id:'report-builder',
+    camada:'especialista',
+    camadaLabel:'ESPECIALISTA',
+    camadaCor:'#4d9fff',
+    camadaBg:'rgba(77,159,255,.06)',
+    camadaBorder:'rgba(77,159,255,.2)',
+    nome:'Report Builder Agent',
+    gatilho:'Fechamento de período ou solicitação executiva',
+    input:'Dados consolidados + insights + template aprovado',
+    output:'Relatório estruturado — deck executivo, PDF ou HTML',
+    raciocinio:'MÉDIO',
+    custofx:'Médio',
+    custoCor:'#ffb340',
+    modelo:'Claude Sonnet 3.7 / GPT-4o',
+    orquestrador:'python-pptx / HTML → PDF + templates',
+    frequencia:'Semanal ou mensal por ciclo de negócio',
+    humano:'Revisão editorial antes de distribuição executiva',
+    resultado:'Documento pronto para apresentação — zero formatação manual'
+  },
+  {
+    id:'governance-agent',
+    camada:'especialista',
+    camadaLabel:'ESPECIALISTA',
+    camadaCor:'#4d9fff',
+    camadaBg:'rgba(77,159,255,.06)',
+    camadaBorder:'rgba(77,159,255,.2)',
+    nome:'Data Governance Agent',
+    gatilho:'Criação ou uso de novo dataset',
+    input:'Metadados + políticas vigentes + lineage do dado',
+    output:'Classificação (PII, sensibilidade) + audit trail + alertas',
+    raciocinio:'MÉDIO',
+    custofx:'Médio',
+    custoCor:'#ffb340',
+    modelo:'Claude Haiku 4.5 / modelo médio com regras',
+    orquestrador:'DataHub / Amundsen + regras + n8n',
+    frequencia:'Contínua — ativa a cada novo ativo de dado',
+    humano:'Exceções de classificação e decisões de política',
+    resultado:'Dataset classificado, documentado e auditável em < 5 min'
+  },
+  // ── VOLUME ───────────────────────────────────────────────
+  {
+    id:'quality-validator',
+    camada:'volume',
+    camadaLabel:'VOLUME',
+    camadaCor:'#00e5a0',
+    camadaBg:'rgba(0,229,160,.04)',
+    camadaBorder:'rgba(0,229,160,.15)',
+    nome:'Data Quality Validator',
+    gatilho:'Pipeline concluído ou dado ingerido',
+    input:'Tabelas raw/trusted + regras de qualidade definidas',
+    output:'Score de qualidade + alertas + flags de problema',
+    raciocinio:'VOLUME',
+    custofx:'Baixo',
+    custoCor:'#00e5a0',
+    modelo:'Gemini 2.0 Flash / Claude Haiku 4.5',
+    orquestrador:'SQL + dbt tests + Great Expectations',
+    frequencia:'Alta — roda em todo ciclo de ingestão',
+    humano:'Investigação quando score cai abaixo do threshold',
+    resultado:'Dado certificado ou bloqueado — zero dado ruim em produção'
+  },
+  {
+    id:'anomaly-detection',
+    camada:'volume',
+    camadaLabel:'VOLUME',
+    camadaCor:'#00e5a0',
+    camadaBg:'rgba(0,229,160,.04)',
+    camadaBorder:'rgba(0,229,160,.15)',
+    nome:'Anomaly Detection Agent',
+    gatilho:'Monitoramento contínuo de KPIs e séries temporais',
+    input:'Séries históricas + baseline estatístico + thresholds',
+    output:'Alerta com severidade + contexto + possível causa',
+    raciocinio:'VOLUME',
+    custofx:'Baixo',
+    custoCor:'#00e5a0',
+    modelo:'Python (stats/ML) + LLM leve para classificação',
+    orquestrador:'Evidently / Monte Carlo + n8n (alertas)',
+    frequencia:'Contínua — monitoramento em tempo real ou near-real-time',
+    humano:'Investigação de anomalias classificadas como críticas',
+    resultado:'Problema detectado antes de impactar decisão de negócio'
   }
-  el.innerHTML = h;
+];
+
+// ── ESTADO ────────────────────────────────────────────────────
+var _taCamada  = 'all';
+var _taAberto  = null;
+
+// ── CAMADA LABEL ─────────────────────────────────────────────
+function _camadaTag(a) {
+  return '<span style="font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid '+a.camadaBorder+';color:'+a.camadaCor+';background:'+a.camadaBg+'">'+a.camadaLabel+'</span>';
+}
+function _custoTag(a) {
+  return '<span style="font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.1);color:'+a.custoCor+'">CUSTO '+a.custofx.toUpperCase()+'</span>';
 }
 
-// ── RENDER AGENTE CARD ───────────────────────────────────────
-function _renderAgentes(dept) {
+// ── RENDER AGENTES ────────────────────────────────────────────
+function _taRender() {
   var el = document.getElementById('taAgenteGrid');
   if (!el) return;
-  var f = _filter(dept.agentes);
-  if (f.length === 0) { el.innerHTML = '<div style="font-size:12px;color:var(--t3);padding:24px;text-align:center">Nenhum agente com esses filtros.</div>'; return; }
+  var lista = TA_AGENTES.filter(function(a) {
+    return _taCamada === 'all' || a.camada === _taCamada;
+  });
+  if (lista.length === 0) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--t3);padding:24px;text-align:center">Nenhum agente nessa camada.</div>';
+    return;
+  }
   var h = '';
-  for (var i = 0; i < f.length; i++) {
-    var a = f[i];
-    var key = a.nome.replace(/[^a-z0-9]/gi,'_');
-    var isOpen = _taAgente === a.nome;
-    var riscoCol = a.risco === 'Baixo' ? '#00e5a0' : a.risco.indexOf('Alto') > -1 ? '#ff3d6e' : '#ffb340';
-    var riscoBg  = a.risco === 'Baixo' ? 'rgba(0,229,160,.08)' : a.risco.indexOf('Alto') > -1 ? 'rgba(255,61,110,.08)' : 'rgba(255,179,64,.08)';
+  for (var i = 0; i < lista.length; i++) {
+    var a = lista[i];
+    var isOpen = _taAberto === a.id;
     h += '<div class="gls" style="overflow:hidden;transition:all .2s">';
-    // Header
-    h += '<div onclick="window._taToggle(\''+a.nome.replace(/'/g,"\\'")+'\')" style="padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">';
+    // Header clicável
+    h += '<div onclick="window._taToggle(\''+a.id+'\')" style="padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">';
     h += '<div>';
-    h += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">'+_badgeLabel(a.badge)+' '+_statusLabel(a.status)+'</div>';
-    h += '<div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px">'+a.nome+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:6px">'+a.cargo+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:10px;font-weight:600;color:#00e5a0">'+a.impacto+'</div>';
+    h += '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+_camadaTag(a)+' '+_custoTag(a)+'</div>';
+    h += '<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px">'+a.nome+'</div>';
+    h += '<div style="font-size:11px;color:var(--t3);font-family:var(--mono)">⚡ '+a.gatilho+'</div>';
     h += '</div>';
-    h += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">';
-    h += '<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">'+_porteIcons(a.porte)+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:10px;color:var(--t3)">'+(isOpen?'▲':'▼')+'</div>';
-    h += '</div></div>';
-    // Detalhe
-    h += '<div id="tad_'+key+'" style="display:'+(isOpen?'block':'none')+';padding:0 16px 16px">';
-    h += '<div style="height:1px;background:rgba(255,255,255,.08);margin-bottom:14px"></div>';
-    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">';
-    h += '<div style="background:rgba(0,229,160,.05);border:1px solid rgba(0,229,160,.12);border-radius:8px;padding:10px 12px">';
-    h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">STACK AI-FIRST</div>';
-    h += '<div style="font-size:11px;color:var(--t1);font-weight:500;line-height:1.5">'+a.stack+'</div></div>';
-    h += '<div style="background:rgba(77,159,255,.05);border:1px solid rgba(77,159,255,.12);border-radius:8px;padding:10px 12px">';
-    h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">CUSTO/MÊS</div>';
-    h += '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:#4d9fff">'+a.custo+'</div></div></div>';
-    h += '<div style="margin-bottom:10px"><div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:1px;margin-bottom:5px">O QUE EXECUTA</div>';
-    h += '<div style="font-size:11px;color:var(--t2);line-height:1.7">'+a.executa+'</div></div>';
-    h += '<div style="background:rgba(255,179,64,.05);border-left:2px solid #ffb340;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:10px">';
-    h += '<div style="font-family:var(--mono);font-size:9px;color:#ffb340;margin-bottom:4px">QUANDO ACIONAR HUMANO</div>';
-    h += '<div style="font-size:11px;color:var(--t2);line-height:1.6">'+a.humano+'</div></div>';
-    if (a.diferencial) {
-      h += '<div style="background:rgba(176,110,255,.05);border-left:2px solid #b06eff;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:10px">';
-      h += '<div style="font-family:var(--mono);font-size:9px;color:#b06eff;margin-bottom:4px">DIFERENCIAL AI-FIRST</div>';
-      h += '<div style="font-size:11px;color:var(--t2);line-height:1.6">'+a.diferencial+'</div></div>';
-    }
-    h += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
-    h += '<div><div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:3px">KPI</div>';
-    h += '<div style="font-size:11px;color:var(--t1)">'+a.kpi+'</div></div>';
-    h += '<div style="background:'+riscoBg+';border:1px solid '+riscoCol.replace(')',', .3)').replace('rgb','rgba')+';color:'+riscoCol+';font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:20px;font-weight:600">RISCO '+a.risco.toUpperCase()+'</div>';
-    h += '</div></div></div>';
-  }
-  el.innerHTML = h;
-}
-
-// ── RENDER PRINCIPAL ─────────────────────────────────────────
-function _taRender() {
-  var deptGrid = document.getElementById('taDeptGrid');
-  var agenteSection = document.getElementById('taAgenteSection');
-  if (!deptGrid || !agenteSection) return;
-  if (_taDept) {
-    deptGrid.style.display = 'none';
-    agenteSection.style.display = 'block';
-    var dept = null;
-    for (var i=0;i<TA.length;i++) { if(TA[i].id===_taDept){dept=TA[i];break;} }
-    if (!dept) return;
-    var f = _filter(dept.agentes);
-    document.getElementById('taDeptTitle').innerHTML = dept.icon+' '+dept.nome;
-    document.getElementById('taDeptCount').textContent = f.length+' agente'+(f.length!==1?'s':'')+' com os filtros ativos';
-    _renderAgentes(dept);
-  } else {
-    deptGrid.style.display = 'grid';
-    agenteSection.style.display = 'none';
-    _renderDepts();
-  }
-}
-
-// ── RENDER STACK ─────────────────────────────────────────────
-function _renderStack() {
-  var el = document.getElementById('stackCustoBlock');
-  if (!el) return;
-  var camadas = [
-    { cor:'#00e5a0', bg:'rgba(0,229,160,.04)', border:'rgba(0,229,160,.15)',
-      label:'CAMADA HUMANA — onde você pensa',
-      desc:'Você interage diretamente. Use o melhor modelo sem limitação. Custo fixo, não por token.',
-      itens:[
-        {icon:'⚡',nome:'Claude Max',funcao:'Orquestração, raciocínio, documentos complexos',custo:'R$1.160/mês',tipo:'Assinatura'},
-        {icon:'🤖',nome:'Manus',funcao:'Execução autônoma de projetos end-to-end',custo:'Incluso no plano',tipo:'Assinatura'},
-        {icon:'🔍',nome:'Perplexity Pro',funcao:'Research com fontes em tempo real',custo:'R$116/mês',tipo:'Assinatura'},
-      ]},
-    { cor:'#4d9fff', bg:'rgba(77,159,255,.04)', border:'rgba(77,159,255,.15)',
-      label:'CAMADA DE EXECUÇÃO — onde os agentes trabalham',
-      desc:'Agentes rodando em volume via OpenRouter. Você paga por token consumido, não por assento.',
-      itens:[
-        {icon:'🧠',nome:'DeepSeek R1',funcao:'80% das tarefas de análise e geração em volume',custo:'~R$0,05/tarefa',tipo:'API via OpenRouter'},
-        {icon:'🎨',nome:'Gemini 3.1 Flash',funcao:'Visual, multimodal, geração de interfaces',custo:'~R$0,03/tarefa',tipo:'API via OpenRouter'},
-        {icon:'⚡',nome:'GPT-5.4 Standard',funcao:'Automação complexa, computer use, 1M ctx',custo:'~R$0,18/tarefa',tipo:'API via OpenRouter'},
-        {icon:'⚙️',nome:'n8n self-hosted',funcao:'Orquestrador de todos os agentes',custo:'~R$80/mês VPS',tipo:'Self-hosted'},
-      ]},
-    { cor:'#ffb340', bg:'rgba(255,179,64,.04)', border:'rgba(255,179,64,.15)',
-      label:'CAMADA DE MEMÓRIA — onde os agentes aprendem',
-      desc:'Vector DB e knowledge graph corporativo. Os agentes aprendem com seus dados, não genéricos.',
-      itens:[
-        {icon:'📓',nome:'NotebookLM',funcao:'Síntese de documentos proprietários sem alucinação',custo:'Gratuito',tipo:'Google'},
-        {icon:'🗄️',nome:'Qdrant / Weaviate',funcao:'Vector DB para RAG e memória de longo prazo',custo:'~R$50-200/mês',tipo:'Self-hosted ou cloud'},
-      ]},
-  ];
-  var h = '';
-  for (var i=0;i<camadas.length;i++) {
-    var c = camadas[i];
-    h += '<div style="margin-bottom:14px;border-radius:14px;border:1px solid '+c.border+';overflow:hidden">';
-    h += '<div style="padding:12px 18px;background:'+c.bg+';border-bottom:1px solid '+c.border+'">';
-    h += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:'+c.cor+';margin-bottom:3px">'+c.label+'</div>';
-    h += '<div style="font-size:11px;color:var(--t2)">'+c.desc+'</div></div>';
-    for (var j=0;j<c.itens.length;j++) {
-      var it = c.itens[j];
-      h += '<div style="display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.04)">';
-      h += '<span style="font-size:18px">'+it.icon+'</span>';
-      h += '<div><div style="font-size:12px;font-weight:600;color:var(--t1)">'+it.nome+'</div>';
-      h += '<div style="font-size:10px;color:var(--t3)">'+it.funcao+'</div></div>';
-      h += '<div style="text-align:right"><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:'+c.cor+'">'+it.custo+'</div>';
-      h += '<div style="font-family:var(--mono);font-size:9px;color:var(--t3)">'+it.tipo+'</div></div></div>';
+    h += '<div style="font-family:var(--mono);font-size:11px;color:var(--t3);padding-top:4px">'+(isOpen?'▲':'▼')+'</div>';
+    h += '</div>';
+    // Detalhe expandido
+    if (isOpen) {
+      h += '<div style="padding:0 16px 16px">';
+      h += '<div style="height:1px;background:rgba(255,255,255,.08);margin-bottom:14px"></div>';
+      // Grid input/output/modelo
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">';
+      h += _infoCard('INPUT','rgba(77,159,255,.05)','rgba(77,159,255,.15)','#4d9fff', a.input);
+      h += _infoCard('OUTPUT','rgba(0,229,160,.05)','rgba(0,229,160,.15)','#00e5a0', a.output);
+      h += '</div>';
+      // Stack
+      h += '<div style="background:rgba(176,110,255,.05);border:1px solid rgba(176,110,255,.15);border-radius:8px;padding:10px 14px;margin-bottom:10px">';
+      h += '<div style="font-family:var(--mono);font-size:9px;color:#b06eff;letter-spacing:1px;margin-bottom:5px">MODELO + ORQUESTRADOR</div>';
+      h += '<div style="font-size:11px;color:var(--t1);font-weight:600;margin-bottom:2px">'+a.modelo+'</div>';
+      h += '<div style="font-size:10px;color:var(--t3)">'+a.orquestrador+'</div>';
+      h += '</div>';
+      // Frequência / Humano no loop / Resultado
+      h += '<div style="display:grid;grid-template-columns:1fr;gap:6px">';
+      h += _rowInfo('FREQUÊNCIA','#ffb340', a.frequencia);
+      h += _rowInfo('QUANDO ACIONAR HUMANO','#ffb340', a.humano);
+      h += _rowInfo('RESULTADO ESPERADO','#00e5a0', a.resultado);
+      h += '</div>';
+      h += '</div>';
     }
     h += '</div>';
   }
   el.innerHTML = h;
 }
 
-// ── RENDER MODELOS ───────────────────────────────────────────
-function _renderModelos() {
-  var el = document.getElementById('modelosFuncaoBlock');
-  if (!el) return;
-  var funcoes = [
-    {funcao:'Raciocínio complexo e orquestração',modelo:'Claude Sonnet 4.6',custo:'R$0,12',quando:'Frameworks, síntese, decisões editoriais',cor:'#b06eff'},
-    {funcao:'Automação de desktop e workflows longos',modelo:'GPT-5.4',custo:'R$0,18',quando:'Computer use, 1M tokens, multiagente',cor:'#00e5a0'},
-    {funcao:'Visual, design e multimodal',modelo:'Gemini 3.1',custo:'R$0,04',quando:'SVG, UI, imagem, vídeo, Flash-Lite',cor:'#4d9fff'},
-    {funcao:'Inteligência social e tempo real',modelo:'Grok 4.20',custo:'R$0,04',quando:'Monitoramento X, notícias < 30 dias',cor:'#ff3d6e'},
-    {funcao:'Research com fontes citadas',modelo:'Perplexity Sonar',custo:'R$0,00',quando:'Validação de dados, mercado, benchmarks',cor:'#4d9fff'},
-    {funcao:'Volume — análise e geração em escala',modelo:'DeepSeek R1',custo:'R$0,05',quando:'80% das tarefas rotineiras de agentes',cor:'#00e5a0'},
-    {funcao:'Código aberto e privacidade total',modelo:'Llama 3.3 70B',custo:'R$0,01',quando:'Dados sensíveis, on-premise, LGPD',cor:'#ffb340'},
-  ];
-  var h = '<div style="display:flex;flex-direction:column;gap:6px">';
-  for (var i=0;i<funcoes.length;i++) {
-    var f = funcoes[i];
-    h += '<div class="gls" style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:12px 16px">';
-    h += '<div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px">'+f.funcao+'</div>';
-    h += '<div style="font-size:10px;color:var(--t3)">'+f.quando+'</div></div>';
-    h += '<div style="font-family:var(--mono);font-size:11px;font-weight:600;color:'+f.cor+';white-space:nowrap">'+f.modelo+'</div>';
-    h += '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:#00e5a0;text-align:right;min-width:56px">'+f.custo+'</div>';
-    h += '</div>';
-  }
-  h += '</div>';
-  el.innerHTML = h;
-}
-
-// ── RENDER ROI ───────────────────────────────────────────────
-function _renderROI() {
-  var el = document.getElementById('roiBlock');
-  if (!el) return;
-  var depts = [
-    {key:'financeiro',label:'Financeiro / Controladoria',icon:'💰',sal:8500,aut:0.65},
-    {key:'rh',label:'RH / People',icon:'👥',sal:6500,aut:0.55},
-    {key:'vendas',label:'Comercial / Vendas',icon:'📈',sal:7000,aut:0.50},
-    {key:'marketing',label:'Marketing',icon:'📣',sal:6500,aut:0.60},
-    {key:'operacoes',label:'Operações / Supply Chain',icon:'⚙️',sal:7500,aut:0.50},
-    {key:'juridico',label:'Jurídico / Compliance',icon:'⚖️',sal:12000,aut:0.55},
-    {key:'ti',label:'TI / Dados',icon:'💻',sal:9000,aut:0.55},
-    {key:'atendimento',label:'Atendimento / CS',icon:'🎧',sal:4500,aut:0.70},
-  ];
-  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-bottom:20px">';
-  for (var i=0;i<depts.length;i++) {
-    var d = depts[i];
-    h += '<div class="gls" style="padding:14px 16px">';
-    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
-    h += '<span style="font-size:18px">'+d.icon+'</span>';
-    h += '<div style="font-size:12px;font-weight:600;color:var(--t1)">'+d.label+'</div></div>';
-    h += '<div style="display:flex;align-items:center;gap:8px">';
-    h += '<div style="font-size:10px;color:var(--t3);white-space:nowrap">Pessoas na área:</div>';
-    h += '<input type="number" min="0" max="999" value="0" id="roi_'+d.key+'" ';
-    h += 'style="width:60px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:var(--t1);font-family:var(--mono);font-size:13px;font-weight:700;padding:4px 8px;text-align:center" ';
-    h += 'oninput="window._calcROI()" /></div></div>';
-  }
-  h += '</div><div id="roiResultado" style="display:none"></div>';
-  el.innerHTML = h;
-}
-
-function _calcROI() {
-  var depts = [
-    {key:'financeiro',sal:8500,aut:0.65},
-    {key:'rh',sal:6500,aut:0.55},
-    {key:'vendas',sal:7000,aut:0.50},
-    {key:'marketing',sal:6500,aut:0.60},
-    {key:'operacoes',sal:7500,aut:0.50},
-    {key:'juridico',sal:12000,aut:0.55},
-    {key:'ti',sal:9000,aut:0.55},
-    {key:'atendimento',sal:4500,aut:0.70},
-  ];
-  var totalPessoas = 0, custoAtual = 0, economiaTotal = 0;
-  for (var i=0;i<depts.length;i++) {
-    var d = depts[i];
-    var el = document.getElementById('roi_'+d.key);
-    var n = el ? (parseInt(el.value)||0) : 0;
-    totalPessoas += n;
-    var custo = n * d.sal * 1.7;
-    custoAtual += custo;
-    economiaTotal += custo * d.aut;
-  }
-  var res = document.getElementById('roiResultado');
-  if (!res) return;
-  if (totalPessoas === 0) { res.style.display = 'none'; return; }
-  var custoAgentes = totalPessoas * 300;
-  var economiaLiquida = economiaTotal - custoAgentes;
-  var roi = custoAgentes > 0 ? Math.round(economiaLiquida / custoAgentes * 100) : 0;
-  res.style.display = 'block';
-  res.innerHTML =
-    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">' +
-    _roiCard('CUSTO HUMANO ATUAL','R$'+Math.round(custoAtual/1000)+'k/mês','Salários + encargos (~70%)','#ff3d6e') +
-    _roiCard('CUSTO DO STACK IA','R$'+Math.round(custoAgentes/1000)+'k/mês','Stack completo equivalente','#4d9fff') +
-    _roiCard('ECONOMIA MENSAL','R$'+Math.round(economiaLiquida/1000)+'k/mês','Funções automatizáveis por área','#00e5a0') +
-    _roiCard('ROI DO STACK',roi+'x','Retorno sobre investimento','#ffb340') +
-    '</div>' +
-    '<div style="font-size:10px;color:var(--t3);line-height:1.6;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.08)">' +
-    '⚠️ Estimativa baseada em salários médios BR Mar 2026 + encargos 70%. Automação varia por área (50-70%). Use como referência de ordem de grandeza.' +
+function _infoCard(label, bg, border, cor, text) {
+  return '<div style="background:'+bg+';border:1px solid '+border+';border-radius:8px;padding:10px 12px">' +
+    '<div style="font-family:var(--mono);font-size:9px;color:'+cor+';letter-spacing:1px;margin-bottom:5px">'+label+'</div>' +
+    '<div style="font-size:11px;color:var(--t2);line-height:1.6">'+text+'</div>' +
     '</div>';
 }
-function _roiCard(label, valor, sub, cor) {
-  return '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 18px">' +
-    '<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:6px">'+label+'</div>' +
-    '<div style="font-family:var(--mono);font-size:24px;font-weight:700;color:'+cor+';margin-bottom:4px">'+valor+'</div>' +
-    '<div style="font-size:10px;color:var(--t3)">'+sub+'</div>' +
+function _rowInfo(label, cor, text) {
+  return '<div style="border-left:2px solid '+cor+';padding:8px 12px;background:rgba(255,255,255,.02);border-radius:0 6px 6px 0">' +
+    '<div style="font-family:var(--mono);font-size:9px;color:'+cor+';letter-spacing:1px;margin-bottom:3px">'+label+'</div>' +
+    '<div style="font-size:11px;color:var(--t2);line-height:1.6">'+text+'</div>' +
     '</div>';
 }
 
-// ── API GLOBAL — nomes que o HTML usa ────────────────────────
-window.taSetPorte  = function(v, btn) { _taPorte  = v; _hilite('#taPorteFb',  btn); _taRender(); };
-window.taSetBadge  = function(v, btn) { _taBadge  = v; _hilite('#taBadgeFb',  btn); _taRender(); };
-window.taSetStatus = function(v, btn) { _taStatus = v; _hilite('#taStatusFb', btn); _taRender(); };
-window.taCloseDept = function()       { _taDept = null; _taAgente = null; _taRender(); };
-window._taOpenDept = function(id)     { _taDept = id;   _taAgente = null; _taRender(); };
-window._taToggle   = function(nome)   { _taAgente = (_taAgente === nome) ? null : nome; _taRender(); };
-window._calcROI    = _calcROI;
-
-function _hilite(parentSel, btn) {
-  var parent = document.querySelector(parentSel);
-  if (!parent) return;
-  var btns = parent.querySelectorAll('.fbtn');
-  for (var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+// ── API GLOBAL ───────────────────────────────────────────────
+window.taSetCamada = function(v, btn) {
+  _taCamada = v;
+  var parent = document.querySelector('#taCamadaFb');
+  if (parent) {
+    var btns = parent.querySelectorAll('.fbtn');
+    for (var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+  }
   if (btn) btn.classList.add('on');
-}
+  _taRender();
+};
+window._taToggle = function(id) {
+  _taAberto = (_taAberto === id) ? null : id;
+  _taRender();
+};
 
 // ── INIT ──────────────────────────────────────────────────────
 window.initCosts = function() {
   _renderStack();
   _renderModelos();
-  _renderROI();
   _taRender();
+  _renderROI();
 };
 
 })(); // fim do IIFE
