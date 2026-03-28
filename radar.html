@@ -1152,7 +1152,7 @@ function show(id,el){
   document.getElementById(id).classList.add('on');
   el.classList.add('on');
   if(id==='s6'){ setTimeout(function(){ if(typeof window.initCosts==='function') window.initCosts(); }, 50); }
-  if(id==='s7'){ setTimeout(function(){ renderGov(); }, 50); }
+  if(id==='s7'){ /* governança inicializada por gPill + generateGovDoc */ }
 }
 
 // ── RENDER DECISION ──
@@ -1955,7 +1955,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if(typeof renderEmg==='function') renderEmg();
   if(typeof renderDT==='function') renderDT();
   // Governança
-  if(typeof renderGov==='function') renderGov();
+  // renderGov removida — governança usa gPill + generateGovDoc
 });
 
 
