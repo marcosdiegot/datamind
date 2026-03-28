@@ -494,7 +494,7 @@ footer a{color:var(--green);text-decoration:none}
 
   <!-- BLOCO 0: SIMULADOR -->
   <div class="slabel">00 · SIMULADOR — ARQUITETURA AI-FIRST POR SEGMENTO</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:16px">Selecione o segmento, porte e stack existente. O simulador mostra agentes, economia real, segurança, IA interna e implementação calibrados para sua realidade.</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:16px">Selecione o segmento, porte e stack existente. O simulador mostra agentes, economia real, segurança, IA interna e implementação calibrados para sua realidade. Use o bloco 01 abaixo para comparar os três cenários de operação.</div>
 
   <!-- FILTRO: SEGMENTO -->
   <div style="margin-bottom:12px">
@@ -680,55 +680,217 @@ footer a{color:var(--green);text-decoration:none}
   <!-- RESULTADO DO SIMULADOR -->
   <div id="simResultBlock" style="margin-bottom:32px"></div>
 
-  <!-- BLOCO 1: STACK DE CUSTO -->
-  <div class="slabel">01 · COMO O STACK AI-FIRST FUNCIONA — CUSTO REAL</div>
+  <!-- BLOCO 1: COMPARATIVO DE CENÁRIOS -->
+  <div class="slabel">01 · COMPARATIVO DE CENÁRIOS — CUSTO E IMPACTO</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:6px">Três realidades de operação. A diferença entre elas não é tecnologia — é decisão de arquitetura.</div>
+  <div style="font-size:10px;color:var(--t3);margin-bottom:16px;font-style:italic">⚠️ Estimativas baseadas em estudos de mercado e benchmarks setoriais (McKinsey, Deloitte, MIT Sloan, BCG 2023–2025). Variações reais dependem do porte, setor e maturidade de dados da organização.</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:20px">
+
+    <!-- CENÁRIO 1: TRADICIONAL -->
+    <div style="border:1px solid rgba(255,61,90,.25);border-radius:14px;overflow:hidden">
+      <div style="padding:14px 16px;background:rgba(255,61,90,.06);border-bottom:1px solid rgba(255,61,90,.15)">
+        <div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#ff3d5a;margin-bottom:4px">CENÁRIO 01</div>
+        <div style="font-size:13px;font-weight:700;color:var(--t1)">Operação Tradicional</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px">Headcount puro. Processo manual. Sem automação estruturada.</div>
+      </div>
+      <div style="padding:14px 16px">
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">ESTRUTURA DE CUSTO</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Analista júnior (CLT × 1,8)</span><span style="color:#ff3d5a;font-family:var(--mono)">R$5–9k/mês</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Analista sênior (CLT × 1,8)</span><span style="color:#ff3d5a;font-family:var(--mono)">R$14–25k/mês</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Ferramentas SaaS por área</span><span style="color:#ff3d5a;font-family:var(--mono)">R$2–8k/mês</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Retrabalho e erro humano</span><span style="color:#ff3d5a;font-family:var(--mono)">+15–30% indireto</span></div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">HORAS EM TAREFAS OPERACIONAIS</div>
+          <div style="background:rgba(255,61,90,.06);border-radius:8px;padding:10px 12px">
+            <div style="font-size:22px;font-weight:700;color:#ff3d5a;font-family:var(--mono)">60–75%</div>
+            <div style="font-size:10px;color:var(--t3);margin-top:2px">do tempo do time em tarefas que não geram decisão</div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">CARACTERÍSTICAS</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:10px;color:var(--t2)">⚠️ Escala exige contratação linear</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Dado em planilha — sem governança</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Relatório entregue D+3 a D+7</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Conhecimento concentrado em pessoas</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Turnover = perda de processo</div>
+          </div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(255,61,90,.05);border-radius:8px;border:1px solid rgba(255,61,90,.15)">
+          <div style="font-family:var(--mono);font-size:8px;color:#ff3d5a;margin-bottom:3px">RISCO OPERACIONAL</div>
+          <div style="font-size:10px;color:var(--t2);line-height:1.6">Alta dependência de pessoa-chave. Erro manual não detectado. Decisão baseada em dado defasado. Concorrente com IA opera 10x mais rápido no mesmo processo.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENÁRIO 2: IA NÃO OTIMIZADA -->
+    <div style="border:1px solid rgba(255,184,48,.25);border-radius:14px;overflow:hidden">
+      <div style="padding:14px 16px;background:rgba(255,184,48,.06);border-bottom:1px solid rgba(255,184,48,.15)">
+        <div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#ffb830;margin-bottom:4px">CENÁRIO 02</div>
+        <div style="font-size:13px;font-weight:700;color:var(--t1)">IA de Vitrine</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px">LLM em cima de processo ruim. Dado sem estrutura. Custo alto, resultado fraco.</div>
+      </div>
+      <div style="padding:14px 16px">
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">ESTRUTURA DE CUSTO</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Headcount anterior mantido</span><span style="color:#ffb830;font-family:var(--mono)">Custo base</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">SaaS de IA genérico</span><span style="color:#ffb830;font-family:var(--mono)">R$3–15k/mês</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Consultoria de implementação</span><span style="color:#ffb830;font-family:var(--mono)">R$30–120k setup</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Retrabalho por dado ruim</span><span style="color:#ffb830;font-family:var(--mono)">+40–60% custo real</span></div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">HORAS EM TAREFAS OPERACIONAIS</div>
+          <div style="background:rgba(255,184,48,.06);border-radius:8px;padding:10px 12px">
+            <div style="font-size:22px;font-weight:700;color:#ffb830;font-family:var(--mono)">40–55%</div>
+            <div style="font-size:10px;color:var(--t3);margin-top:2px">melhora parcial — mas time ainda corrige output da IA manualmente</div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">CARACTERÍSTICAS</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:10px;color:var(--t2)">⚠️ LLM premium em tudo — custo explode</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Dado sem qualidade = IA sem qualidade</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Lock-in em SaaS de IA proprietário</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ Governança e LGPD ignorados</div>
+            <div style="font-size:10px;color:var(--t2)">⚠️ ROI não mensurável em 6 meses</div>
+          </div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(255,184,48,.05);border-radius:8px;border:1px solid rgba(255,184,48,.15)">
+          <div style="font-family:var(--mono);font-size:8px;color:#ffb830;margin-bottom:3px">RISCO OPERACIONAL</div>
+          <div style="font-size:10px;color:var(--t2);line-height:1.6">IA amplifica o problema, não resolve. Dado ruim entra, decisão ruim sai. Time perde confiança na ferramenta. Projeto vira custo sem retorno. "Nossa IA não funciona" é sintoma — causa é dado sem estrutura.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENÁRIO 3: IA OTIMIZADA -->
+    <div style="border:1px solid rgba(0,229,160,.3);border-radius:14px;overflow:hidden">
+      <div style="padding:14px 16px;background:rgba(0,229,160,.06);border-bottom:1px solid rgba(0,229,160,.2)">
+        <div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:var(--green);margin-bottom:4px">CENÁRIO 03</div>
+        <div style="font-size:13px;font-weight:700;color:var(--t1)">IA Otimizada — AI-First</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px">Dado estruturado primeiro. Stack certo por função. Agentes com governança real.</div>
+      </div>
+      <div style="padding:14px 16px">
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">ESTRUTURA DE CUSTO</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">LLMs via API (volume)</span><span style="color:var(--green);font-family:var(--mono)">R$0,004–0,20/1M tok</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Orquestração (n8n self-hosted)</span><span style="color:var(--green);font-family:var(--mono)">R$0 (OSS)</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Infraestrutura de agentes</span><span style="color:var(--green);font-family:var(--mono)">R$800–5k/mês</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Head of Data (orquestrador)</span><span style="color:var(--green);font-family:var(--mono)">1 profissional sênior</span></div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">HORAS EM TAREFAS OPERACIONAIS</div>
+          <div style="background:rgba(0,229,160,.06);border-radius:8px;padding:10px 12px">
+            <div style="font-size:22px;font-weight:700;color:var(--green);font-family:var(--mono)">10–25%</div>
+            <div style="font-size:10px;color:var(--t3);margin-top:2px">time foca em decisão, estratégia e exceção — não em operacional</div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">CARACTERÍSTICAS</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:10px;color:var(--t2)">✅ Modelo certo para cada função</div>
+            <div style="font-size:10px;color:var(--t2)">✅ Dado com qualidade e linhagem</div>
+            <div style="font-size:10px;color:var(--t2)">✅ LGPD e RBAC operacionais</div>
+            <div style="font-size:10px;color:var(--t2)">✅ Escala sem contratação linear</div>
+            <div style="font-size:10px;color:var(--t2)">✅ ROI mensurável em 30–60 dias</div>
+          </div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(0,229,160,.05);border-radius:8px;border:1px solid rgba(0,229,160,.2)">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:3px">RESULTADO OPERACIONAL</div>
+          <div style="font-size:10px;color:var(--t2);line-height:1.6">Agentes executam o operacional. Humano decide, valida exceção e evolui o sistema. Conhecimento documentado e auditável. Concorrente sem IA estruturada opera com custo 3–8x maior no mesmo volume.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABELA COMPARATIVA RESUMIDA -->
+  <div style="overflow-x:auto;margin-bottom:28px">
+    <table style="width:100%;border-collapse:collapse;font-size:10px">
+      <thead>
+        <tr style="font-family:var(--mono);font-size:8px;color:var(--t3)">
+          <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--rim)">DIMENSÃO</th>
+          <th style="text-align:center;padding:8px 10px;border-bottom:1px solid var(--rim);color:#ff3d5a">TRADICIONAL</th>
+          <th style="text-align:center;padding:8px 10px;border-bottom:1px solid var(--rim);color:#ffb830">IA DE VITRINE</th>
+          <th style="text-align:center;padding:8px 10px;border-bottom:1px solid var(--rim);color:var(--green)">AI-FIRST</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Custo de escalar 2x</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">Dobra o headcount</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">+50% custo de SaaS</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">+10–20% infra</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Tempo de entrega de relatório</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">D+3 a D+7</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">D+1 a D+3</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">D+0 automático</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Horas liberadas por analista/mês</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">—</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">~20–40h</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">~60–100h</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Governança e LGPD</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">Política no papel</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">Parcial — risco real</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">Operacional em código</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">ROI mensurável em</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">Não aplicável</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">12–18 meses</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">30–60 dias</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Dado sensível on-premise</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">Controle manual</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">Depende do SaaS</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">Llama self-hosted</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Lock-in tecnológico</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">Fornecedor SaaS</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">Alto — SaaS de IA</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">Zero — stack aberto</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;color:var(--t2);font-weight:600">Redução de custo operacional</td>
+          <td style="padding:7px 10px;text-align:center;color:#ff3d5a">Base</td>
+          <td style="padding:7px 10px;text-align:center;color:#ffb830">20–35%</td>
+          <td style="padding:7px 10px;text-align:center;color:var(--green)">50–85%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid var(--rim);border-radius:8px;margin-bottom:28px">
+    <div style="font-size:9px;color:var(--t3);line-height:1.7">📊 <strong style="color:var(--t2)">Fontes e metodologia:</strong> Estimativas consolidadas de McKinsey Global Institute (2023), Deloitte AI Survey (2024), MIT Sloan Management Review (2024), BCG AI Adoption Report (2025) e benchmarks DataMind de projetos em setores regulados no Brasil. Horas liberadas referem-se a tarefas repetitivas e de baixo julgamento substituíveis por agentes. Custos em BRL, referência Mar/2026. Variações reais dependem de porte, setor, maturidade de dados e nível de implementação.</div>
+  </div>
+
+
+  <!-- BLOCO 2: STACK DE CUSTO -->
+  <div class="slabel">02 · COMO O STACK AI-FIRST FUNCIONA — CUSTO REAL</div>
   <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Três camadas distintas. Camada humana com os melhores modelos sem limite. Execução em volume pelo menor custo. Raciocínio crítico apenas onde a justificativa auditável é obrigatória.</div>
   <div id="stackCustoBlock" style="margin-bottom:28px"></div>
 
-  <!-- BLOCO 2: MODELOS POR FUNÇÃO -->
-  <div class="slabel">02 · MODELOS — QUAL USAR EM CADA FUNÇÃO</div>
+  <!-- BLOCO 3: MODELOS POR FUNÇÃO -->
+  <div class="slabel">03 · MODELOS — QUAL USAR EM CADA FUNÇÃO</div>
   <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Preços reais de Mar 2026 via OpenRouter. Calculado para tarefa média de 7k tokens. Escolha o modelo pelo que ele faz melhor — não pelo hype e não pelo que aparece em todo lugar.</div>
   <div id="modelosFuncaoBlock" style="margin-bottom:28px"></div>
 
-  <!-- BLOCO 3: TIMES DE AGENTES -->
-  <div class="slabel">03 · TIMES DE AGENTES — QUEM FAZ O QUÊ</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:16px">Base genérica de agentes por departamento. Para ver agentes calibrados por setor, use o Simulador acima.</div>
-
-  <div class="fb" id="taPorteFb" style="margin-bottom:8px">
-    <span class="fl">PORTE</span>
-    <button class="fbtn on" onclick="taSetPorte('all',this)">TODOS</button>
-    <button class="fbtn" onclick="taSetPorte('pme',this)">PME</button>
-    <button class="fbtn" onclick="taSetPorte('mid',this)">MID-MARKET</button>
-    <button class="fbtn" onclick="taSetPorte('enterprise',this)">ENTERPRISE</button>
-  </div>
-  <div class="fb" id="taBadgeFb" style="margin-bottom:8px">
-    <span class="fl">DECISÃO</span>
-    <button class="fbtn on" onclick="taSetBadge('all',this)">TODOS</button>
-    <button class="fbtn" onclick="taSetBadge('auto',this)">✅ AUTOMATIZAR</button>
-    <button class="fbtn" onclick="taSetBadge('loop',this)">🔄 HUMANO NO LOOP</button>
-  </div>
-  <div class="fb" id="taStatusFb" style="margin-bottom:20px">
-    <span class="fl">MATURIDADE</span>
-    <button class="fbtn on" onclick="taSetStatus('all',this)">TODOS</button>
-    <button class="fbtn" onclick="taSetStatus('producao',this)">EM PRODUÇÃO</button>
-    <button class="fbtn" onclick="taSetStatus('adocao',this)">EM ADOÇÃO</button>
-    <button class="fbtn" onclick="taSetStatus('emergente',this)">EMERGENTE</button>
-  </div>
-
-  <div id="taDeptGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px"></div>
-  <div id="taAgenteSection" style="display:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <button onclick="taCloseDept()" style="font-family:var(--mono);font-size:10px;color:var(--t3);cursor:pointer;padding:5px 12px;border:1px solid var(--rim);border-radius:20px;background:var(--g)">← VOLTAR</button>
-      <div id="taDeptTitle" style="font-size:14px;font-weight:700;color:var(--t1)"></div>
-      <div id="taDeptCount" style="font-family:var(--mono);font-size:10px;color:var(--t3)"></div>
-    </div>
-    <div id="taAgenteGrid" style="display:flex;flex-direction:column;gap:8px"></div>
-  </div>
-
-  <!-- BLOCO 4: ROI -->
-  <div class="slabel" style="margin-top:28px">04 · CALCULADORA DE ROI — QUANTO VOCÊ ECONOMIZA</div>
-  <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Informe o número de pessoas em cada área. Veja o custo atual estimado vs o custo do time de agentes equivalente.</div>
-  <div id="roiBlock" style="margin-bottom:8px"></div>
 
 
 
