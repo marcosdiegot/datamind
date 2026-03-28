@@ -2895,6 +2895,26 @@ function taPorteIcons(porte) {
   }).join(' ');
 }
 
+
+function taSetPorte(v, btn) {
+  taPorte = v;
+  document.querySelectorAll('#taPorteFb .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  taRender();
+}
+function taSetBadge(v, btn) {
+  taBadge = v;
+  document.querySelectorAll('#taBadgeFb .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  taRender();
+}
+function taSetStatus(v, btn) {
+  taStatus = v;
+  document.querySelectorAll('#taStatusFb .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  taRender();
+}
+
 function taRender() {
   const deptGrid = document.getElementById('taDeptGrid');
   const agenteSection = document.getElementById('taAgenteSection');
