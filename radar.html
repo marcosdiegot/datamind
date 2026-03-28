@@ -2538,17 +2538,14 @@ function _roiCard(label, valor, sub, cor) {
     '</div>';
 }
 
-// ── API GLOBAL — chamada pelo HTML ────────────────────────────
-window._taOpenDept = function(id) { _taDept = id; _taAgente = null; _taRender(); };
-window._taBack    = function()    { _taDept = null; _taAgente = null; _taRender(); };
-window._taToggle  = function(nome) {
-  _taAgente = (_taAgente === nome) ? null : nome;
-  _taRender();
-};
-window._taSetPorte  = function(v, btn) { _taPorte  = v; _hilite('#taPorteFb',  btn); _taRender(); };
-window._taSetBadge  = function(v, btn) { _taBadge  = v; _hilite('#taBadgeFb',  btn); _taRender(); };
-window._taSetStatus = function(v, btn) { _taStatus = v; _hilite('#taStatusFb', btn); _taRender(); };
-window._calcROI = _calcROI;
+// ── API GLOBAL — nomes que o HTML usa ────────────────────────
+window.taSetPorte  = function(v, btn) { _taPorte  = v; _hilite('#taPorteFb',  btn); _taRender(); };
+window.taSetBadge  = function(v, btn) { _taBadge  = v; _hilite('#taBadgeFb',  btn); _taRender(); };
+window.taSetStatus = function(v, btn) { _taStatus = v; _hilite('#taStatusFb', btn); _taRender(); };
+window.taCloseDept = function()       { _taDept = null; _taAgente = null; _taRender(); };
+window._taOpenDept = function(id)     { _taDept = id;   _taAgente = null; _taRender(); };
+window._taToggle   = function(nome)   { _taAgente = (_taAgente === nome) ? null : nome; _taRender(); };
+window._calcROI    = _calcROI;
 
 function _hilite(parentSel, btn) {
   var parent = document.querySelector(parentSel);
