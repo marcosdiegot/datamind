@@ -801,8 +801,8 @@ function show(id,el){
   for(var i=0;i<nbs.length;i++) nbs[i].classList.remove('on');
   document.getElementById(id).classList.add('on');
   el.classList.add('on');
-  if(id==='s6'){ initCosts(); taRender(); }
-  if(id==='s7'){ renderGov(); }
+  if(id==='s6'){ setTimeout(function(){ initCosts(); taRender(); }, 50); }
+  if(id==='s7'){ setTimeout(function(){ renderGov(); }, 50); }
 }
 
 // ── RENDER DECISION ──
@@ -3030,10 +3030,18 @@ function taToggleAgente(nome, el) {
 
 // init times de agentes quando a aba custos for aberta
 const _origShow = typeof show === 'function' ? show : null;
-document.addEventListener('DOMContentLoaded', () => {
-  // Inicializar aba 1 (FEED) que abre por padrão
-  renderDecision(); renderPulse(); renderIntel();
-  renderRanking(); renderBullets(); renderSquad(); renderEmg(); renderDT();
+document.addEventListener('DOMContentLoaded', function() {
+  // Feed (aba padrão)
+  if(typeof renderDecision==='function') renderDecision();
+  if(typeof renderPulse==='function') renderPulse();
+  if(typeof renderIntel==='function') renderIntel();
+  if(typeof renderRanking==='function') renderRanking();
+  if(typeof renderBullets==='function') renderBullets();
+  if(typeof renderSquad==='function') renderSquad();
+  if(typeof renderEmg==='function') renderEmg();
+  if(typeof renderDT==='function') renderDT();
+  // Governança
+  if(typeof renderGov==='function') renderGov();
 });
 
 </script>
