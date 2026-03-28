@@ -801,6 +801,8 @@ function show(id,el){
   for(var i=0;i<nbs.length;i++) nbs[i].classList.remove('on');
   document.getElementById(id).classList.add('on');
   el.classList.add('on');
+  if(id==='s6'){ initCosts(); taRender(); }
+  if(id==='s7'){ renderGov(); }
 }
 
 // ── RENDER DECISION ──
@@ -3029,7 +3031,9 @@ function taToggleAgente(nome, el) {
 // init times de agentes quando a aba custos for aberta
 const _origShow = typeof show === 'function' ? show : null;
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => { if (document.getElementById('taDeptGrid')) taRender(); }, 100);
+  // Inicializar aba 1 (FEED) que abre por padrão
+  renderDecision(); renderPulse(); renderIntel();
+  renderRanking(); renderBullets(); renderSquad(); renderEmg(); renderDT();
 });
 
 </script>
