@@ -2950,9 +2950,11 @@ function taCloseDept() {
 
 function taAgenteCard(a) {
   const isOpen = taOpenAgente === a.nome;
+  const stackVal = a.stack || a.ferramenta || '—';
+  const diferencialVal = a.diferencial || '';
   return `
     <div class="gls" style="overflow:hidden;transition:all .2s">
-      <div onclick="taToggleAgente('${a.nome.replace(/'/g,"\\'")}',this)" 
+      <div onclick="taToggleAgente('${a.nome.replace(/'/g,"\\'")}',this)"
            style="padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">
         <div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
@@ -2972,8 +2974,8 @@ function taAgenteCard(a) {
         <div style="height:1px;background:var(--rim);margin-bottom:14px"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
           <div style="background:rgba(0,229,160,.05);border:1px solid rgba(0,229,160,.12);border-radius:8px;padding:10px 12px">
-            <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">FERRAMENTA</div>
-            <div style="font-size:11px;color:var(--t1);font-weight:500;line-height:1.4">${a.ferramenta}</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">STACK AI-FIRST</div>
+            <div style="font-size:11px;color:var(--t1);font-weight:500;line-height:1.5">${stackVal}</div>
           </div>
           <div style="background:rgba(77,159,255,.05);border:1px solid rgba(77,159,255,.12);border-radius:8px;padding:10px 12px">
             <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:4px">CUSTO/MÊS</div>
@@ -2988,6 +2990,10 @@ function taAgenteCard(a) {
           <div style="font-family:var(--mono);font-size:9px;color:var(--gold);margin-bottom:4px">QUANDO ACIONAR HUMANO</div>
           <div style="font-size:11px;color:var(--t2);line-height:1.6">${a.quando_humano}</div>
         </div>
+        ${diferencialVal ? `<div style="background:rgba(176,110,255,.05);border-left:2px solid #b06eff;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:10px">
+          <div style="font-family:var(--mono);font-size:9px;color:#b06eff;margin-bottom:4px">DIFERENCIAL AI-FIRST</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.6">${diferencialVal}</div>
+        </div>` : ''}
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
           <div>
             <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:3px">KPI</div>
