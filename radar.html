@@ -891,6 +891,83 @@ footer a{color:var(--green);text-decoration:none}
   <div style="font-size:11px;color:var(--t2);margin-bottom:14px">Preços reais de Mar 2026 via OpenRouter. Calculado para tarefa média de 7k tokens. Escolha o modelo pelo que ele faz melhor — não pelo hype e não pelo que aparece em todo lugar.</div>
   <div id="modelosFuncaoBlock" style="margin-bottom:28px"></div>
 
+  <!-- BLOCO 4: CALCULADORA DE CENÁRIOS -->
+  <div class="slabel" style="margin-top:28px">04 · CALCULADORA DE CENÁRIOS — CUSTO TOTAL EM R$</div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:6px">Informe o número de pessoas nas áreas operacionais. O sistema calcula o custo total mensal nos 3 cenários e mostra onde você está e onde pode chegar.</div>
+  <div style="font-size:10px;color:var(--t3);margin-bottom:18px;font-style:italic">⚠️ Estimativa baseada em benchmarks de mercado (CLT ×1,8, senioridade média, ferramentas típicas por setor). Não substitui análise detalhada.</div>
+
+  <!-- INPUTS DE HEADCOUNT -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:20px" id="calcInputs">
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">FINANCEIRO / CONTABILIDADE</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_fin" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$8k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">RH & PEOPLE OPS</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_rh" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$6k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">ATENDIMENTO / CX</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_cx" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$3,5k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">MARKETING & CONTEÚDO</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_mkt" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$7k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">JURÍDICO & COMPLIANCE</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_jur" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$15k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">DADOS & ANALYTICS</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_dados" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$12k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">OPERAÇÕES / BACKOFFICE</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_ops" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$5k/mês</span>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border:1px solid var(--rim);border-radius:8px">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--t3);margin-bottom:6px">PRODUTO & DESENVOLVIMENTO</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" min="0" max="200" value="0" id="calc_prod" oninput="calcCenarios()"
+          style="width:60px;background:var(--g);border:1px solid var(--rim);border-radius:6px;padding:5px 8px;color:var(--t1);font-family:var(--mono);font-size:12px;text-align:right">
+        <span style="font-size:10px;color:var(--t3)">pessoas · R$14k/mês</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO DOS CENÁRIOS -->
+  <div id="calcResult"></div>
+
+
 </div>
 
 
@@ -4356,6 +4433,209 @@ window.taCloseDept = function()       { _taDept = null; _taAgente = null; _taRen
 window._taOpenDept = function(id)     { _taDept = id;   _taAgente = null; _taRender(); };
 window._taToggle   = function(nome)   { _taAgente = (_taAgente === nome) ? null : nome; _taRender(); };
 window._calcROI    = _calcROI;
+
+
+// ── CALCULADORA DE CENÁRIOS ───────────────────────────────────
+window.calcCenarios = function() {
+  var el = document.getElementById('calcResult');
+  if (!el) return;
+
+  var areas = [
+    { id:'calc_fin',   sal:8000,  fatorRed:0.70, nome:'Financeiro' },
+    { id:'calc_rh',    sal:6000,  fatorRed:0.65, nome:'RH' },
+    { id:'calc_cx',    sal:3500,  fatorRed:0.85, nome:'Atendimento' },
+    { id:'calc_mkt',   sal:7000,  fatorRed:0.60, nome:'Marketing' },
+    { id:'calc_jur',   sal:15000, fatorRed:0.50, nome:'Jurídico' },
+    { id:'calc_dados', sal:12000, fatorRed:0.55, nome:'Dados' },
+    { id:'calc_ops',   sal:5000,  fatorRed:0.75, nome:'Operações' },
+    { id:'calc_prod',  sal:14000, fatorRed:0.45, nome:'Produto' },
+  ];
+
+  var totalPessoas = 0;
+  var custoFolha = 0;
+  var economiaAgentes = 0;
+  var detalhe = [];
+
+  for (var i = 0; i < areas.length; i++) {
+    var inp = document.getElementById(areas[i].id);
+    var n = inp ? (parseInt(inp.value) || 0) : 0;
+    if (n === 0) continue;
+    totalPessoas += n;
+    var custo = n * areas[i].sal * 1.8; // CLT × 1,8
+    custoFolha += custo;
+    economiaAgentes += custo * areas[i].fatorRed;
+    detalhe.push({ nome: areas[i].nome, n: n, custo: custo, economia: custo * areas[i].fatorRed });
+  }
+
+  if (totalPessoas === 0) {
+    el.innerHTML = '';
+    return;
+  }
+
+  // ── CENÁRIO 1: TRADICIONAL ──
+  var saasTradicional = Math.max(2000, totalPessoas * 200); // ferramentas SaaS por área
+  var c1_total = custoFolha + saasTradicional;
+
+  // ── CENÁRIO 2: IA NÃO OTIMIZADA ──
+  // Mantém headcount, adiciona SaaS de IA genérico + setup amortizado
+  var saasIA = Math.max(8000, totalPessoas * 500);  // SaaS de IA genérico
+  var setupIA = 60000 / 12; // R$60k setup amortizado em 12 meses
+  var retrabalhoIA = custoFolha * 0.15; // 15% retrabalho por dado ruim
+  var c2_total = custoFolha + saasTradicional + saasIA + setupIA + retrabalhoIA;
+
+  // ── CENÁRIO 3: IA OTIMIZADA (AI-FIRST) ──
+  // Reduz headcount operacional, substitui por agentes
+  var folhaReduzida = custoFolha - economiaAgentes;
+  var custoAgentes = Math.max(800, totalPessoas * 180); // custo de infra e APIs dos agentes
+  var headOfData = 25000; // 1 Head of Data orquestrando tudo
+  var saasOtimizado = Math.max(1500, totalPessoas * 80); // SaaS reduzido — stack aberto
+  var c3_total = folhaReduzida + custoAgentes + headOfData + saasOtimizado;
+
+  // ── ECONOMIA ──
+  var eco_c2 = c1_total - c2_total; // negativo = mais caro
+  var eco_c3 = c1_total - c3_total; // positivo = economia
+  var pct_c2 = Math.round((eco_c2 / c1_total) * 100);
+  var pct_c3 = Math.round((eco_c3 / c1_total) * 100);
+  var roi_meses = eco_c3 > 0 ? Math.ceil((60000 + 25000) / (eco_c3)) : 0; // payback em meses
+
+  function fmt(n) { return 'R$' + Math.round(n).toLocaleString('pt-BR'); }
+  function fmtN(n) { return Math.round(n).toLocaleString('pt-BR'); }
+
+  var h = '';
+
+  // Cards dos 3 cenários
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px">';
+
+  // C1 — Tradicional
+  h += '<div style="border:1px solid rgba(255,61,90,.25);border-radius:14px;overflow:hidden">';
+  h += '<div style="padding:12px 16px;background:rgba(255,61,90,.06);border-bottom:1px solid rgba(255,61,90,.15)">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#ff3d5a;margin-bottom:3px">CENÁRIO 01</div>';
+  h += '<div style="font-size:13px;font-weight:700;color:var(--t1)">Operação Tradicional</div>';
+  h += '</div>';
+  h += '<div style="padding:14px 16px">';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Folha operacional (CLT ×1,8)</span><span style="color:var(--t1);font-family:var(--mono)">' + fmt(custoFolha) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">SaaS e ferramentas</span><span style="color:var(--t1);font-family:var(--mono)">' + fmt(saasTradicional) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px;padding-top:6px;border-top:1px solid var(--rim)"><span style="color:var(--t1);font-weight:700">TOTAL / MÊS</span><span style="color:#ff3d5a;font-family:var(--mono);font-size:16px;font-weight:700">' + fmt(c1_total) + '</span></div>';
+  h += '</div>';
+  h += '<div style="font-size:10px;color:var(--t3)">👥 ' + totalPessoas + ' pessoas · Referência base</div>';
+  h += '</div></div>';
+
+  // C2 — IA Não Otimizada
+  var c2_label = eco_c2 < 0 ? ('▲ ' + fmt(Math.abs(eco_c2)) + '/mês a mais') : ('▼ ' + fmt(eco_c2) + '/mês');
+  var c2_cor = eco_c2 < 0 ? '#ffb830' : '#ffb830';
+  h += '<div style="border:1px solid rgba(255,184,48,.25);border-radius:14px;overflow:hidden">';
+  h += '<div style="padding:12px 16px;background:rgba(255,184,48,.06);border-bottom:1px solid rgba(255,184,48,.15)">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#ffb830;margin-bottom:3px">CENÁRIO 02</div>';
+  h += '<div style="font-size:13px;font-weight:700;color:var(--t1)">IA de Vitrine</div>';
+  h += '</div>';
+  h += '<div style="padding:14px 16px">';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Folha mantida</span><span style="color:var(--t1);font-family:var(--mono)">' + fmt(custoFolha) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">SaaS existente</span><span style="color:var(--t1);font-family:var(--mono)">' + fmt(saasTradicional) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">SaaS de IA genérico</span><span style="color:#ffb830;font-family:var(--mono)">' + fmt(saasIA) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Setup amortizado/12</span><span style="color:#ffb830;font-family:var(--mono)">' + fmt(setupIA) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Retrabalho por dado ruim</span><span style="color:#ffb830;font-family:var(--mono)">' + fmt(retrabalhoIA) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px;padding-top:6px;border-top:1px solid var(--rim)"><span style="color:var(--t1);font-weight:700">TOTAL / MÊS</span><span style="color:#ffb830;font-family:var(--mono);font-size:16px;font-weight:700">' + fmt(c2_total) + '</span></div>';
+  h += '</div>';
+  h += '<div style="font-size:10px;color:#ffb830">⚠️ ' + Math.abs(pct_c2) + '% ' + (eco_c2 < 0 ? 'mais caro' : 'mais barato') + ' que o tradicional</div>';
+  h += '<div style="font-size:10px;color:var(--t3);margin-top:3px">Resultado: custo sobe antes de cair</div>';
+  h += '</div></div>';
+
+  // C3 — IA Otimizada
+  h += '<div style="border:1px solid rgba(0,229,160,.3);border-radius:14px;overflow:hidden">';
+  h += '<div style="padding:12px 16px;background:rgba(0,229,160,.06);border-bottom:1px solid rgba(0,229,160,.2)">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:var(--green);margin-bottom:3px">CENÁRIO 03</div>';
+  h += '<div style="font-size:13px;font-weight:700;color:var(--t1)">IA Otimizada — AI-First</div>';
+  h += '</div>';
+  h += '<div style="padding:14px 16px">';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Folha reduzida (agentes assumem)</span><span style="color:var(--t1);font-family:var(--mono)">' + fmt(folhaReduzida) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Custo de agentes (APIs + infra)</span><span style="color:var(--green);font-family:var(--mono)">' + fmt(custoAgentes) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">Head of Data (orquestrador)</span><span style="color:var(--t1);font-family:var(--mono)">' + fmt(headOfData) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--t2)">SaaS reduzido (stack aberto)</span><span style="color:var(--green);font-family:var(--mono)">' + fmt(saasOtimizado) + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px;padding-top:6px;border-top:1px solid var(--rim)"><span style="color:var(--t1);font-weight:700">TOTAL / MÊS</span><span style="color:var(--green);font-family:var(--mono);font-size:16px;font-weight:700">' + fmt(c3_total) + '</span></div>';
+  h += '</div>';
+  h += '<div style="font-size:10px;color:var(--green)">✅ ' + fmt(eco_c3) + '/mês de economia (' + pct_c3 + '% de redução)</div>';
+  if (roi_meses > 0) {
+    h += '<div style="font-size:10px;color:var(--t3);margin-top:3px">Payback estimado: ' + roi_meses + ' ' + (roi_meses === 1 ? 'mês' : 'meses') + '</div>';
+  }
+  h += '</div></div>';
+
+  h += '</div>'; // fim grid 3 colunas
+
+  // Tabela comparativa consolidada
+  h += '<div style="overflow-x:auto;margin-bottom:16px">';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:10px">';
+  h += '<thead><tr style="font-family:var(--mono);font-size:8px;color:var(--t3)">';
+  h += '<th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--rim)">LINHA DE CUSTO</th>';
+  h += '<th style="text-align:right;padding:7px 10px;border-bottom:1px solid var(--rim);color:#ff3d5a">TRADICIONAL</th>';
+  h += '<th style="text-align:right;padding:7px 10px;border-bottom:1px solid var(--rim);color:#ffb830">IA DE VITRINE</th>';
+  h += '<th style="text-align:right;padding:7px 10px;border-bottom:1px solid var(--rim);color:var(--green)">AI-FIRST</th>';
+  h += '</tr></thead><tbody>';
+
+  var linhas = [
+    { label: 'Folha operacional (CLT ×1,8)', c1: custoFolha, c2: custoFolha, c3: folhaReduzida },
+    { label: 'SaaS e ferramentas', c1: saasTradicional, c2: saasTradicional, c3: saasOtimizado },
+    { label: 'SaaS de IA / setup', c1: 0, c2: saasIA + setupIA, c3: 0 },
+    { label: 'Custo de agentes', c1: 0, c2: 0, c3: custoAgentes },
+    { label: 'Head of Data', c1: 0, c2: 0, c3: headOfData },
+    { label: 'Retrabalho / ineficiência', c1: 0, c2: retrabalhoIA, c3: 0 },
+  ];
+
+  for (var l = 0; l < linhas.length; l++) {
+    var row = linhas[l];
+    if (row.c1 === 0 && row.c2 === 0 && row.c3 === 0) continue;
+    h += '<tr style="border-bottom:1px solid rgba(255,255,255,.04)">';
+    h += '<td style="padding:6px 10px;color:var(--t2)">' + row.label + '</td>';
+    h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">' + (row.c1 > 0 ? fmt(row.c1) : '—') + '</td>';
+    h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">' + (row.c2 > 0 ? fmt(row.c2) : '—') + '</td>';
+    h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">' + (row.c3 > 0 ? fmt(row.c3) : '—') + '</td>';
+    h += '</tr>';
+  }
+
+  // Linha total
+  h += '<tr style="border-top:2px solid var(--rim)">';
+  h += '<td style="padding:8px 10px;color:var(--t1);font-weight:700">TOTAL / MÊS</td>';
+  h += '<td style="padding:8px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ff3d5a;font-size:12px">' + fmt(c1_total) + '</td>';
+  h += '<td style="padding:8px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ffb830;font-size:12px">' + fmt(c2_total) + '</td>';
+  h += '<td style="padding:8px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--green);font-size:12px">' + fmt(c3_total) + '</td>';
+  h += '</tr>';
+
+  // Linha economia
+  h += '<tr style="background:rgba(0,229,160,.04)">';
+  h += '<td style="padding:6px 10px;color:var(--t3);font-family:var(--mono);font-size:9px">ECONOMIA VS TRADICIONAL</td>';
+  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--t3)">base</td>';
+  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:#ffb830">' + (pct_c2 >= 0 ? '-' : '+') + Math.abs(pct_c2) + '%</td>';
+  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--green)">-' + pct_c3 + '%</td>';
+  h += '</tr>';
+
+  h += '</tbody></table></div>';
+
+  // Detalhe por área
+  if (detalhe.length > 1) {
+    h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:var(--t3);margin-bottom:8px">REDUÇÃO POR ÁREA (IA Otimizada)</div>';
+    h += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">';
+    for (var d = 0; d < detalhe.length; d++) {
+      var pctArea = Math.round((detalhe[d].economia / detalhe[d].custo) * 100);
+      h += '<div style="padding:6px 12px;border:1px solid var(--rim);border-radius:20px;font-size:10px">';
+      h += '<span style="color:var(--t2)">' + detalhe[d].nome + '</span> ';
+      h += '<span style="color:var(--green);font-family:var(--mono);font-weight:700">-' + pctArea + '%</span>';
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  // Disclaimer
+  h += '<div style="padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--rim);border-radius:8px;font-size:9px;color:var(--t3);line-height:1.7">';
+  h += '📊 <strong style="color:var(--t2)">Metodologia:</strong> Folha calculada com CLT ×1,8 (encargos + benefícios médios BR 2026). ';
+  h += 'Redução por área baseada em benchmarks DataMind e estudos McKinsey/Deloitte. ';
+  h += 'Cenário AI-First assume implementação em 90 dias com Head of Data dedicado. ';
+  h += 'Não inclui custos de transição, rescisões ou treinamento. Variações reais dependem do setor e maturidade de dados.';
+  h += '</div>';
+
+  el.innerHTML = h;
+};
 
 // ── INIT ──────────────────────────────────────────────────────
 window.initCosts = function() {
