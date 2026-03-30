@@ -4376,63 +4376,26 @@ var _calcPorte = 'mid';
 
 var _CALC_PERFIS = {
   pme: {
-    label: 'PME',
-    desc: 'Empresa de 20–150 funcionários. Time operacional enxuto, acúmulo de funções.',
-    areas: [
-      { nome:'Financeiro / Contabilidade', n:2,  sal:7000  },
-      { nome:'RH & People Ops',            n:1,  sal:6000  },
-      { nome:'Atendimento / CX',           n:4,  sal:3500  },
-      { nome:'Marketing & Conteúdo',       n:2,  sal:6000  },
-      { nome:'Operações / Backoffice',     n:3,  sal:4500  },
-      { nome:'Dados & Analytics',          n:1,  sal:10000 }
-    ],
-    saas_base: 3000, saas_ia: 6000, setup_ia: 40000
+    label: 'PME', desc: 'Empresa de 20\u2013150 funcionários. Time enxuto, acúmulo de funções.',
+    pessoas: 13, folha: 158400,
+    saas_atual: 3000, terceir_atual: 8000,
+    saas_ia_vitrine: 6000, setup_ia_vitrine: 40000,
+    saas_ai_first: 1200, agentes_infra: 1800, hod: 18000, setup_ai_first: 55000
   },
   mid: {
-    label: 'Mid-Market',
-    desc: 'Empresa de 150–1.000 funcionários. Times estruturados, algum BI.',
-    areas: [
-      { nome:'Financeiro / Contabilidade', n:6,  sal:8000  },
-      { nome:'RH & People Ops',            n:4,  sal:6500  },
-      { nome:'Atendimento / CX',           n:15, sal:3500  },
-      { nome:'Marketing & Conteúdo',       n:5,  sal:7000  },
-      { nome:'Jurídico & Compliance',      n:2,  sal:14000 },
-      { nome:'Operações / Backoffice',     n:8,  sal:5000  },
-      { nome:'Dados & Analytics',          n:3,  sal:12000 },
-      { nome:'Produto & Desenvolvimento',  n:4,  sal:14000 }
-    ],
-    saas_base: 12000, saas_ia: 18000, setup_ia: 80000
+    label: 'Mid-Market', desc: 'Empresa de 150\u20131.000 funcionários. Times estruturados, algum BI.',
+    pessoas: 47, folha: 578700,
+    saas_atual: 12000, terceir_atual: 35000,
+    saas_ia_vitrine: 18000, setup_ia_vitrine: 80000,
+    saas_ai_first: 3500, agentes_infra: 8500, hod: 25000, setup_ai_first: 105000
   },
   enterprise: {
-    label: 'Enterprise',
-    desc: 'Empresa 1.000+ funcionários. Times especializados, processos maduros.',
-    areas: [
-      { nome:'Financeiro / Contabilidade', n:20, sal:9000  },
-      { nome:'RH & People Ops',            n:12, sal:7000  },
-      { nome:'Atendimento / CX',           n:60, sal:3500  },
-      { nome:'Marketing & Conteúdo',       n:15, sal:8000  },
-      { nome:'Jurídico & Compliance',      n:8,  sal:16000 },
-      { nome:'Operações / Backoffice',     n:30, sal:5500  },
-      { nome:'Dados & Analytics',          n:10, sal:13000 },
-      { nome:'Produto & Desenvolvimento',  n:15, sal:15000 }
-    ],
-    saas_base: 45000, saas_ia: 60000, setup_ia: 200000
+    label: 'Enterprise', desc: 'Empresa 1.000+ funcionários. Times especializados, processos maduros.',
+    pessoas: 170, folha: 2106000,
+    saas_atual: 45000, terceir_atual: 120000,
+    saas_ia_vitrine: 60000, setup_ia_vitrine: 200000,
+    saas_ai_first: 12000, agentes_infra: 28000, hod: 35000, setup_ai_first: 280000
   }
-};
-
-// Fatores de redução REALISTAS — % do custo de folha que agentes assumem
-// Não representa demissão. Representa redistribuição: operacional → agentes,
-// pessoas → análise, decisão e supervisão dos agentes.
-// Fonte: benchmarks DataMind, McKinsey Global Institute 2024, Deloitte AI Survey 2024
-var _FATORES_RED = {
-  'Financeiro / Contabilidade': 0.25,
-  'RH & People Ops':            0.20,
-  'Atendimento / CX':           0.50,
-  'Marketing & Conteúdo':       0.20,
-  'Jurídico & Compliance':      0.15,
-  'Operações / Backoffice':     0.35,
-  'Dados & Analytics':          0.10,
-  'Produto & Desenvolvimento':  0.10
 };
 
 window.calcSetPorte = function(v, btn) {
@@ -4446,110 +4409,213 @@ window.calcSetPorte = function(v, btn) {
 function _renderCalc() {
   var el = document.getElementById('calcResult');
   if (!el) return;
-  var perfil = _CALC_PERFIS[_calcPorte];
-  if (!perfil) return;
-  var areas = perfil.areas;
-  var totalPessoas = 0, custoFolha = 0, economiaAgentes = 0;
-  for (var i = 0; i < areas.length; i++) {
-    totalPessoas += areas[i].n;
-    var custo = areas[i].n * areas[i].sal * 1.8;
-    custoFolha += custo;
-    economiaAgentes += custo * (_FATORES_RED[areas[i].nome] || 0.60);
-  }
-  var c1 = custoFolha + perfil.saas_base;
-  var c2 = custoFolha + perfil.saas_base + perfil.saas_ia + (perfil.setup_ia/12) + (custoFolha*0.15);
-  var c3 = (custoFolha - economiaAgentes) + Math.max(800, totalPessoas*180) + 25000 + Math.max(1500, perfil.saas_base*0.15);
-  var eco = c1 - c3;
-  var pct2 = Math.round((c2-c1)/c1*100);
-  var pct3 = Math.round(eco/c1*100);
-  var payback = eco > 0 ? Math.ceil((perfil.setup_ia + 25000) / eco) : 0;
-  function fmt(n) { return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); }
-  function linha(l,v,c) { return '<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)"><span style="color:var(--t2)">'+l+'</span><span style="font-family:var(--mono);color:'+(c||'var(--t1)')+'">'+v+'</span></div>'; }
-  function total(v,c) { return '<div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-top:1px solid var(--rim);margin-top:4px"><span style="color:var(--t1);font-weight:700">TOTAL / MÊS</span><span style="font-family:var(--mono);font-weight:700;font-size:15px;color:'+c+'">'+v+'</span></div>'; }
+  var p = _CALC_PERFIS[_calcPorte];
+  if (!p) return;
+
+  function fmt(n) { return 'R$\u00a0' + Math.round(n).toLocaleString('pt-BR'); }
+
+  // ── CENÁRIO 01: TRADICIONAL ──
+  var c1_folha   = p.folha;
+  var c1_saas    = p.saas_atual;
+  var c1_terceir = p.terceir_atual;
+  var c1_total   = c1_folha + c1_saas + c1_terceir;
+
+  // ── CENÁRIO 02: IA DE VITRINE ──
+  // Mantém tudo + adiciona IA sem redesenhar processo
+  var c2_folha   = p.folha;           // folha não muda
+  var c2_saas    = p.saas_atual;      // SaaS original mantido
+  var c2_ia      = p.saas_ia_vitrine; // licenças IA genéricas (Copilots, ChatGPT Teams etc)
+  var c2_setup   = p.setup_ia_vitrine / 12; // setup amortizado 12 meses
+  var c2_terceir = p.terceir_atual;   // terceirização não muda (IA não integrada)
+  var c2_retrab  = p.folha * 0.12;    // 12% da folha em retrabalho por dado ruim / má integração
+  var c2_total   = c2_folha + c2_saas + c2_ia + c2_setup + c2_terceir + c2_retrab;
+
+  // ── CENÁRIO 03: AI-FIRST ──
+  // Não demite — aumenta capacidade e elimina custos estruturais
+  // Folha: sem corte no ano 1. Ganho vem de não precisar contratar mais.
+  var c3_folha   = p.folha;           // folha preservada (pessoas realocadas, não demitidas)
+  var c3_saas    = p.saas_ai_first;   // SaaS enxuto — stack aberto substitui licenças caras
+  var c3_terceir = p.terceir_atual * 0.30; // 70% das terceirizações substituídas por agentes
+  var c3_agentes = p.agentes_infra;   // infra de agentes (APIs + cloud)
+  var c3_hod     = p.hod;             // Head of Data orquestrando
+  var c3_setup   = p.setup_ai_first / 12; // setup amortizado 12 meses
+  var c3_total   = c3_folha + c3_saas + c3_terceir + c3_agentes + c3_hod + c3_setup;
+
+  // Economias reais no P&L
+  var eco_saas    = c1_saas - c3_saas;
+  var eco_terceir = c1_terceir - c3_terceir;
+  var eco_total   = c1_total - c3_total;
+  var pct_eco     = Math.round(eco_total / c1_total * 100);
+  var pct_c2_aum  = Math.round((c2_total - c1_total) / c1_total * 100);
+
+  // Capacidade liberada (não é custo, é argumento estratégico)
+  var cap_cx      = '2\u20133\u00d7 mais atendimentos sem contratar';
+  var cap_dados   = 'Análise em horas, não semanas';
+  var cap_ops     = 'Processos rodando 24/7 sem intervenção';
+  var payback     = eco_total > 0 ? Math.ceil(p.setup_ai_first / eco_total) : '\u2014';
+
   var h = '';
-  // Premissas
-  h += '<div style="padding:12px 16px;background:rgba(79,142,247,.05);border:1px solid rgba(79,142,247,.15);border-radius:10px;margin-bottom:16px">';
-  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#4f8ef7;margin-bottom:6px">PREMISSAS — ' + perfil.label.toUpperCase() + '</div>';
-  h += '<div style="font-size:10px;color:var(--t2);margin-bottom:8px">' + perfil.desc + '</div>';
-  h += '<div style="display:flex;flex-wrap:wrap;gap:5px">';
-  for (var i = 0; i < areas.length; i++) {
-    h += '<span style="font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:20px;background:var(--g);border:1px solid var(--rim);color:var(--t2)">' + areas[i].nome + ' · ' + areas[i].n + '</span>';
-  }
-  h += '</div>';
-  h += '<div style="font-size:9px;color:var(--t3);margin-top:8px">Total: ' + totalPessoas + ' pessoas · Salário médio: ' + fmt(Math.round(custoFolha/totalPessoas/1.8)) + '/mês</div>';
-  h += '</div>';
-  // 3 cards
-  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:16px">';
-  // C1
-  h += '<div style="border:1px solid rgba(255,61,90,.25);border-radius:12px;overflow:hidden">';
-  h += '<div style="padding:10px 14px;background:rgba(255,61,90,.06);border-bottom:1px solid rgba(255,61,90,.15)"><div style="font-family:var(--mono);font-size:8px;color:#ff3d5a;margin-bottom:2px">CENÁRIO 01</div><div style="font-size:12px;font-weight:700;color:var(--t1)">Operação Tradicional</div></div>';
-  h += '<div style="padding:12px 14px">';
-  h += linha('Folha (CLT ×1,8)', fmt(custoFolha), '');
-  h += linha('SaaS e ferramentas', fmt(perfil.saas_base), '');
-  h += total(fmt(c1), '#ff3d5a');
-  h += '<div style="font-size:9px;color:var(--t3);margin-top:8px">Base de referência</div>';
+
+  // ── PREMISSAS ──
+  h += '<div style="padding:12px 16px;background:rgba(79,142,247,.05);border:1px solid rgba(79,142,247,.15);border-radius:10px;margin-bottom:20px">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#4f8ef7;margin-bottom:6px">PREMISSAS — ' + p.label.toUpperCase() + '</div>';
+  h += '<div style="font-size:10px;color:var(--t2);margin-bottom:8px">' + p.desc + '</div>';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:14px">';
+  h += '<span style="font-size:10px;color:var(--t2)">👥 <strong style="color:var(--t1)">' + p.pessoas + ' pessoas</strong> nas áreas operacionais</span>';
+  h += '<span style="font-size:10px;color:var(--t2)">💼 Folha total: <strong style="color:var(--t1)">' + fmt(p.folha) + '</strong>/mês (CLT\u00d71,8)</span>';
+  h += '<span style="font-size:10px;color:var(--t2)">🔗 Terceirizações: <strong style="color:var(--t1)">' + fmt(p.terceir_atual) + '</strong>/mês</span>';
   h += '</div></div>';
-  // C2
-  h += '<div style="border:1px solid rgba(255,184,48,.25);border-radius:12px;overflow:hidden">';
-  h += '<div style="padding:10px 14px;background:rgba(255,184,48,.06);border-bottom:1px solid rgba(255,184,48,.15)"><div style="font-family:var(--mono);font-size:8px;color:#ffb830;margin-bottom:2px">CENÁRIO 02</div><div style="font-size:12px;font-weight:700;color:var(--t1)">IA de Vitrine</div></div>';
-  h += '<div style="padding:12px 14px">';
-  h += linha('Folha mantida', fmt(custoFolha), '');
-  h += linha('SaaS existente', fmt(perfil.saas_base), '');
-  h += linha('SaaS de IA genérico', fmt(perfil.saas_ia), '#ffb830');
-  h += linha('Setup amortizado/12', fmt(perfil.setup_ia/12), '#ffb830');
-  h += linha('Retrabalho (dado ruim)', fmt(custoFolha*0.15), '#ffb830');
-  h += total(fmt(c2), '#ffb830');
-  h += '<div style="font-size:9px;color:#ffb830;margin-top:8px">+' + pct2 + '% vs tradicional antes de qualquer ganho real</div>';
+
+  // ── 3 CARDS ──
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:20px">';
+
+  // Card C1
+  h += '<div style="border:1px solid rgba(255,61,90,.2);border-radius:12px;overflow:hidden">';
+  h += '<div style="padding:10px 14px;background:rgba(255,61,90,.06);border-bottom:1px solid rgba(255,61,90,.12)">';
+  h += '<div style="font-family:var(--mono);font-size:8px;color:#ff3d5a;margin-bottom:2px">CENÁRIO 01</div>';
+  h += '<div style="font-size:12px;font-weight:700;color:var(--t1)">Operação Tradicional</div>';
+  h += '</div><div style="padding:12px 14px">';
+  h += _cl('Folha operacional', fmt(c1_folha));
+  h += _cl('SaaS e ferramentas', fmt(c1_saas));
+  h += _cl('Terceirizações', fmt(c1_terceir));
+  h += _ct(fmt(c1_total), '#ff3d5a');
+  h += '<div style="font-size:9px;color:var(--t3);margin-top:8px">Referência base</div>';
   h += '</div></div>';
-  // C3
-  h += '<div style="border:1px solid rgba(0,229,160,.25);border-radius:12px;overflow:hidden">';
-  h += '<div style="padding:10px 14px;background:rgba(0,229,160,.06);border-bottom:1px solid rgba(0,229,160,.2)"><div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:2px">CENÁRIO 03</div><div style="font-size:12px;font-weight:700;color:var(--t1)">IA Otimizada — AI-First</div></div>';
-  h += '<div style="padding:12px 14px">';
-  h += linha('Folha realocada (operacional → agentes)', fmt(custoFolha - economiaAgentes), '');
-  h += linha('Agentes (APIs + infra)', fmt(Math.max(800, totalPessoas*180)), 'var(--green)');
-  h += linha('Head of Data', 'R$ 25.000', '');
-  h += linha('SaaS enxuto (stack aberto)', fmt(Math.max(1500, perfil.saas_base*0.15)), 'var(--green)');
-  h += total(fmt(c3), 'var(--green)');
-  h += '<div style="font-size:9px;color:var(--green);margin-top:8px">' + fmt(eco) + '/mês vs tradicional (' + pct3 + '% de redução de custo)</div>';
-  if (payback > 0) h += '<div style="font-size:9px;color:var(--t3);margin-top:2px">Payback estimado: ' + payback + ' meses</div>';
+
+  // Card C2
+  h += '<div style="border:1px solid rgba(255,184,48,.2);border-radius:12px;overflow:hidden">';
+  h += '<div style="padding:10px 14px;background:rgba(255,184,48,.06);border-bottom:1px solid rgba(255,184,48,.12)">';
+  h += '<div style="font-family:var(--mono);font-size:8px;color:#ffb830;margin-bottom:2px">CENÁRIO 02</div>';
+  h += '<div style="font-size:12px;font-weight:700;color:var(--t1)">IA de Vitrine</div>';
+  h += '</div><div style="padding:12px 14px">';
+  h += _cl('Folha (mantida)', fmt(c2_folha));
+  h += _cl('SaaS existente (mantido)', fmt(c2_saas));
+  h += _cl('Licenças IA genéricas', fmt(c2_ia), '#ffb830');
+  h += _cl('Setup amortizado/12', fmt(c2_setup), '#ffb830');
+  h += _cl('Terceirizações (mantidas)', fmt(c2_terceir));
+  h += _cl('Retrabalho (dado ruim)', fmt(c2_retrab), '#ffb830');
+  h += _ct(fmt(c2_total), '#ffb830');
+  h += '<div style="font-size:9px;color:#ffb830;margin-top:8px">\u26a0\ufe0f +' + pct_c2_aum + '% vs tradicional — custo sobe antes de cair</div>';
   h += '</div></div>';
+
+  // Card C3
+  h += '<div style="border:1px solid rgba(0,229,160,.2);border-radius:12px;overflow:hidden">';
+  h += '<div style="padding:10px 14px;background:rgba(0,229,160,.05);border-bottom:1px solid rgba(0,229,160,.15)">';
+  h += '<div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:2px">CENÁRIO 03</div>';
+  h += '<div style="font-size:12px;font-weight:700;color:var(--t1)">AI-First</div>';
+  h += '</div><div style="padding:12px 14px">';
+  h += _cl('Folha (realocada, não cortada)', fmt(c3_folha));
+  h += _cl('SaaS enxuto (stack aberto)', fmt(c3_saas), 'var(--green)');
+  h += _cl('Terceiriz. residual (30%)', fmt(c3_terceir), 'var(--green)');
+  h += _cl('Agentes (APIs + infra)', fmt(c3_agentes));
+  h += _cl('Head of Data', fmt(c3_hod));
+  h += _cl('Setup amortizado/12', fmt(c3_setup));
+  h += _ct(fmt(c3_total), 'var(--green)');
+  h += '<div style="font-size:9px;color:var(--green);margin-top:8px">' + fmt(eco_total) + '/mês de economia (' + pct_eco + '%)</div>';
+  if (typeof payback === 'number') h += '<div style="font-size:9px;color:var(--t3);margin-top:2px">Payback do setup: ' + payback + ' ' + (payback === 1 ? 'mês' : 'meses') + '</div>';
+  h += '</div></div>';
+
+  h += '</div>'; // fim grid cards
+
+  // ── ONDE VEM A ECONOMIA ──
+  h += '<div style="padding:14px 16px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.15);border-radius:10px;margin-bottom:16px">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:var(--green);margin-bottom:10px">ONDE ESTÁ A ECONOMIA REAL (AI-FIRST vs TRADICIONAL)</div>';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">';
+  h += _eco_item('SaaS eliminado', fmt(eco_saas), 'Licenças por usuário substituídas por stack aberto');
+  h += _eco_item('Terceirizações', fmt(eco_terceir), '70% do que era terceirizado vira agente próprio');
+  h += _eco_item('Total P&L real', fmt(eco_total), pct_eco + '% de redução no custo operacional');
   h += '</div>';
-  // Tabela
-  h += '<div style="overflow-x:auto;margin-bottom:14px"><table style="width:100%;border-collapse:collapse;font-size:10px">';
-  h += '<thead><tr style="font-family:var(--mono);font-size:8px;color:var(--t3)"><th style="text-align:left;padding:6px 10px;border-bottom:1px solid var(--rim)">LINHA</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:#ff3d5a">TRADICIONAL</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:#ffb830">IA VITRINE</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:var(--green)">AI-FIRST</th></tr></thead><tbody>';
-  var linhas2 = [
-    ['Folha operacional', custoFolha, custoFolha, custoFolha - economiaAgentes],
-    ['SaaS e ferramentas', perfil.saas_base, perfil.saas_base, Math.max(1500, perfil.saas_base*0.15)],
-    ['SaaS de IA / setup', 0, perfil.saas_ia + perfil.setup_ia/12, 0],
-    ['Custo de agentes', 0, 0, Math.max(800, totalPessoas*180)],
-    ['Head of Data', 0, 0, 25000],
-    ['Retrabalho', 0, custoFolha*0.15, 0]
+  h += '<div style="font-size:9px;color:var(--t3);margin-top:10px;padding-top:8px;border-top:1px solid rgba(0,229,160,.1)">';
+  h += '⚠️ A folha <strong style="color:var(--t2)">não é cortada</strong> no ano 1. O ganho de folha vem de <strong style="color:var(--t2)">não precisar contratar os próximos 10</strong> para crescer — e do turnover natural realocando vagas para funções analíticas.';
+  h += '</div></div>';
+
+  // ── CAPACIDADE LIBERADA ──
+  h += '<div style="padding:14px 16px;background:rgba(79,142,247,.04);border:1px solid rgba(79,142,247,.12);border-radius:10px;margin-bottom:16px">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#4f8ef7;margin-bottom:10px">CAPACIDADE LIBERADA — O ARGUMENTO REAL</div>';
+  h += '<div style="font-size:10px;color:var(--t3);margin-bottom:8px">Isso não aparece no P&L. Mas é o que justifica o investimento para um board.</div>';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">';
+  h += _cap_item('Atendimento / CX', cap_cx);
+  h += _cap_item('Dados & Analytics', cap_dados);
+  h += _cap_item('Operações', cap_ops);
+  h += _cap_item('Crescimento', 'Escala sem crescer headcount proporcionalmente');
+  h += '</div></div>';
+
+  // ── TABELA COMPARATIVA ──
+  h += '<div style="overflow-x:auto;margin-bottom:14px">';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:10px">';
+  h += '<thead><tr style="font-family:var(--mono);font-size:8px;color:var(--t3)">';
+  h += '<th style="text-align:left;padding:6px 10px;border-bottom:1px solid var(--rim)">LINHA DE CUSTO</th>';
+  h += '<th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:#ff3d5a">TRADICIONAL</th>';
+  h += '<th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:#ffb830">IA VITRINE</th>';
+  h += '<th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:var(--green)">AI-FIRST</th>';
+  h += '</tr></thead><tbody>';
+
+  var rows = [
+    ['Folha operacional',        c1_folha,  c2_folha,  c3_folha],
+    ['SaaS e ferramentas',       c1_saas,   c2_saas,   c3_saas],
+    ['Terceirizações',           c1_terceir,c2_terceir,c3_terceir],
+    ['Licenças IA / setup',      0,         c2_ia+c2_setup, 0],
+    ['Agentes (APIs + infra)',   0,         0,         c3_agentes],
+    ['Head of Data',             0,         0,         c3_hod],
+    ['Setup amortizado/12',      0,         0,         c3_setup],
+    ['Retrabalho',               0,         c2_retrab, 0],
   ];
-  for (var l = 0; l < linhas2.length; l++) {
-    if (!linhas2[l][1] && !linhas2[l][2] && !linhas2[l][3]) continue;
-    h += '<tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:5px 10px;color:var(--t2)">'+linhas2[l][0]+'</td>';
-    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">'+(linhas2[l][1]?fmt(linhas2[l][1]):'—')+'</td>';
-    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">'+(linhas2[l][2]?fmt(linhas2[l][2]):'—')+'</td>';
-    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">'+(linhas2[l][3]?fmt(linhas2[l][3]):'—')+'</td></tr>';
+  for (var i = 0; i < rows.length; i++) {
+    if (!rows[i][1] && !rows[i][2] && !rows[i][3]) continue;
+    h += '<tr style="border-bottom:1px solid rgba(255,255,255,.04)">';
+    h += '<td style="padding:5px 10px;color:var(--t2)">' + rows[i][0] + '</td>';
+    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">' + (rows[i][1] ? fmt(rows[i][1]) : '\u2014') + '</td>';
+    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">' + (rows[i][2] ? fmt(rows[i][2]) : '\u2014') + '</td>';
+    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">' + (rows[i][3] ? fmt(rows[i][3]) : '\u2014') + '</td>';
+    h += '</tr>';
   }
-  h += '<tr style="border-top:2px solid var(--rim)"><td style="padding:6px 10px;color:var(--t1);font-weight:700">TOTAL / MÊS</td>';
-  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ff3d5a;font-size:12px">'+fmt(c1)+'</td>';
-  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ffb830;font-size:12px">'+fmt(c2)+'</td>';
-  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--green);font-size:12px">'+fmt(c3)+'</td></tr>';
-  h += '<tr style="background:rgba(0,229,160,.03)"><td style="padding:5px 10px;color:var(--t3);font-family:var(--mono);font-size:8px">VS TRADICIONAL</td>';
+  h += '<tr style="border-top:2px solid var(--rim)">';
+  h += '<td style="padding:7px 10px;color:var(--t1);font-weight:700">TOTAL P&L / MÊS</td>';
+  h += '<td style="padding:7px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ff3d5a;font-size:12px">' + fmt(c1_total) + '</td>';
+  h += '<td style="padding:7px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ffb830;font-size:12px">' + fmt(c2_total) + '</td>';
+  h += '<td style="padding:7px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--green);font-size:12px">' + fmt(c3_total) + '</td>';
+  h += '</tr>';
+  h += '<tr style="background:rgba(0,229,160,.03)">';
+  h += '<td style="padding:5px 10px;font-family:var(--mono);font-size:8px;color:var(--t3)">VS TRADICIONAL</td>';
   h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--t3)">base</td>';
-  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:#ffb830">+'+pct2+'%</td>';
-  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--green)">-'+pct3+'%</td></tr>';
-  h += '</tbody></table></div>';
-  // Disclaimer
+  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:#ffb830">+' + pct_c2_aum + '%</td>';
+  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--green)">-' + pct_eco + '%</td>';
+  h += '</tr></tbody></table></div>';
+
+  // ── DISCLAIMER ──
   h += '<div style="padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--rim);border-radius:8px;font-size:9px;color:var(--t3);line-height:1.7">';
-  h += '<strong style="color:var(--t2)">Metodologia:</strong> Folha = pessoas × salário médio × 1,8 (encargos + benefícios BR 2026). ';
-  h += 'Redução por área baseada em benchmarks DataMind, McKinsey e Deloitte 2023–2025. ';
-  h += 'AI-First assume implementação em 90 dias com Head of Data dedicado. ';
-  h += 'Não inclui custos de transição. Os valores são referência de mercado — sua operação real pode variar.';
+  h += '<strong style="color:var(--t2)">Metodologia:</strong> Folha = pessoas × sal\u00e1rio m\u00e9dio × 1,8 (encargos + benef\u00edcios BR 2026). ';
+  h += 'Economia real concentrada em SaaS por usu\u00e1rio e terceiriza\u00e7\u00f5es — n\u00e3o em corte de folha. ';
+  h += 'Redu\u00e7\u00e3o de folha acontece via turnover natural e realoca\u00e7\u00e3o em 12\u201324 meses. ';
+  h += 'Baseado em benchmarks DataMind, McKinsey, Deloitte e GPT-4o (valida\u00e7\u00e3o mar/2026). ';
+  h += 'Sua opera\u00e7\u00e3o real pode variar.';
   h += '</div>';
+
   el.innerHTML = h;
 }
+
+function _cl(label, valor, cor) {
+  return '<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)">' +
+    '<span style="color:var(--t2)">' + label + '</span>' +
+    '<span style="font-family:var(--mono);color:' + (cor || 'var(--t1)') + '">' + valor + '</span></div>';
+}
+function _ct(valor, cor) {
+  return '<div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-top:1px solid var(--rim);margin-top:4px">' +
+    '<span style="color:var(--t1);font-weight:700">TOTAL / M\u00caS</span>' +
+    '<span style="font-family:var(--mono);font-weight:700;font-size:15px;color:' + cor + '">' + valor + '</span></div>';
+}
+function _eco_item(label, valor, desc) {
+  return '<div style="padding:8px 10px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);border-radius:8px">' +
+    '<div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:3px">' + label.toUpperCase() + '</div>' +
+    '<div style="font-size:13px;font-weight:700;color:var(--t1);font-family:var(--mono);margin-bottom:3px">' + valor + '</div>' +
+    '<div style="font-size:9px;color:var(--t3)">' + desc + '</div></div>';
+}
+function _cap_item(label, desc) {
+  return '<div style="padding:8px 10px;background:rgba(79,142,247,.04);border:1px solid rgba(79,142,247,.1);border-radius:8px">' +
+    '<div style="font-family:var(--mono);font-size:8px;color:#4f8ef7;margin-bottom:3px">' + label.toUpperCase() + '</div>' +
+    '<div style="font-size:9px;color:var(--t2)">' + desc + '</div></div>';
+}
+
 
 window.initCosts = function() {
   _renderStack();
