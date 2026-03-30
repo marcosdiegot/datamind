@@ -4638,12 +4638,190 @@ window.calcCenarios = function() {
 };
 
 // ── INIT ──────────────────────────────────────────────────────
+
+// ── CALCULADORA DE CENÁRIOS ───────────────────────────────────
+var _calcPorte = 'mid';
+
+var _CALC_PERFIS = {
+  pme: {
+    label: 'PME',
+    desc: 'Empresa de 20–150 funcionários. Time operacional enxuto, acúmulo de funções.',
+    areas: [
+      { nome:'Financeiro / Contabilidade', n:2,  sal:7000  },
+      { nome:'RH & People Ops',            n:1,  sal:6000  },
+      { nome:'Atendimento / CX',           n:4,  sal:3500  },
+      { nome:'Marketing & Conteúdo',       n:2,  sal:6000  },
+      { nome:'Operações / Backoffice',     n:3,  sal:4500  },
+      { nome:'Dados & Analytics',          n:1,  sal:10000 }
+    ],
+    saas_base: 3000, saas_ia: 6000, setup_ia: 40000
+  },
+  mid: {
+    label: 'Mid-Market',
+    desc: 'Empresa de 150–1.000 funcionários. Times estruturados, algum BI.',
+    areas: [
+      { nome:'Financeiro / Contabilidade', n:6,  sal:8000  },
+      { nome:'RH & People Ops',            n:4,  sal:6500  },
+      { nome:'Atendimento / CX',           n:15, sal:3500  },
+      { nome:'Marketing & Conteúdo',       n:5,  sal:7000  },
+      { nome:'Jurídico & Compliance',      n:2,  sal:14000 },
+      { nome:'Operações / Backoffice',     n:8,  sal:5000  },
+      { nome:'Dados & Analytics',          n:3,  sal:12000 },
+      { nome:'Produto & Desenvolvimento',  n:4,  sal:14000 }
+    ],
+    saas_base: 12000, saas_ia: 18000, setup_ia: 80000
+  },
+  enterprise: {
+    label: 'Enterprise',
+    desc: 'Empresa 1.000+ funcionários. Times especializados, processos maduros.',
+    areas: [
+      { nome:'Financeiro / Contabilidade', n:20, sal:9000  },
+      { nome:'RH & People Ops',            n:12, sal:7000  },
+      { nome:'Atendimento / CX',           n:60, sal:3500  },
+      { nome:'Marketing & Conteúdo',       n:15, sal:8000  },
+      { nome:'Jurídico & Compliance',      n:8,  sal:16000 },
+      { nome:'Operações / Backoffice',     n:30, sal:5500  },
+      { nome:'Dados & Analytics',          n:10, sal:13000 },
+      { nome:'Produto & Desenvolvimento',  n:15, sal:15000 }
+    ],
+    saas_base: 45000, saas_ia: 60000, setup_ia: 200000
+  }
+};
+
+var _FATORES_RED = {
+  'Financeiro / Contabilidade': 0.70,
+  'RH & People Ops':            0.65,
+  'Atendimento / CX':           0.85,
+  'Marketing & Conteúdo':       0.60,
+  'Jurídico & Compliance':      0.50,
+  'Operações / Backoffice':     0.75,
+  'Dados & Analytics':          0.55,
+  'Produto & Desenvolvimento':  0.45
+};
+
+window.calcSetPorte = function(v, btn) {
+  _calcPorte = v;
+  var btns = document.querySelectorAll('#calcPorteFb .fbtn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
+  if (btn) btn.classList.add('on');
+  _renderCalc();
+};
+
+function _renderCalc() {
+  var el = document.getElementById('calcResult');
+  if (!el) return;
+  var perfil = _CALC_PERFIS[_calcPorte];
+  if (!perfil) return;
+  var areas = perfil.areas;
+  var totalPessoas = 0, custoFolha = 0, economiaAgentes = 0;
+  for (var i = 0; i < areas.length; i++) {
+    totalPessoas += areas[i].n;
+    var custo = areas[i].n * areas[i].sal * 1.8;
+    custoFolha += custo;
+    economiaAgentes += custo * (_FATORES_RED[areas[i].nome] || 0.60);
+  }
+  var c1 = custoFolha + perfil.saas_base;
+  var c2 = custoFolha + perfil.saas_base + perfil.saas_ia + (perfil.setup_ia/12) + (custoFolha*0.15);
+  var c3 = (custoFolha - economiaAgentes) + Math.max(800, totalPessoas*180) + 25000 + Math.max(1500, perfil.saas_base*0.15);
+  var eco = c1 - c3;
+  var pct2 = Math.round((c2-c1)/c1*100);
+  var pct3 = Math.round(eco/c1*100);
+  var payback = eco > 0 ? Math.ceil((perfil.setup_ia + 25000) / eco) : 0;
+  function fmt(n) { return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); }
+  function linha(l,v,c) { return '<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)"><span style="color:var(--t2)">'+l+'</span><span style="font-family:var(--mono);color:'+(c||'var(--t1)')+'">'+v+'</span></div>'; }
+  function total(v,c) { return '<div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-top:1px solid var(--rim);margin-top:4px"><span style="color:var(--t1);font-weight:700">TOTAL / MÊS</span><span style="font-family:var(--mono);font-weight:700;font-size:15px;color:'+c+'">'+v+'</span></div>'; }
+  var h = '';
+  // Premissas
+  h += '<div style="padding:12px 16px;background:rgba(79,142,247,.05);border:1px solid rgba(79,142,247,.15);border-radius:10px;margin-bottom:16px">';
+  h += '<div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;color:#4f8ef7;margin-bottom:6px">PREMISSAS — ' + perfil.label.toUpperCase() + '</div>';
+  h += '<div style="font-size:10px;color:var(--t2);margin-bottom:8px">' + perfil.desc + '</div>';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:5px">';
+  for (var i = 0; i < areas.length; i++) {
+    h += '<span style="font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:20px;background:var(--g);border:1px solid var(--rim);color:var(--t2)">' + areas[i].nome + ' · ' + areas[i].n + '</span>';
+  }
+  h += '</div>';
+  h += '<div style="font-size:9px;color:var(--t3);margin-top:8px">Total: ' + totalPessoas + ' pessoas · Salário médio: ' + fmt(Math.round(custoFolha/totalPessoas/1.8)) + '/mês</div>';
+  h += '</div>';
+  // 3 cards
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:16px">';
+  // C1
+  h += '<div style="border:1px solid rgba(255,61,90,.25);border-radius:12px;overflow:hidden">';
+  h += '<div style="padding:10px 14px;background:rgba(255,61,90,.06);border-bottom:1px solid rgba(255,61,90,.15)"><div style="font-family:var(--mono);font-size:8px;color:#ff3d5a;margin-bottom:2px">CENÁRIO 01</div><div style="font-size:12px;font-weight:700;color:var(--t1)">Operação Tradicional</div></div>';
+  h += '<div style="padding:12px 14px">';
+  h += linha('Folha (CLT ×1,8)', fmt(custoFolha), '');
+  h += linha('SaaS e ferramentas', fmt(perfil.saas_base), '');
+  h += total(fmt(c1), '#ff3d5a');
+  h += '<div style="font-size:9px;color:var(--t3);margin-top:8px">Base de referência</div>';
+  h += '</div></div>';
+  // C2
+  h += '<div style="border:1px solid rgba(255,184,48,.25);border-radius:12px;overflow:hidden">';
+  h += '<div style="padding:10px 14px;background:rgba(255,184,48,.06);border-bottom:1px solid rgba(255,184,48,.15)"><div style="font-family:var(--mono);font-size:8px;color:#ffb830;margin-bottom:2px">CENÁRIO 02</div><div style="font-size:12px;font-weight:700;color:var(--t1)">IA de Vitrine</div></div>';
+  h += '<div style="padding:12px 14px">';
+  h += linha('Folha mantida', fmt(custoFolha), '');
+  h += linha('SaaS existente', fmt(perfil.saas_base), '');
+  h += linha('SaaS de IA genérico', fmt(perfil.saas_ia), '#ffb830');
+  h += linha('Setup amortizado/12', fmt(perfil.setup_ia/12), '#ffb830');
+  h += linha('Retrabalho (dado ruim)', fmt(custoFolha*0.15), '#ffb830');
+  h += total(fmt(c2), '#ffb830');
+  h += '<div style="font-size:9px;color:#ffb830;margin-top:8px">+' + pct2 + '% vs tradicional antes de qualquer ganho real</div>';
+  h += '</div></div>';
+  // C3
+  h += '<div style="border:1px solid rgba(0,229,160,.25);border-radius:12px;overflow:hidden">';
+  h += '<div style="padding:10px 14px;background:rgba(0,229,160,.06);border-bottom:1px solid rgba(0,229,160,.2)"><div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:2px">CENÁRIO 03</div><div style="font-size:12px;font-weight:700;color:var(--t1)">IA Otimizada — AI-First</div></div>';
+  h += '<div style="padding:12px 14px">';
+  h += linha('Folha reduzida (agentes assumem)', fmt(custoFolha - economiaAgentes), '');
+  h += linha('Agentes (APIs + infra)', fmt(Math.max(800, totalPessoas*180)), 'var(--green)');
+  h += linha('Head of Data', 'R$ 25.000', '');
+  h += linha('SaaS enxuto (stack aberto)', fmt(Math.max(1500, perfil.saas_base*0.15)), 'var(--green)');
+  h += total(fmt(c3), 'var(--green)');
+  h += '<div style="font-size:9px;color:var(--green);margin-top:8px">' + fmt(eco) + '/mês de economia (' + pct3 + '%)</div>';
+  if (payback > 0) h += '<div style="font-size:9px;color:var(--t3);margin-top:2px">Payback estimado: ' + payback + ' meses</div>';
+  h += '</div></div>';
+  h += '</div>';
+  // Tabela
+  h += '<div style="overflow-x:auto;margin-bottom:14px"><table style="width:100%;border-collapse:collapse;font-size:10px">';
+  h += '<thead><tr style="font-family:var(--mono);font-size:8px;color:var(--t3)"><th style="text-align:left;padding:6px 10px;border-bottom:1px solid var(--rim)">LINHA</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:#ff3d5a">TRADICIONAL</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:#ffb830">IA VITRINE</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid var(--rim);color:var(--green)">AI-FIRST</th></tr></thead><tbody>';
+  var linhas2 = [
+    ['Folha operacional', custoFolha, custoFolha, custoFolha - economiaAgentes],
+    ['SaaS e ferramentas', perfil.saas_base, perfil.saas_base, Math.max(1500, perfil.saas_base*0.15)],
+    ['SaaS de IA / setup', 0, perfil.saas_ia + perfil.setup_ia/12, 0],
+    ['Custo de agentes', 0, 0, Math.max(800, totalPessoas*180)],
+    ['Head of Data', 0, 0, 25000],
+    ['Retrabalho', 0, custoFolha*0.15, 0]
+  ];
+  for (var l = 0; l < linhas2.length; l++) {
+    if (!linhas2[l][1] && !linhas2[l][2] && !linhas2[l][3]) continue;
+    h += '<tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:5px 10px;color:var(--t2)">'+linhas2[l][0]+'</td>';
+    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">'+(linhas2[l][1]?fmt(linhas2[l][1]):'—')+'</td>';
+    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">'+(linhas2[l][2]?fmt(linhas2[l][2]):'—')+'</td>';
+    h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);color:var(--t1)">'+(linhas2[l][3]?fmt(linhas2[l][3]):'—')+'</td></tr>';
+  }
+  h += '<tr style="border-top:2px solid var(--rim)"><td style="padding:6px 10px;color:var(--t1);font-weight:700">TOTAL / MÊS</td>';
+  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ff3d5a;font-size:12px">'+fmt(c1)+'</td>';
+  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:#ffb830;font-size:12px">'+fmt(c2)+'</td>';
+  h += '<td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--green);font-size:12px">'+fmt(c3)+'</td></tr>';
+  h += '<tr style="background:rgba(0,229,160,.03)"><td style="padding:5px 10px;color:var(--t3);font-family:var(--mono);font-size:8px">VS TRADICIONAL</td>';
+  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--t3)">base</td>';
+  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:#ffb830">+'+pct2+'%</td>';
+  h += '<td style="padding:5px 10px;text-align:right;font-family:var(--mono);font-size:9px;color:var(--green)">-'+pct3+'%</td></tr>';
+  h += '</tbody></table></div>';
+  // Disclaimer
+  h += '<div style="padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--rim);border-radius:8px;font-size:9px;color:var(--t3);line-height:1.7">';
+  h += '<strong style="color:var(--t2)">Metodologia:</strong> Folha = pessoas × salário médio × 1,8 (encargos + benefícios BR 2026). ';
+  h += 'Redução por área baseada em benchmarks DataMind, McKinsey e Deloitte 2023–2025. ';
+  h += 'AI-First assume implementação em 90 dias com Head of Data dedicado. ';
+  h += 'Não inclui custos de transição. Os valores são referência de mercado — sua operação real pode variar.';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
 window.initCosts = function() {
   _renderStack();
   _renderModelos();
   _renderROI();
   _taRender();
   _renderSimulador();
+  _renderCalc();
 };
 
 })(); // fim do IIFE
