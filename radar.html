@@ -4688,15 +4688,19 @@ var _CALC_PERFIS = {
   }
 };
 
+// Fatores de redução REALISTAS — % do custo de folha que agentes assumem
+// Não representa demissão. Representa redistribuição: operacional → agentes,
+// pessoas → análise, decisão e supervisão dos agentes.
+// Fonte: benchmarks DataMind, McKinsey Global Institute 2024, Deloitte AI Survey 2024
 var _FATORES_RED = {
-  'Financeiro / Contabilidade': 0.70,
-  'RH & People Ops':            0.65,
-  'Atendimento / CX':           0.85,
-  'Marketing & Conteúdo':       0.60,
-  'Jurídico & Compliance':      0.50,
-  'Operações / Backoffice':     0.75,
-  'Dados & Analytics':          0.55,
-  'Produto & Desenvolvimento':  0.45
+  'Financeiro / Contabilidade': 0.25,
+  'RH & People Ops':            0.20,
+  'Atendimento / CX':           0.50,
+  'Marketing & Conteúdo':       0.20,
+  'Jurídico & Compliance':      0.15,
+  'Operações / Backoffice':     0.35,
+  'Dados & Analytics':          0.10,
+  'Produto & Desenvolvimento':  0.10
 };
 
 window.calcSetPorte = function(v, btn) {
@@ -4769,12 +4773,12 @@ function _renderCalc() {
   h += '<div style="border:1px solid rgba(0,229,160,.25);border-radius:12px;overflow:hidden">';
   h += '<div style="padding:10px 14px;background:rgba(0,229,160,.06);border-bottom:1px solid rgba(0,229,160,.2)"><div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:2px">CENÁRIO 03</div><div style="font-size:12px;font-weight:700;color:var(--t1)">IA Otimizada — AI-First</div></div>';
   h += '<div style="padding:12px 14px">';
-  h += linha('Folha reduzida (agentes assumem)', fmt(custoFolha - economiaAgentes), '');
+  h += linha('Folha realocada (operacional → agentes)', fmt(custoFolha - economiaAgentes), '');
   h += linha('Agentes (APIs + infra)', fmt(Math.max(800, totalPessoas*180)), 'var(--green)');
   h += linha('Head of Data', 'R$ 25.000', '');
   h += linha('SaaS enxuto (stack aberto)', fmt(Math.max(1500, perfil.saas_base*0.15)), 'var(--green)');
   h += total(fmt(c3), 'var(--green)');
-  h += '<div style="font-size:9px;color:var(--green);margin-top:8px">' + fmt(eco) + '/mês de economia (' + pct3 + '%)</div>';
+  h += '<div style="font-size:9px;color:var(--green);margin-top:8px">' + fmt(eco) + '/mês vs tradicional (' + pct3 + '% de redução de custo)</div>';
   if (payback > 0) h += '<div style="font-size:9px;color:var(--t3);margin-top:2px">Payback estimado: ' + payback + ' meses</div>';
   h += '</div></div>';
   h += '</div>';
