@@ -2058,12 +2058,12 @@ var SIM = {
     defaultAgentes: ['KYC Automatizado', 'Conciliação de Pagamentos', 'Suporte L1', 'ROAS/BTAG Automático', 'Audit Trail'],
     departamentos: [
       { nome: 'Dados & BI', agentes: [
-        { nome: 'Monitoramento de Odds em Tempo Real', stack: 'Grok API + n8n + Kafka/Kinesis', badge: 'loop', custo: 'R$400–900/mês', impacto: 'Detecta manipulação de mercado em < 3s', humano: 'Trader decide a ação' },
+        { nome: 'Monitoramento de Odds em Tempo Real', stack: 'Grok API + n8n + Kafka/Kinesis', badge: 'loop', custo: 'R$400–900/mês', impacto: 'Detecta manipulação de mercado em \u003C 3s', humano: 'Trader decide a ação' },
         { nome: 'Análise de Cohort e Retenção', stack: 'n8n + BigQuery + dbt + Power BI API', badge: 'auto', custo: 'R$200–500/mês', impacto: 'Relatório semanal de comportamento de apostador sem intervenção', humano: 'Nenhum' },
         { nome: 'Detecção de Jogo Responsável', stack: 'DeepSeek R1 + n8n + regras Secap', badge: 'loop', custo: 'R$300–700/mês', impacto: 'Identifica padrão problemático antes de virar risco regulatório', humano: 'Compliance decide ação' }
       ]},
       { nome: 'Compliance / PLD / KYC', agentes: [
-        { nome: 'KYC Automatizado', stack: 'Gemini 2.0 Flash + visão + n8n + API Serpro', badge: 'loop', custo: 'R$0,80/cadastro', impacto: '-98% custo vs analista humano. Aprovação em < 2 min', humano: 'Casos de risco elevado' },
+        { nome: 'KYC Automatizado', stack: 'Gemini 2.0 Flash + visão + n8n + API Serpro', badge: 'loop', custo: 'R$0,80/cadastro', impacto: '-98% custo vs analista humano. Aprovação em \u003C 2 min', humano: 'Casos de risco elevado' },
         { nome: 'Monitoramento PLD', stack: 'DeepSeek R1 + RAG tipologias COAF + n8n', badge: 'loop', custo: 'R$600–1.200/mês', impacto: 'Análise contínua vs batch mensal. ROS rascunhado para aprovação', humano: 'Oficial PLD aprova ROS' },
         { nome: 'Audit Trail', stack: 'n8n + Delta Lake append-only + DataHub', badge: 'auto', custo: 'R$150–300/mês', impacto: 'Toda decisão rastreável para Secap/MF. Retenção 5 anos', humano: 'Nenhum' }
       ]},
@@ -2096,7 +2096,7 @@ var SIM = {
       { op: 'Monitoramento PLD', antes: 'Auditoria mensal R$25k', depois: 'Contínuo R$600/mês', economia: '-97%' }
     ],
     metricas: [
-      { label: 'Tempo de KYC', antes: '24–48h', depois: '< 2 min', prazo: 'Semana 2' },
+      { label: 'Tempo de KYC', antes: '24–48h', depois: '\u003C 2 min', prazo: 'Semana 2' },
       { label: 'Custo CX', antes: 'R$75k/mês', depois: 'R$8k/mês', prazo: 'Semana 6' },
       { label: 'PLD em tempo real', antes: 'Mensal', depois: 'Contínuo', prazo: 'Semana 5' },
       { label: 'Fechamento financeiro', antes: 'D+5', depois: 'D+1', prazo: 'Semana 4' },
@@ -2145,10 +2145,10 @@ var SIM = {
       { nome: 'Crédito & Risco', agentes: [
         { nome: 'Open Finance Connector', stack: 'n8n + Python + API Open Finance Bacen', badge: 'auto', custo: 'R$200–400/mês', impacto: 'Consolida dados de outras instituições com consentimento. Alimenta modelos de crédito', humano: 'Nenhum' },
         { nome: 'Análise de Crédito', stack: 'GPT-5.4 + RAG política de crédito + Python + API bureaus', badge: 'loop', custo: 'R$500–1.200/mês', impacto: '-95% tempo. Score com justificativa auditável — não caixa preta', humano: 'Decisão acima do limite de alçada' },
-        { nome: 'Detecção de Fraude Transacional', stack: 'DeepSeek R1 + XGBoost + Kafka + n8n', badge: 'loop', custo: 'R$600–1.400/mês', impacto: '-80% perdas por fraude. Bloqueio preventivo em < 1s', humano: 'Bloqueio confirmado para valores altos' }
+        { nome: 'Detecção de Fraude Transacional', stack: 'DeepSeek R1 + XGBoost + Kafka + n8n', badge: 'loop', custo: 'R$600–1.400/mês', impacto: '-80% perdas por fraude. Bloqueio preventivo em \u003C 1s', humano: 'Bloqueio confirmado para valores altos' }
       ]},
       { nome: 'Compliance & KYC', agentes: [
-        { nome: 'KYC Automatizado', stack: 'Gemini 2.0 Flash + visão + n8n + API Serpro', badge: 'loop', custo: 'R$3,20/cadastro', impacto: 'Onboarding PF: de 3 dias para < 10 min', humano: 'Casos PEP ou alto risco' },
+        { nome: 'KYC Automatizado', stack: 'Gemini 2.0 Flash + visão + n8n + API Serpro', badge: 'loop', custo: 'R$3,20/cadastro', impacto: 'Onboarding PF: de 3 dias para \u003C 10 min', humano: 'Casos PEP ou alto risco' },
         { nome: 'Monitoramento Regulatório Bacen/CVM', stack: 'Perplexity API + n8n + Llama 3.3 70B self-hosted', badge: 'loop', custo: 'R$400/mês', impacto: 'Novas obrigações detectadas automaticamente. Sumário para jurídico', humano: 'Jurídico valida impacto' },
         { nome: 'Audit Trail', stack: 'n8n + BigQuery row-level security + DataHub', badge: 'auto', custo: 'R$150–300/mês', impacto: 'Toda decisão rastreável para Bacen. Retenção 5 anos', humano: 'Nenhum' }
       ]},
@@ -2162,15 +2162,15 @@ var SIM = {
       ]}
     ],
     economia: [
-      { op: 'Análise de crédito', antes: '48h + analista', depois: '< 5 min automatizado', economia: '-95% tempo' },
-      { op: 'Detecção de fraude', antes: 'Batch diário', depois: 'Tempo real < 1s', economia: '-80% perdas' },
+      { op: 'Análise de crédito', antes: '48h + analista', depois: '\u003C 5 min automatizado', economia: '-95% tempo' },
+      { op: 'Detecção de fraude', antes: 'Batch diário', depois: 'Tempo real \u003C 1s', economia: '-80% perdas' },
       { op: 'Conciliação multi-instituição', antes: '3 analistas D+1', depois: 'Automático D+0', economia: '-90% custo' },
       { op: 'Monitoramento regulatório', antes: 'Consultoria mensal R$15k', depois: 'Contínuo R$400/mês', economia: '-97%' }
     ],
     metricas: [
-      { label: 'Crédito sem toque humano', antes: '< 30%', depois: '> 70%', prazo: 'Semana 4' },
-      { label: 'Fraude detectada antes do débito', antes: '30%', depois: '> 85%', prazo: 'Semana 3' },
-      { label: 'Tempo de onboarding PF', antes: '3 dias', depois: '< 10 min', prazo: 'Semana 2' },
+      { label: 'Crédito sem toque humano', antes: '\u003C 30%', depois: '\u003E 70%', prazo: 'Semana 4' },
+      { label: 'Fraude detectada antes do débito', antes: '30%', depois: '\u003E 85%', prazo: 'Semana 3' },
+      { label: 'Tempo de onboarding PF', antes: '3 dias', depois: '\u003C 10 min', prazo: 'Semana 2' },
       { label: 'Custo por cliente onboardado', antes: 'R$85', depois: 'R$3,20', prazo: 'Semana 2' }
     ],
     seguranca: [
@@ -2212,7 +2212,7 @@ var SIM = {
     defaultAgentes: ['Subscrição Automatizada', 'Regulação de Sinistro', 'Renovação Proativa', 'Audit Trail', 'KYC'],
     departamentos: [
       { nome: 'Subscrição', agentes: [
-        { nome: 'Subscrição Automatizada', stack: 'GPT-5.4 + RAG manual de subscrição + API bureaus + n8n', badge: 'loop', custo: 'R$8/proposta', impacto: '-92% tempo. Proposta simples aprovada em < 2h vs 3 dias', humano: 'Riscos fora da faixa padrão' },
+        { nome: 'Subscrição Automatizada', stack: 'GPT-5.4 + RAG manual de subscrição + API bureaus + n8n', badge: 'loop', custo: 'R$8/proposta', impacto: '-92% tempo. Proposta simples aprovada em \u003C 2h vs 3 dias', humano: 'Riscos fora da faixa padrão' },
         { nome: 'Precificação Atuarial', stack: 'Python atuarial (statsmodels/Prophet) + n8n + Power BI API', badge: 'loop', custo: 'R$300–700/mês', impacto: 'Atualização de tabelas com sinistralidade recente. Proposta para atuário', humano: 'Atuário aprova ajuste de prêmio' }
       ]},
       { nome: 'Sinistros', agentes: [
@@ -2221,7 +2221,7 @@ var SIM = {
       ]},
       { nome: 'Comercial / Carteira', agentes: [
         { nome: 'Renovação Proativa', stack: 'Gemini 2.0 Flash + CRM API + n8n', badge: 'auto', custo: 'R$300–600/mês', impacto: '+25% taxa de renovação com proposta personalizada por cliente', humano: 'Nenhum' },
-        { nome: 'KYC e Compliance', stack: 'Gemini 2.0 Flash + visão + n8n + listas PEP', badge: 'loop', custo: 'R$2,50/cadastro', impacto: 'Onboarding em < 30 min com rastreabilidade SUSEP', humano: 'Casos de alto risco' }
+        { nome: 'KYC e Compliance', stack: 'Gemini 2.0 Flash + visão + n8n + listas PEP', badge: 'loop', custo: 'R$2,50/cadastro', impacto: 'Onboarding em \u003C 30 min com rastreabilidade SUSEP', humano: 'Casos de alto risco' }
       ]},
       { nome: 'Dados & Governança', agentes: [
         { nome: 'Audit Trail', stack: 'n8n + Delta Lake append-only + DataHub', badge: 'auto', custo: 'R$150–300/mês', impacto: 'Decisões de subscrição e sinistro rastreáveis para SUSEP', humano: 'Nenhum' },
@@ -2229,15 +2229,15 @@ var SIM = {
       ]}
     ],
     economia: [
-      { op: 'Subscrição simples', antes: '3 dias + analista', depois: '< 2h automatizada', economia: '-92% tempo' },
+      { op: 'Subscrição simples', antes: '3 dias + analista', depois: '\u003C 2h automatizada', economia: '-92% tempo' },
       { op: 'Regulação de sinistro simples', antes: '15 dias', depois: '4h (simples) / 48h (complexo)', economia: '-70% prazo' },
       { op: 'Detecção de fraude', antes: 'Auditoria pontual', depois: 'Contínua em cada sinistro', economia: '-40% perdas' },
       { op: 'Renovação de carteira', antes: 'Campanha genérica', depois: 'Proposta individual automatizada', economia: '+25% renovação' }
     ],
     metricas: [
-      { label: 'Sinistros sem toque humano', antes: '< 10%', depois: '> 60%', prazo: 'Semana 6' },
+      { label: 'Sinistros sem toque humano', antes: '\u003C 10%', depois: '\u003E 60%', prazo: 'Semana 6' },
       { label: 'Tempo médio de regulação', antes: '15 dias', depois: '48h', prazo: 'Semana 5' },
-      { label: 'Fraude detectada antes do pagamento', antes: '20%', depois: '> 70%', prazo: 'Semana 4' },
+      { label: 'Fraude detectada antes do pagamento', antes: '20%', depois: '\u003E 70%', prazo: 'Semana 4' },
       { label: 'Custo de subscrição por proposta', antes: 'R$120', depois: 'R$8', prazo: 'Semana 3' }
     ],
     seguranca: [
@@ -2279,7 +2279,7 @@ var SIM = {
     defaultAgentes: ['Autorização de Procedimentos', 'Glosa Inteligente', 'Monitoramento ANS', 'Audit Trail', 'KYC'],
     departamentos: [
       { nome: 'Assistencial / Autorização', agentes: [
-        { nome: 'Autorização de Procedimentos', stack: 'Llama 3.3 70B self-hosted + RAG rol ANS + n8n', badge: 'loop', custo: 'R$500–1.000/mês', impacto: '75% das autorizações em < 1h vs 48h. Dado clínico on-premise obrigatório', humano: 'Alto custo ou negativa — parecer médico' },
+        { nome: 'Autorização de Procedimentos', stack: 'Llama 3.3 70B self-hosted + RAG rol ANS + n8n', badge: 'loop', custo: 'R$500–1.000/mês', impacto: '75% das autorizações em \u003C 1h vs 48h. Dado clínico on-premise obrigatório', humano: 'Alto custo ou negativa — parecer médico' },
         { nome: 'Monitoramento ANS (RN 259)', stack: 'n8n + Python + sistema de regulação', badge: 'auto', custo: 'R$200–400/mês', impacto: 'Prazo de garantia monitorado. -70% multas ANS', humano: 'Nenhum' }
       ]},
       { nome: 'Faturamento / Glosa', agentes: [
@@ -2295,14 +2295,14 @@ var SIM = {
       ]}
     ],
     economia: [
-      { op: 'Autorização procedimento simples', antes: '24–72h', depois: '< 30 min', economia: '-85% prazo' },
-      { op: 'Análise de glosa hospitalar', antes: 'Analista 8h/processo', depois: 'Automático < 15 min', economia: '-88% custo' },
+      { op: 'Autorização procedimento simples', antes: '24–72h', depois: '\u003C 30 min', economia: '-85% prazo' },
+      { op: 'Análise de glosa hospitalar', antes: 'Analista 8h/processo', depois: 'Automático \u003C 15 min', economia: '-88% custo' },
       { op: 'Multas ANS por prazo', antes: 'Recorrente', depois: 'Monitoramento contínuo', economia: '-70% incidência' },
       { op: 'Gestão de crônicos', antes: 'Reativa (emergência)', depois: 'Proativa (prevenção)', economia: '-30% internação evitável' }
     ],
     metricas: [
-      { label: 'Autorizações sem toque humano', antes: '< 20%', depois: '> 75%', prazo: 'Semana 5' },
-      { label: 'Tempo médio de autorização', antes: '48h', depois: '< 1h', prazo: 'Semana 4' },
+      { label: 'Autorizações sem toque humano', antes: '\u003C 20%', depois: '\u003E 75%', prazo: 'Semana 5' },
+      { label: 'Tempo médio de autorização', antes: '48h', depois: '\u003C 1h', prazo: 'Semana 4' },
       { label: 'Glosa recuperada anual', antes: 'Base', depois: '+R$800k–2M', prazo: 'Semana 6' },
       { label: 'Multas ANS evitadas', antes: 'Recorrente', depois: '-70%', prazo: 'Semana 3' }
     ],
@@ -2353,7 +2353,7 @@ var SIM = {
         { nome: 'Detecção de Irregularidades', stack: 'DeepSeek R1 + Python (análise de grafo) + n8n + DataHub', badge: 'loop', custo: 'R$500–1.000/mês', impacto: '+60% irregularidades detectadas antes da auditoria TCU', humano: 'Investigação e encaminhamento formal' }
       ]},
       { nome: 'Compras & Licitação', agentes: [
-        { nome: 'Análise de Licitação', stack: 'GPT-5.4 + RAG jurisprudência TCU + n8n', badge: 'loop', custo: 'R$400–800/mês', impacto: 'Análise de edital em < 4h vs 5 dias. Risco jurídico mapeado', humano: 'Aprovação final do jurídico' }
+        { nome: 'Análise de Licitação', stack: 'GPT-5.4 + RAG jurisprudência TCU + n8n', badge: 'loop', custo: 'R$400–800/mês', impacto: 'Análise de edital em \u003C 4h vs 5 dias. Risco jurídico mapeado', humano: 'Aprovação final do jurídico' }
       ]},
       { nome: 'Dados & Governança', agentes: [
         { nome: 'Audit Trail Público', stack: 'n8n + Delta Lake + DataHub', badge: 'auto', custo: 'R$150–300/mês', impacto: 'Toda ação de agente rastreável para TCU/CGU', humano: 'Nenhum' },
@@ -2361,16 +2361,16 @@ var SIM = {
       ]}
     ],
     economia: [
-      { op: 'Resposta LAI', antes: 'Servidor 3 dias/pedido', depois: '< 4h automatizado', economia: '-85% tempo' },
-      { op: 'Análise de edital', antes: 'Jurídico 5 dias', depois: '< 2h rastreável', economia: '-80% tempo' },
+      { op: 'Resposta LAI', antes: 'Servidor 3 dias/pedido', depois: '\u003C 4h automatizado', economia: '-85% tempo' },
+      { op: 'Análise de edital', antes: 'Jurídico 5 dias', depois: '\u003C 2h rastreável', economia: '-80% tempo' },
       { op: 'Atendimento ao cidadão', antes: 'Fila presencial R$42/atendimento', depois: '24/7 R$3,80/atendimento', economia: '-91% custo' },
       { op: 'Detecção de irregularidades', antes: 'Pós-auditoria TCU', depois: 'Preventivo e contínuo', economia: '+60% detecção prévia' }
     ],
     metricas: [
-      { label: 'Pedidos LAI no prazo legal', antes: '70%', depois: '> 98%', prazo: 'Semana 4' },
+      { label: 'Pedidos LAI no prazo legal', antes: '70%', depois: '\u003E 98%', prazo: 'Semana 4' },
       { label: 'Custo por atendimento cidadão', antes: 'R$42', depois: 'R$3,80', prazo: 'Semana 6' },
       { label: 'Irregularidades detectadas antes do TCU', antes: 'Base', depois: '+60%', prazo: 'Semana 8' },
-      { label: 'Tempo de análise de licitação', antes: '5 dias', depois: '< 4h', prazo: 'Semana 5' }
+      { label: 'Tempo de análise de licitação', antes: '5 dias', depois: '\u003C 4h', prazo: 'Semana 5' }
     ],
     seguranca: [
       'Soberania digital — todo LLM on-premise ou self-hosted, dado do cidadão não sai',
@@ -2412,7 +2412,7 @@ var SIM = {
     defaultAgentes: ['Gestão de Estoque', 'Suporte L1', 'Performance de Marketplace/Afiliado', 'Prevenção de Churn', 'Conciliação Financeira'],
     departamentos: [
       { nome: 'Estoque & Supply Chain', agentes: [
-        { nome: 'Gestão de Estoque', stack: 'n8n + Python + ERP API + DW', badge: 'auto', custo: 'R$200–500/mês', impacto: 'Ruptura de 12% para < 3%. Reposição automática no ponto de pedido', humano: 'Nenhum' },
+        { nome: 'Gestão de Estoque', stack: 'n8n + Python + ERP API + DW', badge: 'auto', custo: 'R$200–500/mês', impacto: 'Ruptura de 12% para \u003C 3%. Reposição automática no ponto de pedido', humano: 'Nenhum' },
         { nome: 'Demand Forecast', stack: 'Prophet/NeuralProphet + Python + n8n + DW', badge: 'auto', custo: 'R$300–600/mês', impacto: '+12% utilização de capacidade. 3 cenários sazonais automáticos', humano: 'Nenhum' }
       ]},
       { nome: 'Comercial / Pricing', agentes: [
@@ -2439,7 +2439,7 @@ var SIM = {
       { op: 'Precificação manual', antes: 'Analista 3x/semana', depois: 'Contínua em tempo real', economia: '+8% margem média' }
     ],
     metricas: [
-      { label: 'Ruptura de estoque', antes: '12%', depois: '< 3%', prazo: 'Semana 3' },
+      { label: 'Ruptura de estoque', antes: '12%', depois: '\u003C 3%', prazo: 'Semana 3' },
       { label: 'Custo de suporte por pedido', antes: 'R$4,20', depois: 'R$0,38', prazo: 'Semana 4' },
       { label: 'NPS de entrega', antes: 'Base', depois: '+18 pontos', prazo: 'Semana 6' },
       { label: 'Fechamento financeiro', antes: 'D+3', depois: 'D+0', prazo: 'Semana 3' }
@@ -2482,7 +2482,7 @@ var SIM = {
     departamentos: [
       { nome: 'Retenção & CRM', agentes: [
         { nome: 'Churn Preditivo Avançado', stack: 'XGBoost + Python + Kafka stream + CRM API + n8n', badge: 'auto', custo: 'R$800–1.500/mês', impacto: '-1,5–2pp churn = R$8–15M/ano preservado. 90+ variáveis de comportamento', humano: 'Nenhum' },
-        { nome: 'Portabilidade Defensiva', stack: 'n8n + CRM + modelo LTV + Llama 3.3 70B self-hosted', badge: 'loop', custo: 'R$400–800/mês', impacto: 'Pedido detectado → oferta personalizada gerada → consultor humano para alto valor', humano: 'Clientes de alto valor (LTV > threshold)' },
+        { nome: 'Portabilidade Defensiva', stack: 'n8n + CRM + modelo LTV + Llama 3.3 70B self-hosted', badge: 'loop', custo: 'R$400–800/mês', impacto: 'Pedido detectado → oferta personalizada gerada → consultor humano para alto valor', humano: 'Clientes de alto valor (LTV \u003E threshold)' },
         { nome: 'Oferta de Plano', stack: 'Gemini 2.0 Flash + CRM API + n8n', badge: 'auto', custo: 'R$300–600/mês', impacto: '+12% ARPU com migração baseada em uso real', humano: 'Nenhum' }
       ]},
       { nome: 'Rede & Infraestrutura', agentes: [
@@ -2545,7 +2545,7 @@ var SIM = {
     defaultAgentes: ['Gestão de Estoque de Veículos', 'Retenção Pós-venda', 'Análise de Margem por Veículo', 'Precificação de Usado', 'Análise de Funil'],
     departamentos: [
       { nome: 'Estoque & Vendas', agentes: [
-        { nome: 'Gestão de Estoque de Veículos', stack: 'n8n + Python + DMS API', badge: 'auto', custo: 'R$200–400/mês', impacto: 'Dias em estoque: 75 → < 45. Risco de obsolescência sinalizado em 45 dias', humano: 'Nenhum' },
+        { nome: 'Gestão de Estoque de Veículos', stack: 'n8n + Python + DMS API', badge: 'auto', custo: 'R$200–400/mês', impacto: 'Dias em estoque: 75 → \u003C 45. Risco de obsolescência sinalizado em 45 dias', humano: 'Nenhum' },
         { nome: 'Análise de Margem por Veículo', stack: 'n8n + Python + dbt + DMS API + ERP', badge: 'auto', custo: 'R$300–600/mês', impacto: 'Margem real por unidade em tempo real vs D+30 manual', humano: 'Nenhum' },
         { nome: 'Análise de Funil e Conversão', stack: 'n8n + CRM API + dbt + Power BI API', badge: 'auto', custo: 'R$200–400/mês', impacto: '+15% conversão de test drive com análise de funil por vendedor', humano: 'Nenhum' }
       ]},
@@ -2558,13 +2558,13 @@ var SIM = {
       ]}
     ],
     economia: [
-      { op: 'Estoque parado > 90 dias', antes: 'Desconto agressivo tardio', depois: 'Ação proativa em 45 dias', economia: '-30% custo de carregamento' },
+      { op: 'Estoque parado \u003E 90 dias', antes: 'Desconto agressivo tardio', depois: 'Ação proativa em 45 dias', economia: '-30% custo de carregamento' },
       { op: 'Margem por veículo', antes: 'Calculada D+30', depois: 'Tempo real', economia: 'Decisão com dado real' },
       { op: 'Retenção pós-venda', antes: 'Campanha genérica anual', depois: 'Individual e contínua', economia: '+35% retorno para revisão' },
       { op: 'Precificação de usado', antes: 'Feeling do gerente', depois: 'Baseada em mercado real', economia: '+8% margem em usado' }
     ],
     metricas: [
-      { label: 'Dias médios em estoque', antes: '75 dias', depois: '< 45 dias', prazo: 'Mês 2' },
+      { label: 'Dias médios em estoque', antes: '75 dias', depois: '\u003C 45 dias', prazo: 'Mês 2' },
       { label: 'Taxa de retorno para revisão', antes: '40%', depois: '68%', prazo: 'Mês 2' },
       { label: 'Conversão de test drive', antes: 'Base', depois: '+15%', prazo: 'Mês 1' },
       { label: 'Margem real por veículo', antes: 'D+30', depois: 'D+0', prazo: 'Semana 3' }
@@ -2606,7 +2606,7 @@ var SIM = {
     departamentos: [
       { nome: 'Operações & Entregas', agentes: [
         { nome: 'Roteirização Dinâmica', stack: 'OR-Tools (Google) + Python + API HERE/Google Maps + n8n', badge: 'auto', custo: 'R$300–600/mês', impacto: '-18% custo de combustível. Reroteirização automática em imprevisto', humano: 'Nenhum' },
-        { nome: 'Monitoramento de OTIF', stack: 'n8n + API rastreamento Samsara/Omnilink + Evolution API + Python', badge: 'auto', custo: 'R$400–800/mês', impacto: 'OTIF: 83% → > 95%. Risco de atraso detectado antes', humano: 'Incidentes que exigem renegociação' },
+        { nome: 'Monitoramento de OTIF', stack: 'n8n + API rastreamento Samsara/Omnilink + Evolution API + Python', badge: 'auto', custo: 'R$400–800/mês', impacto: 'OTIF: 83% → \u003E 95%. Risco de atraso detectado antes', humano: 'Incidentes que exigem renegociação' },
         { nome: 'Previsão de Demanda de Frete', stack: 'Prophet + Python + n8n + TMS API', badge: 'auto', custo: 'R$250–500/mês', impacto: 'Frota terceirizada planejada. Sem contratação emergencial cara', humano: 'Nenhum' }
       ]},
       { nome: 'Fiscal & Financeiro', agentes: [
@@ -2625,9 +2625,9 @@ var SIM = {
       { op: 'Manutenção corretiva', antes: 'Quebra em rota (custo 3x)', depois: 'Preventiva por telemetria', economia: '-35% custo manutenção' }
     ],
     metricas: [
-      { label: 'OTIF', antes: '83%', depois: '> 95%', prazo: 'Mês 1' },
+      { label: 'OTIF', antes: '83%', depois: '\u003E 95%', prazo: 'Mês 1' },
       { label: 'Custo por km', antes: 'Base', depois: '-12–18%', prazo: 'Mês 2' },
-      { label: 'Documentação sem toque humano', antes: '20%', depois: '> 90%', prazo: 'Semana 4' },
+      { label: 'Documentação sem toque humano', antes: '20%', depois: '\u003E 90%', prazo: 'Semana 4' },
       { label: 'Downtime de frota', antes: 'Base', depois: '-35%', prazo: 'Mês 3' }
     ],
     seguranca: [
@@ -2675,7 +2675,7 @@ var SIM = {
         { nome: 'Monitoramento de Concorrente', stack: 'Perplexity API + n8n + Gemini 2.0 Flash', badge: 'auto', custo: 'R$250–500/mês', impacto: 'Mudanças de pricing e features do concorrente entregues semanalmente', humano: 'Nenhum' }
       ]},
       { nome: 'Suporte & Atendimento', agentes: [
-        { nome: 'Suporte Técnico L1', stack: 'Llama 3.3 70B self-hosted + RAG documentação + Zendesk API', badge: 'auto', custo: 'R$500–900/mês', impacto: '-88% custo. Dúvidas de uso e bugs triviais resolvidos em < 15 min', humano: 'Bugs confirmados e contratos enterprise' }
+        { nome: 'Suporte Técnico L1', stack: 'Llama 3.3 70B self-hosted + RAG documentação + Zendesk API', badge: 'auto', custo: 'R$500–900/mês', impacto: '-88% custo. Dúvidas de uso e bugs triviais resolvidos em \u003C 15 min', humano: 'Bugs confirmados e contratos enterprise' }
       ]},
       { nome: 'Comercial', agentes: [
         { nome: 'Proposta Comercial', stack: 'GPT-5.4 + RAG proposals históricos + n8n', badge: 'loop', custo: 'R$300–600/mês', impacto: '-85% tempo. Rascunho gerado em 30 min vs 4h manual', humano: 'Revisor aprova antes do envio' }
@@ -2692,7 +2692,7 @@ var SIM = {
     ],
     metricas: [
       { label: 'Churn anual', antes: 'Base', depois: '-35%', prazo: 'Mês 3' },
-      { label: 'Tempo de resposta suporte L1', antes: '4h', depois: '< 15 min', prazo: 'Semana 3' },
+      { label: 'Tempo de resposta suporte L1', antes: '4h', depois: '\u003C 15 min', prazo: 'Semana 3' },
       { label: 'Taxa de upsell', antes: 'Base', depois: '+22%', prazo: 'Mês 2' },
       { label: 'NPS', antes: 'Base', depois: '+18 pontos', prazo: 'Mês 3' }
     ],
@@ -2996,7 +2996,7 @@ var SIM = {
       { op: 'Planejamento de produção', antes: 'Planilha 4h/dia do PCP', depois: 'Automático em minutos', economia: '+12% utilização' }
     ],
     metricas: [
-      { label: 'OEE', antes: '< 75%', depois: '+5–8pp', prazo: 'Mês 2' },
+      { label: 'OEE', antes: '\u003C 75%', depois: '+5–8pp', prazo: 'Mês 2' },
       { label: 'Downtime não planejado', antes: 'Base', depois: '-35%', prazo: 'Mês 2' },
       { label: 'Defeito escapando para cliente', antes: 'Base', depois: '-80%', prazo: 'Mês 1' },
       { label: 'Custo de retrabalho', antes: 'Base', depois: '-40%', prazo: 'Mês 2' }
@@ -3049,20 +3049,20 @@ var SIM = {
         { nome: 'Relatório para Investidor', stack: 'n8n + dbt + Power BI API + Gemini 2.0 Flash', badge: 'auto', custo: 'R$200–400/mês', impacto: 'VGV, velocidade de vendas e margem consolidados mensalmente sem intervenção', humano: 'Apresentação ao board' }
       ]},
       { nome: 'Documentação', agentes: [
-        { nome: 'Controle Documental', stack: 'Llama 3.3 70B self-hosted + RAG Qdrant + n8n + OCR Gemini', badge: 'auto', custo: 'R$300–600/mês', impacto: 'Projetos, alvarás, ART/RRT e contratos encontrados em < 2 min vs 45 min', humano: 'Nenhum' }
+        { nome: 'Controle Documental', stack: 'Llama 3.3 70B self-hosted + RAG Qdrant + n8n + OCR Gemini', badge: 'auto', custo: 'R$300–600/mês', impacto: 'Projetos, alvarás, ART/RRT e contratos encontrados em \u003C 2 min vs 45 min', humano: 'Nenhum' }
       ]}
     ],
     economia: [
       { op: 'Desvio de cronograma detectado tarde', antes: 'Multa contratual recorrente', depois: 'Detectado 30 dias antes', economia: '-50% incidência de multa' },
       { op: 'Custo de obra calculado manualmente', antes: 'Medição mensal defasada', depois: 'Diário automático', economia: 'Decisão com dado real' },
-      { op: 'Busca documental em obra', antes: '30–60 min por documento', depois: '< 2 min via IA interna', economia: '-90% tempo' },
+      { op: 'Busca documental em obra', antes: '30–60 min por documento', depois: '\u003C 2 min via IA interna', economia: '-90% tempo' },
       { op: 'Distrato não previsto', antes: 'Descoberto no pedido formal', depois: 'Detectado 60 dias antes', economia: '-30% distrato evitável' }
     ],
     metricas: [
       { label: 'Margem por empreendimento', antes: 'D+30', depois: 'Tempo real', prazo: 'Semana 4' },
       { label: 'Multas contratuais por atraso', antes: 'Recorrentes', depois: '-50%', prazo: 'Mês 2' },
       { label: 'Distrato evitável', antes: 'Base', depois: '-30%', prazo: 'Mês 3' },
-      { label: 'Busca documental', antes: '45 min', depois: '< 2 min', prazo: 'Semana 3' }
+      { label: 'Busca documental', antes: '45 min', depois: '\u003C 2 min', prazo: 'Semana 3' }
     ],
     seguranca: [
       'Documentação técnica e de clientes on-premise',
@@ -3362,10 +3362,10 @@ var STACK_V = {
     siem: 'Agente de audit trail envia eventos estruturados para o SIEM existente via webhook ou Kafka. Decisões de KYC, PLD e bloqueio de fraude rastreáveis no mesmo painel de segurança. Alertas do agente de jogo responsável integrados ao playbook do SOC.',
     dlp: 'Agentes de KYC e suporte L1 integrados ao DLP existente via API. Dado do apostador classificado e monitorado pela política já configurada. Reduz escopo de adequação LGPD — DLP existente cobre os agentes sem infraestrutura adicional.',
     whatsapp_api: 'Agente de suporte L1 e notificações de oferta operam no canal já ativo. Zero migração — agente entra como novo número ou agente no mesmo WABA. Fluxos de KYC conversacional via WhatsApp com coleta de documento e validação visual em tempo real.',
-    redis: 'Agente de detecção de fraude usa Redis para cache de regras e histórico recente — decisão em < 10ms sem consultar o DW. Score do apostador em cache com TTL configurado. Sessão do suporte L1 mantida em Redis para contexto entre mensagens.',
+    redis: 'Agente de detecção de fraude usa Redis para cache de regras e histórico recente — decisão em \u003C 10ms sem consultar o DW. Score do apostador em cache com TTL configurado. Sessão do suporte L1 mantida em Redis para contexto entre mensagens.',
     llm_em_uso: 'Você já tem integração com LLM. Agentes de personalização e conteúdo SEO migram para o endpoint existente — sem novo contrato. KYC e PLD continuam no Gemini 2.0 Flash e DeepSeek R1 por custo e volume. Dado sensível do apostador permanece no Llama 3.3 70B self-hosted independente do LLM comercial contratado.',
     rpa: 'Agentes substituem os bots RPA de conciliação e KYC — mesma função, custo 10x menor, sem fragilidade de scraping de tela. RPA existente mantido apenas para sistemas sem API. Migração incremental: agente assume processo por processo sem parada operacional.',
-    nosql: 'Agente de personalização de oferta lê perfil do apostador diretamente do NoSQL — latência < 5ms. Histórico de sessão do suporte L1 armazenado no NoSQL existente com TTL configurado. Score de churn e risco gravados como documento — consultados pelo agente sem passar pelo DW.',
+    nosql: 'Agente de personalização de oferta lê perfil do apostador diretamente do NoSQL — latência \u003C 5ms. Histórico de sessão do suporte L1 armazenado no NoSQL existente com TTL configurado. Score de churn e risco gravados como documento — consultados pelo agente sem passar pelo DW.',
     vault: 'Chaves de API de todos os agentes gerenciadas pelo Vault existente. Rotação automática de credenciais sem intervenção manual. Agentes nunca têm credencial hardcoded — compliance Secap/MF e LGPD atendido nativamente.'
   },
 
@@ -3407,7 +3407,7 @@ var STACK_V = {
     dlp: 'Dado de beneficiário e clínico monitorado pelo DLP existente. Agentes de autorização e triagem operam dentro da política já configurada. Escopo de adequação LGPD e ANS reduzido — DLP existente cobre os agentes.',
     iam_sso: 'RBAC por perfil (médico regulador / faturamento / DPO) gerenciado pelo IAM existente. Service accounts dos agentes com escopo mínimo. Auditoria de acesso integrada ao log do IAM — rastreável para ANS.',
     whatsapp_api: 'Agente de gestão de crônicos opera no canal já ativo. Notificações de autorização e NPS pós-consulta pelo mesmo WABA. Zero migração de canal.',
-    kafka: 'Agente de autorização recebe pedido em tempo real via evento — decisão em < 30 min ao invés de batch. Monitoramento ANS processa cada evento de autorização para controle de prazo em tempo real. Glosa recebe conta hospitalar via stream para análise antes do vencimento do prazo de recurso.',
+    kafka: 'Agente de autorização recebe pedido em tempo real via evento — decisão em \u003C 30 min ao invés de batch. Monitoramento ANS processa cada evento de autorização para controle de prazo em tempo real. Glosa recebe conta hospitalar via stream para análise antes do vencimento do prazo de recurso.',
     crm_enterprise: 'Score de risco de cancelamento de contrato empresarial atualizado no Salesforce. Agente de NPS e retenção cria task para o consultor humano com contexto do cliente. Histórico de autorizações e reclamações acessível via RAG sobre dados do Salesforce.',
     bi_consolidado: 'Autorização, glosa recuperada e NPS escritos diretamente no dataset do BI via API push. Dashboard regulatório ANS atualizado automaticamente. Diretor assistencial e financeiro acessam no painel que já usam.',
     data_catalog: 'Linhagem de dados de autorização e glosa publicada no catálogo existente. Decisões auditáveis com rastreabilidade de origem do dado para ANS. Glossário de TUSS e CBHPM mantido no catálogo — agentes consultam definições padronizadas.',
@@ -3437,7 +3437,7 @@ var STACK_V = {
     bi_consolidado: 'Agentes de performance de marketplace e conciliação escrevem resultados diretamente no dataset do BI via API push. Dashboards de ruptura e ROAS atualizados em tempo real sem ETL adicional. Métricas calculadas pelos agentes alimentam o modelo semântico existente.',
     elt_gerenciado: 'Fontes de marketplace (Mercado Livre, Shopee, Amazon) já conectadas pelo ELT gerenciado. Agentes consomem dados já normalizados no DW — sem retrabalho de integração. Novos conectores de canal adicionados no Fivetran/Airbyte sem código customizado.',
     whatsapp_api: 'Agente de suporte L1 opera no canal já ativo. Notificações de rastreio, confirmação de pedido e cobrança pelo mesmo WABA. Zero migração de canal — cliente continua no número que já conhece.',
-    redis: 'Cache de score de churn e personalização por cliente — decisão em < 5ms sem consultar o DW. Sessão do suporte L1 mantida em Redis para contexto entre mensagens. Saldo de estoque em cache com TTL configurado.',
+    redis: 'Cache de score de churn e personalização por cliente — decisão em \u003C 5ms sem consultar o DW. Sessão do suporte L1 mantida em Redis para contexto entre mensagens. Saldo de estoque em cache com TTL configurado.',
     kubernetes: 'Agentes de suporte L1, detecção de fraude e personalização rodam como pods com autoscaling. Black Friday e datas sazonais absorvidas sem intervenção. Llama 3.3 70B self-hosted em deployment dedicado com HPA configurado.',
     plataforma_ml: 'Modelos de churn e personalização versionados na plataforma ML existente. Agentes consomem modelo via endpoint já deployado. Degradação do modelo de recomendação monitorada automaticamente.',
     feature_store: 'Features de comportamento de compra já calculadas consumidas diretamente pelos agentes de personalização. Novas features de churn publicadas na Feature Store para reutilização. Consistência entre treino e serving garantida.',
@@ -3451,7 +3451,7 @@ var STACK_V = {
     kafka: 'Agente de churn preditivo consome stream de eventos de uso em tempo real — score atualizado a cada evento, não batch diário. Detecção de falha de rede processa telemetria de equipamentos via tópico Kafka — falha localizada antes do pico de reclamação. Portabilidade defensiva recebe evento de pedido em tempo real para intervenção imediata.',
     sap: 'Agente de conciliação financeira integrado via SAP API — receita de mensalidade e recarga reconciliada D+0. Agente de gestão de contratos empresariais acessa dados de faturamento B2B diretamente no SAP. Fechamento contábil alimenta razões SAP automaticamente.',
     crm_enterprise: 'Score de churn e propensão de portabilidade atualizados como campos customizados no Salesforce. Agente de portabilidade defensiva cria task para o consultor humano com contexto do cliente — sem troca de sistema. Oferta de plano personalizada gerada e registrada no CRM automaticamente.',
-    redis: 'Cache de score de churn por cliente — decisão de intervenção em < 5ms sem consultar o DW. Sessão de atendimento do suporte L1 mantida em Redis para contexto entre mensagens. Regras de oferta em cache com TTL configurado — atualização sem redeploy de agente.',
+    redis: 'Cache de score de churn por cliente — decisão de intervenção em \u003C 5ms sem consultar o DW. Sessão de atendimento do suporte L1 mantida em Redis para contexto entre mensagens. Regras de oferta em cache com TTL configurado — atualização sem redeploy de agente.',
     kubernetes: 'Agentes de alto volume (suporte L1, churn, detecção de falha) rodam como pods com autoscaling. Pico de segunda-feira manhã absorvido automaticamente. Llama 3.3 70B self-hosted em deployment dedicado com resource limits.',
     siem: 'Decisões de bloqueio de conta e detecção de fraude integradas ao SIEM. Agente de monitoramento de rede envia alertas estruturados para o painel do NOC existente. Audit trail rastreável para ANATEL no mesmo ambiente de segurança.',
     dlp: 'PII de assinante monitorada pelo DLP existente. Agentes de suporte L1 e churn operam dentro da política já configurada. LGPD e obrigações ANATEL de sigilo atendidas sem nova ferramenta.',
@@ -3484,7 +3484,7 @@ var STACK_V = {
     bi_consolidado: 'OTIF, custo por rota e performance de motorista escritos diretamente no dataset via API push. Dashboards operacionais atualizados em tempo real. Gerente de operações acessa métricas no painel que já usa.',
     whatsapp_api: 'Notificações de entrega, confirmação de coleta e alertas de atraso pelo canal já ativo. Agente de suporte ao destinatário opera no mesmo WABA. Motorista recebe instrução de rota por WhatsApp — sem app dedicado.',
     mes_scada: 'Agente de OTIF integrado ao WMS via API — localização de carga e status de dock em tempo real. Manutenção preditiva recebe telemetria de veículo via conector do sistema de rastreamento. Roteirização dinâmica consome capacidade de dock do WMS para otimizar janelas de entrega.',
-    redis: 'Cache de rotas ativas e status de entrega — agente de OTIF consulta em < 5ms sem pressionar o TMS. Score de motorista e veículo em cache com TTL configurado. Sessão de suporte ao destinatário mantida em Redis para contexto entre mensagens.',
+    redis: 'Cache de rotas ativas e status de entrega — agente de OTIF consulta em \u003C 5ms sem pressionar o TMS. Score de motorista e veículo em cache com TTL configurado. Sessão de suporte ao destinatário mantida em Redis para contexto entre mensagens.',
     kubernetes: 'Agentes de roteirização e OTIF rodam como pods com autoscaling. Pico de Black Friday absorvido automaticamente. Modelos de manutenção preditiva em deployment dedicado.',
     siem: 'Acessos ao TMS e eventos de carga de alto valor enviados ao SIEM. Audit trail de entrega rastreável para ANTT no painel de segurança existente. Alertas de desvio de rota integrados ao playbook do SOC.',
     dlp: 'Dados de destinatário e nota fiscal monitorados pelo DLP existente. Agentes de documentação fiscal e suporte operam dentro da política já configurada. LGPD operacional sem nova ferramenta.'
@@ -3518,7 +3518,7 @@ var STACK_V = {
     planilha_bi: 'Relatórios de cliente gerados em Sheets via API — template existente preenchido automaticamente pelo agente. Aprovação de campanha no fluxo do Sheets mantida — agente alimenta, humano aprova. Briefing estruturado exportado para o formato de Sheets já usado pelo time.',
     email_mkt: 'Agente de performance de campanha integrado via API da plataforma de e-mail/push. Segmentos de reativação criados automaticamente com base em comportamento real. Métricas de engajamento consolidadas junto com as de mídia paga — visão única de performance.',
     kafka: 'Eventos de engajamento (abertura de email, clique, conversão) consumidos em tempo real pelo agente de performance. ROAS atualizado a cada evento — queda detectada no momento em que acontece, não no relatório do dia seguinte.',
-    redis: 'Cache de score de engajamento por contato — decisão de segmentação em < 5ms. Sessão de briefing do agente mantida em Redis para contexto entre interações. Resultados de campanha em cache com TTL configurado para consulta rápida.',
+    redis: 'Cache de score de engajamento por contato — decisão de segmentação em \u003C 5ms. Sessão de briefing do agente mantida em Redis para contexto entre interações. Resultados de campanha em cache com TTL configurado para consulta rápida.',
     kubernetes: 'Agentes de produção de conteúdo e performance rodam como pods com autoscaling. Pico de lançamento de campanha absorvido automaticamente. Modelos de análise de sentimento em deployment dedicado.',
     aws: 'Llama 3.3 70B self-hosted em instância GPU no provider atual — PI criativa e dados de cliente nunca saem do VPC. Modelos de análise de sentimento e classificação de conteúdo versionados no SageMaker.',
     gcp: 'Llama 3.3 70B self-hosted em GCP VPC. Modelos de análise de sentimento versionados no Vertex AI. PI criativa e dados de cliente nunca saem do perímetro GCP.',
@@ -3581,7 +3581,7 @@ var STACK_V = {
     aws: 'Llama 3.3 70B self-hosted e modelos de manutenção preditiva rodando em instância GPU no provider atual. Dados de sensor em S3 com lifecycle policy para retenção histórica. Modelos de ML versionados no SageMaker.',
     azure: 'Llama 3.3 70B self-hosted em Azure VPC. Modelos de manutenção e OEE versionados no Azure ML. Dados de sensor no ADLS com lifecycle policy.',
     kubernetes: 'Agentes de OEE, qualidade por visão e manutenção preditiva rodam como pods com autoscaling. Pico de turno da manhã absorvido automaticamente. Modelos de visão computacional em deployment dedicado com GPU resource limits.',
-    redis: 'Cache de OEE em tempo real por linha — consulta em < 5ms sem pressionar o MES. Score de risco de falha de equipamento em cache com TTL configurado. Regras de qualidade em cache — agente de inspeção decide sem latência de banco.',
+    redis: 'Cache de OEE em tempo real por linha — consulta em \u003C 5ms sem pressionar o MES. Score de risco de falha de equipamento em cache com TTL configurado. Regras de qualidade em cache — agente de inspeção decide sem latência de banco.',
     feature_store: 'Features de telemetria já calculadas consumidas diretamente pelos agentes de manutenção preditiva. Novas features de padrão de falha publicadas na Feature Store para reutilização por múltiplos modelos. Consistência entre treino e serving garantida.',
     vetores: 'Manuais de equipamento, histórico de falhas e runbooks indexados no banco de vetores existente. Agente de análise de causa raiz usa busca semântica — encontra falha similar em segundos. Knowledge base de engenharia acessível em linguagem natural para o técnico de manutenção.',
     dlp: 'PI industrial (fórmulas, processos, parâmetros de produção) monitorada pelo DLP existente. Agentes de qualidade e manutenção operam dentro da política já configurada. ISO 9001 atendido operacionalmente.',
@@ -3616,7 +3616,7 @@ var STACK_V = {
     gcp: 'Dados de satélite e telemetria de campo no GCS com lifecycle policy. Modelos de detecção de praga versionados no Vertex AI. Processamento geoespacial em instância Cloud Computing sob demanda.',
     kafka: 'Eventos de telemetria de campo (sensor de solo, estação meteorológica) publicados em tópico Kafka. Agente de monitoramento de lavoura consome em tempo real — anomalia detectada no ciclo de medição, não no batch diário.',
     kubernetes: 'Agentes de monitoramento de lavoura e previsão de demanda rodam como pods com autoscaling. Pico de safra absorvido automaticamente. Modelos de detecção de praga em deployment dedicado com GPU para processamento de imagem de satélite.',
-    redis: 'Cache de índices de vegetação por talhão — consulta em < 5ms sem reprocessar dado de satélite. Score de risco de praga em cache com TTL configurado. Cotação de hedge em cache atualizado pelo agente de monitoramento de mercado.',
+    redis: 'Cache de índices de vegetação por talhão — consulta em \u003C 5ms sem reprocessar dado de satélite. Score de risco de praga em cache com TTL configurado. Cotação de hedge em cache atualizado pelo agente de monitoramento de mercado.',
     iot_platform: 'Agente de monitoramento de lavoura integrado diretamente ao IoT Platform existente — sensores de solo, temperatura e umidade consumidos via tópico MQTT ou API do hub. Telemetria de maquinário agrícola integrada ao agente de manutenção preditiva via IoT Hub. Zero replicação de dado de campo.',
     siem: 'Acessos a dados estratégicos de produção e hedge enviados ao SIEM. Audit trail de decisões de pulverização rastreável para MAPA e ANVISA.',
     dlp: 'Estratégia de hedge e dados de produção monitorados pelo DLP existente. Agentes de precificação e rastreabilidade operam dentro da política já configurada.'
@@ -3632,7 +3632,7 @@ var STACK_V = {
     azure: 'Llama 3.3 70B self-hosted em Azure VPC. Modelos de manutenção e previsão versionados no Azure ML. Dados de SCADA e telemetria no ADLS com lifecycle policy.',
     kubernetes: 'Agentes de monitoramento de rede e perda comercial rodam como pods com autoscaling. Pico de demanda no horário de ponta absorvido automaticamente. Llama 3.3 70B e modelos de detecção em deployments dedicados com resource limits.',
     siem: 'Alertas de anomalia de rede e detecção de perda comercial enviados ao SIEM. Decisões de manutenção e intervenção rastreáveis no painel de segurança existente. Audit trail para ANEEL integrado ao ambiente já auditado.',
-    redis: 'Cache de status de equipamentos e leituras recentes de medidor — decisão do agente de monitoramento em < 5ms. Score de risco de falha em cache com TTL configurado. Previsão de demanda em cache para consulta rápida pelo sistema de despacho.',
+    redis: 'Cache de status de equipamentos e leituras recentes de medidor — decisão do agente de monitoramento em \u003C 5ms. Score de risco de falha em cache com TTL configurado. Previsão de demanda em cache para consulta rápida pelo sistema de despacho.',
     feature_store: 'Features de telemetria de rede já calculadas consumidas pelos agentes de manutenção e detecção de perda. Novas features de padrão de falha publicadas na Feature Store para reutilização. Consistência entre treino e serving garantida.',
     vetores: 'Normas ANEEL, histórico de manutenção e runbooks indexados no banco de vetores existente. Agente de monitoramento usa busca semântica para identificar falha similar em segundos. Knowledge base de engenharia de rede acessível em linguagem natural.',
     dlp: 'Dados de infraestrutura crítica e PII de consumidor monitorados pelo DLP existente. Agentes de atendimento e faturamento operam dentro da política já configurada. ANEEL e LGPD atendidos operacionalmente.',
@@ -3654,7 +3654,7 @@ var STACK_V = {
     dbt: 'Métricas de evasão, LTV e NPS definidas no dbt existente — agentes consultam definição única. Cohort de receita construído sobre modelos dbt. Documentação de linhagem publicada automaticamente.',
     kafka: 'Eventos de engajamento do aluno (login, progresso, nota) consumidos em tempo real pelo agente de evasão. Score de risco atualizado a cada evento — intervenção no momento certo, não no batch semanal.',
     kubernetes: 'Agentes de tutor adaptativo e correção de atividade rodam como pods com autoscaling. Pico de provas e entrega de trabalhos absorvido automaticamente. Llama 3.3 70B self-hosted em deployment dedicado com resource limits.',
-    redis: 'Cache de score de evasão por aluno — consulta em < 5ms sem pressionar o LMS. Sessão do tutor adaptativo mantida em Redis para contexto entre mensagens. Progresso recente em cache com TTL configurado.',
+    redis: 'Cache de score de evasão por aluno — consulta em \u003C 5ms sem pressionar o LMS. Sessão do tutor adaptativo mantida em Redis para contexto entre mensagens. Progresso recente em cache com TTL configurado.',
     siem: 'Acessos a dado de aluno e conteúdo proprietário enviados ao SIEM. Audit trail de decisões de correção rastreável no painel de segurança existente.',
     dlp: 'Dado de aprendizado e PII de aluno monitorados pelo DLP existente. Agentes de tutor e correção operam dentro da política já configurada. LGPD e MEC atendidos sem nova ferramenta.',
     iam_sso: 'RBAC dos agentes gerenciado pelo IAM existente — aluno / educador / coordenador / DPO / C-level. Portal do aluno integrado ao IAM — SSO sem nova credencial.',
