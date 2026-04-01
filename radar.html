@@ -1173,6 +1173,260 @@ function generateGovDoc(){
 }
 
 function chkG(txt,pri){ return '<div class="gov-check-item"><div class="gov-chk" onclick="govChk(this)"></div><div class="gov-check-text">'+txt+'</div><div class="gov-pri '+pri+'">'+(pri==='gp-now'?'SEMANA 1':pri==='gp-soon'?'MES 1-2':'FUTURO')+'</div></div>'; }
+// ── RENDER FUNCTIONS ──
+
+function buildStore(){
+  // modal store for all clickable data objects
+  window._store = {};
+  function reg(arr, prefix){
+    if(!arr) return;
+    for(var i=0;i<arr.length;i++){
+      if(arr[i].detail) window._store[prefix+i] = arr[i].detail;
+    }
+  }
+  reg(PULSE,'PL');
+  reg(NEWS,'NW');
+  reg(TIMELINE,'TL');
+  reg(RANKING,'RK');
+  reg(BULLETS && BULLETS.absUp,'BU');
+  reg(BULLETS && BULLETS.absDn,'BD');
+  reg(BULLETS && BULLETS.moves,'BM');
+  reg(SQUAD,'SQ');
+  reg(EMGS,'E');
+  reg(DATA_TOOLS,'DT');
+}
+
+function addClick(container, cls){
+  container.querySelectorAll('.'+cls).forEach(function(el){
+    el.onclick = function(){ openModal(window._store[el.dataset.k]); };
+  });
+}
+
+function openModal(d){
+  if(!d) return;
+  var o = document.getElementById('modalOverlay');
+  var stats = d.stats ? d.stats.map(function(s){ return '<div class="m-stat"><div class="m-stat-l">'+s.l+'</div><div class="m-stat-v">'+s.v+'</div></div>'; }).join('') : '';
+  document.getElementById('modalBody').innerHTML =
+    '<div class="m-eye" style="color:var(--green)">'+(d.eye||'')+'</div>'
+    +'<div class="m-title">'+(d.title||'')+'</div>'
+    +(d.context?'<div class="m-sec"><div class="m-sec-l" style="color:var(--t3)">CONTEXTO</div><div class="m-text">'+d.context+'</div></div>':'')
+    +(d.why?'<div class="m-sec"><div class="m-sec-l" style="color:var(--gold)">POR QUE IMPORTA</div><div class="m-text">'+d.why+'</div></div>':'')
+    +(d.impact?'<div class="m-hl"><p>'+d.impact+'</p></div>':'')
+    +(d.how?'<div class="m-sec"><div class="m-sec-l" style="color:var(--blue)">COMO USAR</div><div class="m-text">'+d.how+'</div></div>':'')
+    +(d.players?'<div class="m-sec"><div class="m-sec-l" style="color:var(--t3)">PLAYERS</div><div class="m-text">'+d.players+'</div></div>':'')
+    +(d.risks?'<div class="m-sec"><div class="m-sec-l" style="color:var(--red)">RISCOS</div><div class="m-text">'+d.risks+'</div></div>':'')
+    +(d.actions?'<div class="m-sec"><div class="m-sec-l" style="color:var(--green)">AÇÕES</div><div class="m-text">'+d.actions+'</div></div>':'')
+    +(stats?'<div class="m-stats">'+stats+'</div>':'');
+  o.classList.add('open');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e){
+  if(e.target === this || e.target.classList.contains('modal-close')) this.classList.remove('open');
+});
+
+function renderPulse(){
+  var el = document.getElementById('pbar');
+  var h = '';
+  for(var i=0;i<PULSE.length;i++){
+    var p = PULSE[i];
+    h += '<div class="pc gl '+p.type+'" data-k="PL'+i+'">'
+      +'<div class="pc-lbl">'+p.label+'</div>'
+      +'<div class="pc-val">'+p.value+'</div>'
+      +'<div class="pc-desc">'+p.desc+'</div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+  addClick(el,'pc');
+}
+
+var _newsFilter = 'all';
+function filterNews(f,btn){
+  _newsFilter = f;
+  document.querySelectorAll('#s1 .fb .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderIntel();
+}
+
+function renderIntel(){
+  var el = document.getElementById('intelList');
+  var h = '';
+  var items = NEWS.concat(TIMELINE.map(function(t){ return {tt:t.title,d:t.sub,imp:'Info',col:t.col,dt:t.date,isNew:false,detail:t.detail}; }));
+  for(var i=0;i<items.length;i++){
+    var n = items[i];
+    if(_newsFilter !== 'all' && _newsFilter !== 'NEW' && n.imp !== _newsFilter) continue;
+    if(_newsFilter === 'NEW' && !n.isNew) continue;
+    var key = i < NEWS.length ? 'NW'+i : 'TL'+(i-NEWS.length);
+    h += '<div class="ic gl '+n.imp+'" data-k="'+key+'">'
+      +'<div class="ic-top">'
+      +'<div class="ic-title">'+n.tt+'</div>'
+      +'<div class="ic-badges">'
+      +'<span class="ib ib-'+n.imp+'">'+n.imp.toUpperCase()+'</span>'
+      +(n.isNew?'<span class="ib ib-new">NEW</span>':'')
+      +'</div></div>'
+      +'<div class="ic-desc">'+n.d+'</div>'
+      +'<div class="ic-foot"><span class="ic-date">'+n.dt+'</span><span class="ic-cta">ver mais →</span></div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+  addClick(el,'ic');
+}
+
+function renderRanking(){
+  var el = document.getElementById('rankList');
+  var h = '';
+  for(var i=0;i<RANKING.length;i++){
+    var r = RANKING[i];
+    h += '<div class="ri gl" data-k="RK'+i+'">'
+      +'<div class="ri-num">'+r.rank+'</div>'
+      +'<div><div class="ri-name">'+r.n+'</div><div class="ri-cat">'+r.cat+'</div></div>'
+      +'<div class="ri-vol">'+r.vol+'</div>'
+      +'<div class="ri-chg '+(r.trend==='up'?'cup':'cdn')+'">'+r.chg+'</div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+}
+
+function renderBullets(){
+  var up = document.getElementById('mbAbsUp');
+  var dn = document.getElementById('mbPctUp');
+  var mv = document.getElementById('mbHype');
+  if(up && BULLETS.absUp){
+    up.innerHTML = BULLETS.absUp.map(function(b,i){
+      return '<div class="mb-item" data-k="BU'+i+'" style="cursor:pointer">'
+        +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cup">'+b.chg+'</div></div>'
+        +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use">'+b.use+'</div></div>'
+        +'</div>';
+    }).join('');
+    addClick(up,'mb-item');
+  }
+  if(dn && BULLETS.absDn){
+    dn.innerHTML = BULLETS.absDn.map(function(b,i){
+      return '<div class="mb-item" data-k="BD'+i+'" style="cursor:pointer">'
+        +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cdn">'+b.chg+'</div></div>'
+        +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use">'+b.use+'</div></div>'
+        +'</div>';
+    }).join('');
+    addClick(dn,'mb-item');
+  }
+  if(mv && BULLETS.moves){
+    mv.innerHTML = BULLETS.moves.map(function(b,i){
+      return '<div class="mb-item" data-k="BM'+i+'" style="cursor:pointer;border-left:3px solid '+b.col+';padding-left:10px">'
+        +'<div><div class="mb-name">'+b.title+'</div><div class="mb-chg" style="color:var(--t3)">'+b.date+'</div></div>'
+        +'<div><div class="mb-reason">'+b.use+'</div></div>'
+        +'</div>';
+    }).join('');
+    addClick(mv,'mb-item');
+  }
+}
+
+var _emgSeg = 'all', _emgTier = 'all';
+function filterEmg(type, val, btn){
+  if(type==='seg') _emgSeg = val;
+  else _emgTier = val;
+  var row = btn.closest('.fb');
+  row.querySelectorAll('.fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderEmg();
+}
+
+function renderEmg(){
+  var el = document.getElementById('emgGrid');
+  var h = '';
+  for(var i=0;i<EMGS.length;i++){
+    var e = EMGS[i];
+    if(_emgSeg!=='all' && e.seg!==_emgSeg) continue;
+    if(_emgTier!=='all' && e.tier!==_emgTier) continue;
+    var tc = e.tier==='hot'?'et-hot':e.tier==='rising'?'et-rise':'et-watch';
+    var tl = e.tier==='hot'?'EM ALTA':e.tier==='rising'?'SUBINDO':'RADAR';
+    var sc = e.tier==='hot'?'hot':e.tier==='rising'?'rising':'watch';
+    var stats = (e.stats||[]).map(function(s){ return '<span class="es">'+s+'</span>'; }).join('');
+    h += '<div class="emg gl '+sc+'" data-k="E'+i+'">'
+      +'<div class="emg-hdr"><span class="emg-ico">'+e.ico+'</span><span class="emg-name">'+e.n+'</span><span class="et '+tc+'">'+tl+'</span></div>'
+      +'<div class="emg-cat">'+e.cat+'</div>'
+      +'<div class="emg-why">'+e.why+'</div>'
+      +'<div class="emg-stats">'+stats+'</div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+  addClick(el,'emg');
+}
+
+var _dtFilter = 'all';
+function filterDT(f, btn){
+  _dtFilter = f;
+  document.querySelectorAll('#s5 .fb .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderDT();
+}
+
+function renderDT(){
+  var el = document.getElementById('dtGrid');
+  var h = '';
+  for(var i=0;i<DATA_TOOLS.length;i++){
+    var d = DATA_TOOLS[i];
+    if(_dtFilter!=='all' && d.seg!==_dtFilter) continue;
+    var sc = d.signal && d.signal.t==='new'?'sig-new':d.signal && d.signal.t==='watch'?'sig-watch':'sig-ok';
+    var sm = d.signal ? (typeof d.signal==='object' ? d.signal.m : d.signal) : '';
+    var bc = d.nivel==='ai-native'?'dt-ai-native':'dt-ai-integrado';
+    h += '<div class="dt-card gl" data-k="DT'+i+'">'
+      +'<div class="dt-header">'
+      +'<div class="dt-ico">'+d.ico+'</div>'
+      +'<div><div class="dt-name">'+d.name+'</div><div class="dt-cat">'+d.cat+'</div></div>'
+      +'<span class="dt-badge '+bc+'">'+d.badge+'</span>'
+      +'</div>'
+      +'<div class="dt-why">'+d.why+'</div>'
+      +'<div class="dt-signal '+sc+'">⬤ '+sm+'</div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+  addClick(el,'dt-card');
+}
+
+// ── SQUAD (already defined above, kept here for reference) ──
+var _squadFilter = 'all';
+
+function filterSquad(f, el){
+  _squadFilter = f;
+  document.querySelectorAll('#s3 .fb .fbtn').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  renderSquad();
+}
+
+function renderSquad(){
+  var el = document.getElementById('squadGrid');
+  var h = '';
+  for(var i=0;i<SQUAD.length;i++){
+    var s = SQUAD[i];
+    var isApi = s.func && s.func.indexOf('API') !== -1;
+    var isAssinatura = s.func && (s.func.indexOf('ASSINATURA') !== -1 || s.func.indexOf('EM AVALIACAO') !== -1);
+    var show = _squadFilter==='all'
+      || (_squadFilter==='titular' && s.status==='titular')
+      || (_squadFilter==='especialista' && s.status==='especialista')
+      || (_squadFilter==='new' && s.isNew)
+      || (_squadFilter==='api' && isApi)
+      || (_squadFilter==='assinatura' && isAssinatura);
+    if(!show) continue;
+    var sigText = typeof s.signal === 'object' ? s.signal.m : s.signal;
+    var sc = s.sigType || 'sig-ok';
+    h += '<div class="sq-card gl" data-k="SQ'+i+'" style="border-top:1px solid '+s.col+'44">'
+      +'<div class="sq-glow" style="background:'+s.col+'"></div>'
+      +'<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,'+s.col+',transparent)"></div>'
+      +'<div class="sq-top"><div class="sq-ico">'+s.ico+'</div><div><div class="sq-name">'+s.name+'</div><div class="sq-func">'+s.func+'</div></div></div>'
+      +'<div class="sq-badges">'
+      +'<span class="sqb sqb-T">'+(s.status==='titular'?'TITULAR':'ESPECIALISTA')+'</span>'
+      +(s.isNew?'<span class="sqb sqb-new">NOVA CONTRATAÇÃO</span>':'')
+      +(s.status==='especialista'?'<span class="sqb sqb-exp">SOB DEMANDA</span>':'')
+      +(isApi?'<span class="sqb" style="background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.2)">⚡ API</span>':'')
+      +(!isApi && isAssinatura?'<span class="sqb" style="background:rgba(255,179,64,.1);color:var(--gold);border:1px solid rgba(255,179,64,.2)">💳 ASSINATURA</span>':'')
+      +'</div>'
+      +'<div class="sq-why">'+s.why+'</div>'
+      +'<div class="sq-signal '+sc+'"><span class="sq-sdot"></span>'+sigText+'</div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+  addClick(el,'sq-card');
+}
+
 // ── INIT ──
 buildStore();
 renderPulse();
