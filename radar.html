@@ -734,6 +734,14 @@ const GOV = [
 ];
 
 
+// ── NAVIGATION ──
+function show(id, btn){
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+}
+
 function filterGov(mod,btn){
   _govFilter = mod;
   document.querySelectorAll('#s7 .fbtn').forEach(function(b){ b.classList.remove('on'); });
