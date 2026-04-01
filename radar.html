@@ -403,18 +403,18 @@ footer a{color:var(--green);text-decoration:none}
   <div class="rank-list" id="rankList"></div>
   <div class="mkt-bullets">
     <div class="mb-block gl">
-      <div class="mb-title">📈 5 MAIORES CRESCIMENTOS ABSOLUTOS</div>
-      <div class="mb-sub">Volume de visitas adicionadas no mês</div>
+      <div class="mb-title">📈 EM ALTA</div>
+      <div class="mb-sub">Crescimento acelerado — produto relevante ou aquisição</div>
       <div id="mbAbsUp"></div>
     </div>
     <div class="mb-block gl">
-      <div class="mb-title">🚀 5 MAIORES CRESCIMENTOS PERCENTUAIS</div>
-      <div class="mb-sub">Velocidade de crescimento relativo ao tamanho</div>
+      <div class="mb-title">📉 EM BAIXA</div>
+      <div class="mb-sub">Perda de relevância, substituição ou declínio</div>
       <div id="mbPctUp"></div>
     </div>
     <div class="mb-block gl" style="grid-column:1/-1">
-      <div class="mb-title">⚡ HYPES DO MOMENTO — TRAÇÃO REAL MAS RISCO ALTO</div>
-      <div class="mb-sub">Cresceram rápido agora em Mar 2026 — monitorar antes de depender</div>
+      <div class="mb-title">⚡ MOVIMENTOS DE MERCADO</div>
+      <div class="mb-sub">Aquisições, rodadas e parcerias estratégicas — Mar/Abr 2026</div>
       <div id="mbHype" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 24px"></div>
     </div>
   </div>
@@ -1311,7 +1311,7 @@ function renderBullets(){
     dn.innerHTML = BULLETS.absDn.map(function(b,i){
       return '<div class="mb-item" data-k="BD'+i+'" style="cursor:pointer">'
         +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cdn">'+b.chg+'</div></div>'
-        +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use">'+b.use+'</div></div>'
+        +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use" style="color:var(--red);opacity:.7">'+b.use+'</div></div>'
         +'</div>';
     }).join('');
     addClick(dn,'mb-item');
