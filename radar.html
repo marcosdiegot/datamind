@@ -153,6 +153,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .dt-why{font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:8px}
 .dt-signal{font-family:var(--mono);font-size:10px;padding:5px 8px;border-radius:6px;line-height:1.4;display:flex;align-items:flex-start;gap:5px}
 
+/* RUMORS */
+.rc{padding:14px 18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;border-style:dashed !important}
+.rc:hover{transform:translateX(3px);background:var(--gm) !important;border-color:var(--rimh) !important}
+.rc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:16px 0 0 16px}
+.rb-exp::before{background:var(--red)}.rb-alto::before{background:var(--gold)}.rb-med::before{background:var(--blue)}
+.rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.rc-title{font-size:13px;font-weight:600;color:var(--t1);line-height:1.4;flex:1}
+.rc-badges{display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap}
+.rb{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600}
+.rb-rumor{background:rgba(255,179,64,.12);color:var(--gold);border:1px solid rgba(255,179,64,.25)}
+.rb-prov{background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.2)}
+.rb-poss{background:rgba(77,159,255,.1);color:var(--blue);border:1px solid rgba(77,159,255,.2)}
+.rb-improv{background:rgba(255,255,255,.04);color:var(--t3);border:1px solid var(--rim)}
+.rc-desc{font-size:11px;color:var(--t2);line-height:1.65;margin-bottom:8px}
+.rc-foot{display:flex;align-items:center;justify-content:space-between}
+.rc-src{font-family:var(--mono);font-size:9px;color:var(--t3)}
+.rc-cta{font-family:var(--mono);font-size:10px;color:var(--gold);opacity:.7}
+
 /* FILTERS */
 .fb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;align-items:center}
 .fl{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);min-width:52px}
@@ -396,6 +414,10 @@ footer a{color:var(--green);text-decoration:none}
     <button class="fbtn" onclick="filterNews('NEW',this)">NOVO</button>
   </div>
   <div class="intel-list" id="intelList"></div>
+
+  <div class="slabel" style="margin-top:28px">MAIS AGUARDADOS — RUMORES & ESPECULAÇÕES</div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-bottom:14px;letter-spacing:1px">ESPECULAÇÕES COM BUZZ REAL NO X — NÃO CONFIRMADOS</div>
+  <div class="intel-list" id="rumorList"></div>
 </div>
 
 <div class="sec" id="s2">
@@ -542,7 +564,16 @@ footer a{color:var(--green);text-decoration:none}
 <script>
 // ── DATA ──
 
-const PULSE = [
+const RUMORS = [
+  {tt:'Claude Mythos / Capybara — modelo acima do Opus com foco enterprise',d:'Codename Capybara vazado no leak do Claude Code. Tier acima do Opus com step-change em coding e reasoning. Release especulado para 16/abr. Preco $120-600/M tokens, acesso limitado. Benchmarks vazados no source map do npm.',buzz:'explosivo',prob:'provavel',col:'#b06eff',src:'@Polymarket + audit do Claude Code leak',detail:{title:'Claude Mythos / Capybara: novo tier acima do Opus',eye:'RUMOR · EXPLOSIVO · ABR 2026',why:'Benchmarks vazados no source map do npm indicam modelo com performance muito acima do Opus 4.6 em coding e reasoning. Anthropic confirmou testes internos.',impact:'Para DataMind: se confirmado, revisar estrategia de pricing de API. Tier enterprise com acesso limitado pode criar vantagem competitiva para early adopters.',stats:[{l:'CODENAME',v:'Capybara'},{l:'RELEASE',v:'~16 Abr (especulado)'},{l:'PRECO',v:'$120-600/M tokens'},{l:'PROB.',v:'Provavel'}]}},
+  {tt:'OpenAI Spud / GPT-5.5 — pre-treinamento concluido, lancamento em semanas',d:'Pre-treinamento concluido em 25/mar. Sam Altman teria dito internamente "sai em poucas semanas" e "pode acelerar a economia". Sora descontinuado para liberar compute para este modelo. Polymarket 66% de chance ate 30/abr.',buzz:'alto',prob:'provavel',col:'#4d9fff',src:'@deredleritt3r + Polymarket 66%',detail:{title:'OpenAI Spud / GPT-5.5: lancamento em semanas',eye:'RUMOR · ALTO · ABR 2026',why:'Pre-treinamento confirmado por insiders. Polymarket precifica 66% de chance de lancamento ate 30/abr. Altman disse que "pode acelerar a economia".',impact:'Para DataMind: avaliar impacto no gateway OpenRouter. GPT-5.5 pode substituir GPT-5.4 como default para tarefas medias.',stats:[{l:'PRE-TREINO',v:'Concluido 25/Mar'},{l:'POLYMARKET',v:'66% ate 30/Abr'},{l:'COMPUTE',v:'Sora cancelado'},{l:'PROB.',v:'Provavel'}]}},
+  {tt:'Grok 5 beta publico — 6T parametros, Colossus 2 a 1,5GW',d:'Modelo de 6 trilhoes de parametros treinando desde final de 2025. Expansao do Colossus 2 para 1,5GW prevista para meados de abril. Musk declarou publicamente "10% de chance de AGI". Practitioners apostam em beta breve em Q2 2026.',buzz:'medio-alto',prob:'possivel',col:'#ff3d6e',src:'Posts Musk + insiders xAI + listas April model drops',detail:{title:'Grok 5: 6T parametros em beta breve',eye:'RUMOR · MEDIO-ALTO · ABR 2026',why:'Colossus 2 expandindo para 1,5GW de compute. Musk falou em 10% de chance de AGI. Maior modelo da xAI ate agora.',impact:'Para DataMind: monitorar API pricing. Se Grok 5 mantiver preco agressivo de $0,20/M como Grok 4.1, muda a equacao de custo do squad.',stats:[{l:'PARAMETROS',v:'6 trilhoes'},{l:'COMPUTE',v:'Colossus 2 1,5GW'},{l:'MUSK',v:'10% chance AGI'},{l:'PROB.',v:'Possivel Q2'}]}},
+  {tt:'Meta Llama 5 Avocado — world-model para Ray-Ban glasses',d:'Codename Avocado com foco em world-model reasoning para Ray-Ban Meta glasses. Target original Q1 2026 atrasou. Possivel lancamento conjunto com Behemoth em abril. Meta tem historico de delays mas pressao competitiva e alta.',buzz:'medio',prob:'possivel',col:'#4285f4',src:'Threads April AI model chaos + insiders Meta',detail:{title:'Meta Llama 5 Avocado: world-model reasoning',eye:'RUMOR · MEDIO · ABR 2026',why:'Llama 5 com foco em raciocinio espacial e world-model para devices fisicos (Ray-Ban). Diferente dos modelos anteriores de texto puro.',impact:'Para DataMind: Llama 5 open-weight pode ser alternativa local-first para clientes com restricao de soberania de dados.',stats:[{l:'CODENAME',v:'Avocado'},{l:'TARGET',v:'Q1 atrasou → Abr'},{l:'FOCO',v:'World-model'},{l:'PROB.',v:'Possivel'}]}},
+  {tt:'April Model Madness — 8+ lancamentos simultaneos em abril',d:'Mês mais caotico do ano: DeepSeek V4, Gemini 3.1 Flash/Pro updates, Kimi K3, Minimax M3, Gemma 4, Claude Sonnet/Haiku updates, Zhipu GLM 5.1 open-weights e mais. Devs chamando de "pure chaos". Varios labs ja confirmaram janelas de abril.',buzz:'alto',prob:'provavel',col:'#ffb340',src:'@aibiceps + @RelativelySmart 01/abr + listas virais 2k-4k likes',detail:{title:'April Model Madness: 8+ lancamentos em semanas',eye:'RUMOR · ALTO · ABR 2026',why:'Consenso entre practitioners: abril 2026 sera o mes de mais lancamentos simultaneos da historia da IA. Varios labs confirmaram janelas. Listas virais com 2k-4k likes.',impact:'Para DataMind: preparar briefing de comparacao de modelos para clientes. Janela de confusion = oportunidade de posicionamento como curador.',stats:[{l:'MODELOS',v:'8+ lancamentos'},{l:'BUZZ',v:'Listas virais 4k+ likes'},{l:'LABS',v:'DeepSeek+Google+Meta+xAI'},{l:'PROB.',v:'Provavel'}]}},
+  {tt:'OpenAI AI Research Intern — agente cientifico autonomo em 2026',d:'Agente capaz de resolver pacotes completos de pesquisa cientifica end-to-end ainda em 2026. Pivot interno para agents cientificos. True researcher autonomo projetado para 2028. Timeline interno citado como "on track" por insiders.',buzz:'medio',prob:'possivel',col:'#00e5a0',src:'MIT Technology Review + @chatgpt21 + rumores internos OpenAI',detail:{title:'OpenAI AI Research Intern: ciencia autonoma',eye:'RUMOR · MEDIO · ABR 2026',why:'OpenAI pivotando para agentes cientificos. AI Research Intern resolve pesquisa end-to-end. True autonomous researcher projetado para 2028.',impact:'Para DataMind: sinal de que agentes especializados por dominio (nao so coding) serao o proximo fronte. Posicionar antes da onda.',stats:[{l:'FUNCAO',v:'Pesquisa end-to-end'},{l:'TIMELINE',v:'2026 (intern)'},{l:'AUTONOMO',v:'2028 (researcher)'},{l:'PROB.',v:'Possivel'}]}},
+];
+
+
   {type:'up',label:'SINAL MAIS QUENTE',value:'Claude Code leak',desc:'Vazamento do source code (~512k linhas TS) gerou forks em <48h, stacks locais com Ollama e 45k+ likes organicos. Agentic coding entrou em modo fork and own.',detail:{title:'Claude Code leak: agentic coding vira open',eye:'EVENTO · 31 MAR 2026',why:'Anthropic vazou codigo via source map no npm. Devs forkearam em Python, Rust e JS em menos de 48h. OpenCode e claw-code ja tem traction real no GitHub.',impact:'Mudanca de paradigma: execucao local-first, soberania de stack, reducao de vendor lock-in.',stats:[{l:'LINHAS',v:'~512k TS'},{l:'FORKS',v:'+48h'},{l:'SIGNAL',v:'45k+ likes'},{l:'TENDENCIA',v:'Local-first'}]}},
   {type:'nw',label:'ALERTA DE MERCADO',value:'Genericos perdem',desc:'Agentes genericos sem contexto de dominio estao sendo substituidos por especializados. Jasper -60%, Copy.ai -45%. Data practitioners preferem ferramentas que entendem schema e pipeline.',detail:{title:'Especializacao vence generalismo — alerta para stack',eye:'TENDENCIA · ABR 2026',why:'No X, data engineers confirmam: agentes genericos geram slop em pipelines. Ferramentas especializadas por dominio (dbt, warehouse, legal, contabil) superam coding agents multiproposto.',impact:'Revisar recomendacoes de stack: menos um LLM para tudo, mais agentes por dominio.',stats:[{l:'JASPER',v:'-60% YoY'},{l:'COPY.AI',v:'-45% YoY'},{l:'CAUSA',v:'AI nativa embarcada'},{l:'PADRAO',v:'Vertical > Generico'}]}},
   {type:'up',label:'CRESCIMENTO',value:'Lovable +48% MoM',desc:'Text-to-app segue como categoria de maior crescimento. Lovable $400M ARR. Replit Agent 2.0 +42%. Cursor +35%. Coding e prototipagem rapida lideram expansao.',detail:{title:'Text-to-app e coding tools lideram crescimento',eye:'MERCADO · MAR 2026',why:'Lovable dobrou ARR em 1 ano para $400M. Replit valuation saltou para $9B. Cursor 280M visitas. Categoria de coding e prototipagem cresce mais que chatbots genericos.',impact:'Demanda por entrega rapida de produto abre mercado para consultores que incluem prototipagem no escopo.',stats:[{l:'LOVABLE ARR',v:'$400M'},{l:'REPLIT',v:'$9B valuation'},{l:'CURSOR',v:'+35% MoM'},{l:'CATEGORIA',v:'Coding tools'}]}},
@@ -1214,6 +1245,7 @@ function buildStore(){
       if(arr[i].detail) window._store[prefix+i] = arr[i].detail;
     }
   }
+  reg(RUMORS,'RU');
   reg(PULSE,'PL');
   reg(NEWS,'NW');
   reg(TIMELINE,'TL');
@@ -1354,7 +1386,32 @@ function renderBullets(){
   });
 }
 
-var _emgSeg = 'all', _emgTier = 'all';
+function renderRumors(){
+  var el = document.getElementById('rumorList');
+  if(!el) return;
+  var h = '';
+  var buzzClass = {explosivo:'rb-exp',alto:'rb-alto','medio-alto':'rb-med',medio:'rb-med'};
+  var probLabel = {provavel:'PROVÁVEL',possivel:'POSSÍVEL',improvavel:'IMPROVÁVEL'};
+  var probClass = {provavel:'rb-prov',possivel:'rb-poss',improvavel:'rb-improv'};
+  for(var i=0;i<RUMORS.length;i++){
+    var r = RUMORS[i];
+    var bc = buzzClass[r.buzz] || 'rb-med';
+    h += '<div class="rc gl '+bc+'" data-k="RU'+i+'">'
+      +'<div class="rc-top">'
+      +'<div class="rc-title">'+r.tt+'</div>'
+      +'<div class="rc-badges">'
+      +'<span class="rb rb-rumor">RUMOR</span>'
+      +'<span class="rb '+(probClass[r.prob]||'rb-poss')+'">'+(probLabel[r.prob]||r.prob.toUpperCase())+'</span>'
+      +'</div></div>'
+      +'<div class="rc-desc">'+r.d+'</div>'
+      +'<div class="rc-foot"><span class="rc-src">'+r.src+'</span><span class="rc-cta">ver mais →</span></div>'
+      +'</div>';
+  }
+  el.innerHTML = h;
+  addClick(el,'rc');
+}
+
+
 function filterEmg(type, val, btn){
   if(type==='seg') _emgSeg = val;
   else _emgTier = val;
@@ -1466,6 +1523,7 @@ function renderSquad(){
 buildStore();
 renderPulse();
 renderIntel();
+renderRumors();
 renderRanking();
 renderBullets();
 renderSquad();
