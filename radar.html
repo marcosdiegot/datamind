@@ -43,16 +43,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .slabel{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--rim),transparent)}
 
-/* DECISION LAYER */
-.dl{margin-bottom:24px;padding:18px 20px;background:linear-gradient(135deg,rgba(0,229,160,.04),rgba(77,159,255,.03));backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(0,229,160,.15);border-radius:16px;position:relative;overflow:hidden}
-.dl::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,160,.5),transparent)}
-.dl-tag{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);opacity:.8;margin-bottom:12px;display:block}
-.dl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.dl-card{background:rgba(255,255,255,.03);border:1px solid var(--rim);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s}
-.dl-card:hover{background:var(--gm);border-color:var(--rimh);transform:translateY(-1px)}
-.dl-headline{font-size:12px;font-weight:600;color:var(--t1);line-height:1.4;margin-bottom:6px}
-.dl-impact{font-size:11px;color:var(--t2);line-height:1.5;margin-bottom:8px}
-.dl-action{font-family:var(--mono);font-size:10px;color:var(--green)}
+
 
 /* PULSE */
 .pbar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
@@ -393,8 +384,6 @@ footer a{color:var(--green);text-decoration:none}
 <main class="main">
 
 <div class="sec on" id="s1">
-  <div class="slabel">DECISION LAYER — O QUE FAZER AGORA</div>
-  <div class="dl" id="decisionLayer"></div>
   <div class="slabel" style="margin-top:20px">PULSE — O QUE MUDOU</div>
   <div class="pbar" id="pbar"></div>
   <div class="slabel">INTEL FEED</div>
@@ -542,11 +531,7 @@ footer a{color:var(--green);text-decoration:none}
 
 <script>
 // ── DATA ──
-const DECISIONS = [
-  { headline:'Agentic coding saiu da demo — stack fragmentada virou obsoleta', impact:'O mercado migrou de copilot para orquestracao real: execucao local, MCP, controle do agente. Claude Code leak acelerou forks comunitarios (OpenCode, claw-code). Consultorias que ainda vendem chatbot e POC de prompt vao parecer atrasadas.', action:'Atualizar oferta: substituir proposta de copilot por build systems com agents + tools + MCP. Entregar outcome, nao acesso a ferramenta.', detail:{title:'Agentic coding: stack fragmentada virou obsoleta',eye:'DECISAO ESTRATEGICA · ABR 2026',why:'Claude Code leak gerou 45k+ likes, forks em <48h, stacks locais reais. O mercado nao esta testando — esta construindo. Cursor+Claude Code+n8n e o novo padrao de producao.',impact:'Consultorias que nao entregam agentes com tools/MCP reais perdem espaco rapidamente.',stats:[{l:'FORKS',v:'+48h post-leak'},{l:'SIGNAL',v:'45k+ likes organicos'},{l:'NOVO PADRAO',v:'MCP + local-first'},{l:'ACAO',v:'Agora'}]}},
-  { headline:'RAG in-database: eliminar vector DB externa e argumento de venda agora', impact:'BigQuery AI.EMBED + AI.SIMILARITY em GA permitem vender busca semantica e copilotos corporativos em arquitetura de 2 componentes, nao 5. Menor custo, menor tempo de implantacao, governanca melhor. Diferencial comercial imediato para clientes GCP.', action:'Empacotar oferta de busca semantica / copiloto corporativo em BigQuery. Pitch: arquitetura simplificada + governanca nativa.', detail:{title:'BigQuery AI.EMBED + AI.SIMILARITY: RAG in-database em GA',eye:'ACAO TECNICA · 23 MAR 2026',why:'Embeddings e similaridade semantica agora sao funcoes SQL nativas no BigQuery. Elimina Pinecone, Weaviate, Redis Vector e qualquer vector DB externa.',impact:'Para clientes GCP: produto de busca semantica com data prep em linguagem natural + Gemini nativo.',stats:[{l:'LANCAMENTO',v:'23 Mar 2026 GA'},{l:'FUNCAO',v:'AI.EMBED + AI.SIMILARITY'},{l:'ELIMINA',v:'Vector DB externa'},{l:'GANHO',v:'Governanca + custo'}]}},
-  { headline:'Agente especializado bate agente generico em dados — mudar recomendacao de stack', impact:'Data practitioners confirmam no X: agentes genericos (Claude/Cursor puro) geram regressoes e slop em pipelines de dados. Altimate-code com 100+ tools especializadas para dbt e warehouse outperforma coding agents genericos em producao. Muda a tese de stack para clientes data-heavy.', action:'Incluir Altimate ou ferramentas especializadas por dominio nas proximas propostas de data engineering. Parar de recomendar agente generico para pipelines de dados.', detail:{title:'Agente especializado vence generico em data engineering',eye:'INTEL TECNICA · ABR 2026',why:'Benchmark de practitioners no X: agentes genericos geram slop, faltam governance e quebram em producao. Altimate-code: 100+ tools especializadas para dbt, schemas e warehouses.',impact:'Mudar recomendacao de stack data: ferramenta especializada por dominio, nao coding agent multiproposto.',stats:[{l:'PROBLEMA',v:'Slop em pipelines'},{l:'SOLUCAO',v:'100+ tools especializadas'},{l:'VALIDACAO',v:'Benchmark X practitioners'},{l:'URGENCIA',v:'Alta'}]}},
-];;
+
 const PULSE = [
   {type:'up',label:'SINAL MAIS QUENTE',value:'Claude Code leak',desc:'Vazamento do source code (~512k linhas TS) gerou forks em <48h, stacks locais com Ollama e 45k+ likes organicos. Agentic coding entrou em modo fork and own.',detail:{title:'Claude Code leak: agentic coding vira open',eye:'EVENTO · 31 MAR 2026',why:'Anthropic vazou codigo via source map no npm. Devs forkearam em Python, Rust e JS em menos de 48h. OpenCode e claw-code ja tem traction real no GitHub.',impact:'Mudanca de paradigma: execucao local-first, soberania de stack, reducao de vendor lock-in.',stats:[{l:'LINHAS',v:'~512k TS'},{l:'FORKS',v:'+48h'},{l:'SIGNAL',v:'45k+ likes'},{l:'TENDENCIA',v:'Local-first'}]}},
   {type:'nw',label:'ALERTA DE MERCADO',value:'Genericos perdem',desc:'Agentes genericos sem contexto de dominio estao sendo substituidos por especializados. Jasper -60%, Copy.ai -45%. Data practitioners preferem ferramentas que entendem schema e pipeline.',detail:{title:'Especializacao vence generalismo — alerta para stack',eye:'TENDENCIA · ABR 2026',why:'No X, data engineers confirmam: agentes genericos geram slop em pipelines. Ferramentas especializadas por dominio (dbt, warehouse, legal, contabil) superam coding agents multiproposto.',impact:'Revisar recomendacoes de stack: menos um LLM para tudo, mais agentes por dominio.',stats:[{l:'JASPER',v:'-60% YoY'},{l:'COPY.AI',v:'-45% YoY'},{l:'CAUSA',v:'AI nativa embarcada'},{l:'PADRAO',v:'Vertical > Generico'}]}},
@@ -1190,7 +1175,6 @@ function generateGovDoc(){
 function chkG(txt,pri){ return '<div class="gov-check-item"><div class="gov-chk" onclick="govChk(this)"></div><div class="gov-check-text">'+txt+'</div><div class="gov-pri '+pri+'">'+(pri==='gp-now'?'SEMANA 1':pri==='gp-soon'?'MES 1-2':'FUTURO')+'</div></div>'; }
 // ── INIT ──
 buildStore();
-renderDecision();
 renderPulse();
 renderIntel();
 renderRanking();
