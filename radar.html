@@ -403,19 +403,29 @@ footer a{color:var(--green);text-decoration:none}
   <div class="rank-list" id="rankList"></div>
   <div class="mkt-bullets">
     <div class="mb-block gl">
-      <div class="mb-title">📈 EM ALTA</div>
-      <div class="mb-sub">Crescimento acelerado — produto relevante ou aquisição</div>
+      <div class="mb-title">📈 5 MAIORES CRESCIMENTOS ABSOLUTOS</div>
+      <div class="mb-sub">Volume de visitas adicionadas no mês</div>
       <div id="mbAbsUp"></div>
     </div>
     <div class="mb-block gl">
-      <div class="mb-title">📉 EM BAIXA</div>
-      <div class="mb-sub">Perda de relevância, substituição ou declínio</div>
+      <div class="mb-title">🚀 5 MAIORES CRESCIMENTOS PERCENTUAIS</div>
+      <div class="mb-sub">Velocidade de crescimento relativo ao tamanho</div>
       <div id="mbPctUp"></div>
     </div>
     <div class="mb-block gl" style="grid-column:1/-1">
-      <div class="mb-title">⚡ MOVIMENTOS DE MERCADO</div>
-      <div class="mb-sub">Aquisições, rodadas e parcerias estratégicas — Mar/Abr 2026</div>
+      <div class="mb-title">⚡ HYPES DO MOMENTO — TRAÇÃO REAL MAS RISCO ALTO</div>
+      <div class="mb-sub">Cresceram rápido agora — monitorar antes de depender</div>
       <div id="mbHype" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 24px"></div>
+    </div>
+    <div class="mb-block gl" style="grid-column:1/-1">
+      <div class="mb-title">📉 EM BAIXA</div>
+      <div class="mb-sub">Perda de relevância, substituição ou declínio — Mar/Abr 2026</div>
+      <div id="mbDn" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 24px"></div>
+    </div>
+    <div class="mb-block gl" style="grid-column:1/-1">
+      <div class="mb-title">🔀 MOVIMENTOS DE MERCADO</div>
+      <div class="mb-sub">Aquisições, rodadas e parcerias estratégicas — Mar/Abr 2026</div>
+      <div id="mbMoves" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 24px"></div>
     </div>
   </div>
 </div>
@@ -589,25 +599,37 @@ const SQUAD = [
 ];;
 const BULLETS = {
   absUp: [
-    {n:'Cursor',      chg:'+35% MoM', reason:'MCP Apps nativos, Automations em background, RL a cada 5h. Virou hub de coding agentico com integracao a ERPs e APIs externas. JetBrains support expande para Java/Kotlin.', use:'IDE agentico — titular do squad DataMind'},
-    {n:'Lovable',     chg:'+48% MoM', reason:'ARR $400M (dobrou em 1 ano). 200k novos projetos/dia. Expandiu para BI e apresentacoes alem de apps. Buscando aquisicoes de teams.', use:'Product delivery interativo — especialista DataMind'},
-    {n:'Replit',      chg:'+42% MoM', reason:'Agent 2.0 com preview em tempo real e 10x autonomia. Valuation saltou para $9B em 6 meses. ARR projetado ~$1B.', use:'Prototipagem rapida — alternativa ao Lovable'},
-    {n:'n8n',         chg:'+28% MoM', reason:'AI Agent Builder nativo com memoria e guardrails. 400+ nodes open-source. Roadmap 2026 foca enterprise (SSO, audit logs).', use:'Backbone de automacao — titular DataMind'},
-    {n:'Claude Code', chg:'+40% MoM', reason:'#1 em coding benchmark. Computer Use + Dispatch GA. Leak gerou forks e adocao acelerada. Orquestrador tecnico central do DataMind.', use:'Execucao tecnica — titular DataMind'},
+    {n:'Lovable',      chg:'+210M visits', reason:'ARR $400M (dobrou em 1 ano). 200k projetos/dia. Expandiu para BI e apresentacoes. Text-to-app e a categoria de maior crescimento absoluto.', use:'Product delivery interativo — especialista DataMind'},
+    {n:'Cursor',       chg:'+100M visits',  reason:'MCP Apps nativos, Automations em background, RL a cada 5h. Virou hub de coding agentico com integracao a ERPs e APIs externas.', use:'IDE agentico — titular do squad DataMind'},
+    {n:'Perplexity',   chg:'+85M visits',   reason:'AEO emergindo como canal B2B. 450M visitas/mes. Clientes C-level pesquisam consultores aqui antes do LinkedIn.', use:'Pesquisa com fontes — titular DataMind'},
+    {n:'n8n',          chg:'+40M visits',   reason:'AI Agent Builder nativo com memoria e guardrails. 400+ nodes open-source. Automacao agentica acessivel sem codigo.', use:'Backbone de automacao — titular DataMind'},
+    {n:'Claude.ai',    chg:'+185M visits',  reason:'1,2B visitas em Mar 2026 (+18,7% MoM). Claude Code leak acelerou adocao. Maior crescimento absoluto entre os LLM assistants.', use:'Orquestrador principal — titular DataMind'},
+  ],
+  pctUp: [
+    {n:'Lovable',       chg:'+48% MoM', reason:'Dobrou ARR para $400M. 200k projetos/dia. Buscando aquisicoes. Maior crescimento percentual entre ferramentas estabelecidas.', use:'Product delivery — especialista DataMind'},
+    {n:'Replit',        chg:'+42% MoM', reason:'Agent 2.0 com preview em tempo real, 10x autonomia, auto-fix de bugs. Valuation saltou para $9B em 6 meses.', use:'Prototipagem rapida — avaliar como alternativa ao Lovable'},
+    {n:'Cursor',        chg:'+35% MoM', reason:'MCP 2.6, background automations, RL em producao. Lider comercial de IDE agentico com crescimento consistente.', use:'IDE agentico — titular DataMind'},
+    {n:'n8n',           chg:'+28% MoM', reason:'AI Agent Builder nativo. 400+ nodes. Roadmap enterprise 2026. Automacao com agentes cresce mais que automacao tradicional.', use:'Backbone de automacao — titular DataMind'},
+    {n:'Claude Code',   chg:'+40% MoM', reason:'#1 em coding benchmark. Computer Use GA. Leak gerou forks e adocao explosiva. Maior crescimento percentual na categoria coding.', use:'Execucao tecnica — titular DataMind'},
+  ],
+  hype: [
+    {date:'ABR 26',col:'#b06eff',title:'OpenCode / claw-code',use:'Forks do Claude Code surgidos em <48h. Crescimento 100% organico no GitHub. Sinal de local-first sovereignty — sem dados de trafego consolidados ainda.',detail:{title:'OpenCode + claw-code: forks virais do Claude Code',eye:'HYPE · ABR 2026',why:'Surgiram <48h apos o leak. Sem PR. Devs construindo stacks locais com Ollama para fugir de rate limits e vendor lock.',impact:'Sinal real de adocao mas sem metricas consolidadas. Monitorar antes de incluir em propostas.',stats:[{l:'ORIGEM',v:'Leak Claude Code'},{l:'SURGIU',v:'+48h'},{l:'DADOS',v:'Sem metricas ainda'},{l:'RISCO',v:'Imaturidade'}]}},
+    {date:'MAR 26',col:'#00e5a0',title:'Cerebras via AWS Bedrock',use:'5x throughput, -80% custo open-source. Parceria anunciada em mar 2026. Ainda em adocao inicial — benchmark impressionante mas producao a confirmar.',detail:{title:'Cerebras + Bedrock: inference barata em validacao',eye:'HYPE · MAR 2026',why:'Parceria AWS+Cerebras promete 5x throughput e 80% menos custo para LLMs open-source. Numeros impressionantes mas poucos relatos de producao real.',impact:'Testar em workloads de alto volume antes de recomendar para clientes.',stats:[{l:'THROUGHPUT',v:'5x'},{l:'CUSTO',v:'-80%'},{l:'STATUS',v:'Early adoption'},{l:'RISCO',v:'Validar em producao'}]}},
+    {date:'MAR 26',col:'#ffb340',title:'Altimate-code',use:'100+ tools especializadas para dbt e warehouses. Buzz forte entre data practitioners mas sem metricas publicas de trafego ou rodada confirmada.',detail:{title:'Altimate-code: agente especializado em validacao',eye:'HYPE · ABR 2026',why:'Data engineers no X confirmam: outperforma coding agents genericos em pipelines de dados. Mas sem dados publicos de adocao.',impact:'Avaliar em projeto piloto antes de incluir em stack de cliente.',stats:[{l:'FERRAMENTAS',v:'100+'},{l:'BUZZ',v:'Forte no X'},{l:'DADOS PUBLICOS',v:'Poucos'},{l:'STATUS',v:'Em avaliacao'}]}},
   ],
   absDn: [
     {n:'Jasper',   chg:'-60% YoY',  reason:'Perdeu subscribers para AI nativa embarcada em Google Docs, Notion e suites genericas. Categoria de copywriting standalone se tornou indefensavel.', use:'Evitar em recomendacoes de stack'},
     {n:'Copy.ai',  chg:'-45% YoY',  reason:'Free tier do ChatGPT tornou pricing injustificavel. Mesma dinamica do Jasper: categoria corroida por AI embarcada.', use:'Evitar em recomendacoes de stack'},
-    {n:'Synthesia', chg:'-38% YoY', reason:'Avatares de video nao superaram o uncanny valley. Diferenciacao baixa e natureza do output percebida como artificial. Clientes pararam de usar.', use:'Cautela em propostas'},
+    {n:'Synthesia', chg:'-38% YoY', reason:'Avatares de video nao superaram o uncanny valley. Diferenciacao baixa. Clientes pararam de usar.', use:'Cautela em propostas'},
     {n:'AI Writing Detectors', chg:'-70% YoY', reason:'Precisao nunca superou 60%. Falsos positivos destruiram confianca. Categoria morreu por falta de produto funcional.', use:'Nao recomendar'},
-    {n:'DeepSeek', chg:'-50% desde mai/25', reason:'Instabilidade de plataforma e restricao de soberania de dados afastaram adotantes. Ainda relevante como API barata com restricao para setores regulados.', use:'Somente via API para tarefas nao sensiveis'},
+    {n:'DeepSeek', chg:'-50% desde mai/25', reason:'Instabilidade de plataforma e restricao de soberania afastaram adotantes. Ainda relevante como API barata com restricao para setores regulados.', use:'Somente via API para tarefas nao sensiveis'},
   ],
   moves: [
-    {date:'MAR 26',col:'#00e5a0',title:'OpenAI rodada adicional +$10B (total >$120B)',use:'Amazon, Nvidia, SoftBank. Maior financiamento privado da historia. Consolida posicao de mercado.',detail:{title:'OpenAI >$120B: consolidacao definitiva',eye:'FINANCIAMENTO · MAR 2026',context:'Rodada adicional ancorada por Amazon, Nvidia e SoftBank.',why:'Validacao de mercado. Pressao competitiva sobre players locais.',impact:'Janela para DataMind se posicionar como especialista de aplicacao.',stats:[{l:'RODADA',v:'+$10B'},{l:'TOTAL',v:'>$120B'},{l:'LIDERADO',v:'Amazon+Nvidia+SoftBank'},{l:'DATA',v:'Mar 2026'}]}},
-    {date:'MAR 26',col:'#4d9fff',title:'Replit $400M Series — valuation $9B',use:'Tripling de valuation em 6 meses. AI-assisted coding atingiu valuation de infraestrutura.',detail:{title:'Replit $9B: coding como infraestrutura',eye:'RODADA · MAR 2026',context:'Replit captou $400M com valuation de $9B.',why:'Text-to-app e agentic coding viram categoria de infraestrutura.',impact:'Demanda por prototipagem rapida como servico cresce.',stats:[{l:'RODADA',v:'$400M'},{l:'VALUATION',v:'$9B'},{l:'CRESCIMENTO',v:'3x em 6 meses'},{l:'ARR PROJ',v:'~$1B'}]}},
-    {date:'MAR 26',col:'#ffb340',title:'Nscale $2B Series C — compute soberano europeu',use:'Valuation $14,6B. GPU data center como asset class soberano. Maior rodada equity da Europa.',detail:{title:'Nscale: compute AI virou ativo soberano',eye:'RODADA · MAR 2026',context:'Nscale captou $2B Series C com valuation de $14,6B.',why:'GPU data centers sao agora asset class soberano — nao so infraestrutura.',impact:'Tendencia de soberania de compute chega ao Brasil.',stats:[{l:'RODADA',v:'$2B'},{l:'VALUATION',v:'$14,6B'},{l:'TIPO',v:'GPU data center'},{l:'SINAL',v:'Compute soberano'}]}},
-    {date:'MAR 26',col:'#b06eff',title:'Legora $550M Series D — Legal AI $5,55B',use:'Accel liderou. Vertical AI SaaS atrai late-stage capital sem compute capex. Template para verticals reguladas.',detail:{title:'Legora $5,55B: vertical AI premium',eye:'RODADA · MAR 2026',context:'Legal AI sueca captou $550M Series D com valuation $5,55B.',why:'Vertical AI em setor regulado cobra premium e cresce mais rapido que generalista.',impact:'Para DataMind: argumento de valuation para propostas em setores regulados.',stats:[{l:'RODADA',v:'$550M'},{l:'VALUATION',v:'$5,55B'},{l:'SETOR',v:'Legal regulado'},{l:'TEMPLATE',v:'Verticais reguladas'}]}},
-    {date:'MAR 26',col:'#ff3d6e',title:'Inference cost vira pauta estrategica',use:'Cerebras+Bedrock -80% em open-source. Quem nao migrar workloads fica em desvantagem. Custo entra na conversa comercial.',detail:{title:'Inference cost: pauta comercial, nao so infra',eye:'TENDENCIA · MAR 2026',context:'Cerebras via AWS Bedrock reduziu custo de inferencia open-source em 80%.',why:'Throughput 5x maior com 80% menos custo muda viabilidade de RAG em producao.',impact:'Para DataMind: testar workloads de alto volume em Bedrock. Argumento de ROI imediato.',stats:[{l:'REDUCAO',v:'-80% custo'},{l:'THROUGHPUT',v:'5x'},{l:'PLATAFORMA',v:'AWS Bedrock'},{l:'DATA',v:'12 Mar 2026'}]}},
+    {date:'MAR 26',col:'#00e5a0',title:'OpenAI rodada +$10B (total >$120B)',use:'Amazon, Nvidia, SoftBank. Maior financiamento privado da historia. Consolida posicao de mercado.',detail:{title:'OpenAI >$120B: consolidacao definitiva',eye:'FINANCIAMENTO · MAR 2026',why:'Rodada adicional ancorada por Amazon, Nvidia e SoftBank.',impact:'Janela para DataMind se posicionar como especialista de aplicacao.',stats:[{l:'RODADA',v:'+$10B'},{l:'TOTAL',v:'>$120B'},{l:'LIDERADO',v:'Amazon+Nvidia+SoftBank'},{l:'DATA',v:'Mar 2026'}]}},
+    {date:'MAR 26',col:'#4d9fff',title:'Replit $400M — valuation $9B',use:'Tripling de valuation em 6 meses. AI-assisted coding atingiu valuation de infraestrutura.',detail:{title:'Replit $9B: coding como infraestrutura',eye:'RODADA · MAR 2026',why:'Replit captou $400M com valuation de $9B.',impact:'Demanda por prototipagem rapida como servico cresce.',stats:[{l:'RODADA',v:'$400M'},{l:'VALUATION',v:'$9B'},{l:'CRESCIMENTO',v:'3x em 6 meses'},{l:'ARR PROJ',v:'~$1B'}]}},
+    {date:'MAR 26',col:'#ffb340',title:'Nscale $2B Series C — compute soberano',use:'Valuation $14,6B. GPU data center como asset class soberano. Maior rodada equity da Europa.',detail:{title:'Nscale: compute AI virou ativo soberano',eye:'RODADA · MAR 2026',why:'Nscale captou $2B Series C com valuation de $14,6B.',impact:'Tendencia de soberania de compute chega ao Brasil.',stats:[{l:'RODADA',v:'$2B'},{l:'VALUATION',v:'$14,6B'},{l:'TIPO',v:'GPU data center'},{l:'SINAL',v:'Compute soberano'}]}},
+    {date:'MAR 26',col:'#b06eff',title:'Legora $550M Series D — Legal AI $5,55B',use:'Vertical AI juridica com capital pesado. Template para DataMind em setores regulados.',detail:{title:'Legora $5,55B: vertical AI premium',eye:'RODADA · MAR 2026',why:'Legal AI sueca captou $550M Series D com valuation $5,55B.',impact:'Para DataMind: argumento de valuation para propostas em setores regulados.',stats:[{l:'RODADA',v:'$550M'},{l:'VALUATION',v:'$5,55B'},{l:'SETOR',v:'Legal regulado'},{l:'TEMPLATE',v:'Verticais reguladas'}]}},
+    {date:'MAR 26',col:'#ff3d6e',title:'Basis $100M — Contabilidade AI $1,15B',use:'Automacao de audits e tax workflows. Vertical com TAM enorme no Brasil.',detail:{title:'Basis: contabilidade agentica',eye:'RODADA · MAR 2026',why:'$100M Series B, valuation $1,15B. Contabilidade e gargalo em 80% das PMEs brasileiras.',impact:'Para DataMind: argumento de valuation vertical para propostas em financeiro.',stats:[{l:'RODADA',v:'$100M'},{l:'VALUATION',v:'$1,15B'},{l:'VERTICAL',v:'Contabilidade'},{l:'BRASIL',v:'TAM enorme PMEs'}]}},
   ],
 };
 
@@ -1197,6 +1219,8 @@ function buildStore(){
   reg(TIMELINE,'TL');
   reg(RANKING,'RK');
   reg(BULLETS && BULLETS.absUp,'BU');
+  reg(BULLETS && BULLETS.pctUp,'BP');
+  reg(BULLETS && BULLETS.hype,'BH');
   reg(BULLETS && BULLETS.absDn,'BD');
   reg(BULLETS && BULLETS.moves,'BM');
   reg(SQUAD,'SQ');
@@ -1295,36 +1319,39 @@ function renderRanking(){
 }
 
 function renderBullets(){
-  var up = document.getElementById('mbAbsUp');
-  var dn = document.getElementById('mbPctUp');
-  var mv = document.getElementById('mbHype');
-  if(up && BULLETS.absUp){
-    up.innerHTML = BULLETS.absUp.map(function(b,i){
-      return '<div class="mb-item" data-k="BU'+i+'" style="cursor:pointer">'
-        +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cup">'+b.chg+'</div></div>'
-        +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use">'+b.use+'</div></div>'
-        +'</div>';
-    }).join('');
-    addClick(up,'mb-item');
+  function itemUp(b, key){
+    return '<div class="mb-item" data-k="'+key+'" style="cursor:pointer">'
+      +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cup">'+b.chg+'</div></div>'
+      +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use">'+b.use+'</div></div>'
+      +'</div>';
   }
-  if(dn && BULLETS.absDn){
-    dn.innerHTML = BULLETS.absDn.map(function(b,i){
-      return '<div class="mb-item" data-k="BD'+i+'" style="cursor:pointer">'
-        +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cdn">'+b.chg+'</div></div>'
-        +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use" style="color:var(--red);opacity:.7">'+b.use+'</div></div>'
-        +'</div>';
-    }).join('');
-    addClick(dn,'mb-item');
+  function itemDn(b, key){
+    return '<div class="mb-item" data-k="'+key+'" style="cursor:pointer">'
+      +'<div><div class="mb-name">'+b.n+'</div><div class="mb-chg cdn">'+b.chg+'</div></div>'
+      +'<div><div class="mb-reason">'+b.reason+'</div><div class="mb-use" style="color:var(--red);opacity:.7">'+b.use+'</div></div>'
+      +'</div>';
   }
-  if(mv && BULLETS.moves){
-    mv.innerHTML = BULLETS.moves.map(function(b,i){
-      return '<div class="mb-item" data-k="BM'+i+'" style="cursor:pointer;border-left:3px solid '+b.col+';padding-left:10px">'
-        +'<div><div class="mb-name">'+b.title+'</div><div class="mb-chg" style="color:var(--t3)">'+b.date+'</div></div>'
-        +'<div><div class="mb-reason">'+b.use+'</div></div>'
-        +'</div>';
-    }).join('');
-    addClick(mv,'mb-item');
+  function itemMove(b, key){
+    return '<div class="mb-item" data-k="'+key+'" style="cursor:pointer;border-left:3px solid '+b.col+';padding-left:10px">'
+      +'<div><div class="mb-name">'+b.title+'</div><div class="mb-chg" style="color:var(--t3)">'+b.date+'</div></div>'
+      +'<div><div class="mb-reason">'+b.use+'</div></div>'
+      +'</div>';
   }
+  var containers = {
+    mbAbsUp: {arr: BULLETS.absUp,  fn: itemUp,   prefix:'BU'},
+    mbPctUp: {arr: BULLETS.pctUp,  fn: itemUp,   prefix:'BP'},
+    mbHype:  {arr: BULLETS.hype,   fn: itemMove, prefix:'BH'},
+    mbDn:    {arr: BULLETS.absDn,  fn: itemDn,   prefix:'BD'},
+    mbMoves: {arr: BULLETS.moves,  fn: itemMove, prefix:'BM'},
+  };
+  Object.keys(containers).forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var cfg = containers[id];
+    if(!cfg.arr) return;
+    el.innerHTML = cfg.arr.map(function(b,i){ return cfg.fn(b, cfg.prefix+i); }).join('');
+    addClick(el,'mb-item');
+  });
 }
 
 var _emgSeg = 'all', _emgTier = 'all';
