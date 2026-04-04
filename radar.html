@@ -386,7 +386,7 @@ footer a{color:var(--green);text-decoration:none}
 
 <div class="topbar">
   <div class="tb-logo"><div class="tb-logo-icon">◈</div>Data<span>Mind</span></div>
-  <div class="tb-center"><span class="tb-pill">AI RADAR 2026</span><span class="tb-pill">01 ABR 2026</span></div>
+  <div class="tb-center"><span class="tb-pill">AI RADAR 2026</span><span class="tb-pill">03 ABR 2026</span></div>
   <div class="live-dot"><span class="ldot"></span>LIVE</div>
 </div>
 
@@ -631,21 +631,33 @@ const BULLETS = {
     {n:'Perplexity',    chg:'+85M visits',   reason:'AEO emergindo como canal B2B. 192M visitas/mes. Clientes C-level pesquisam consultores aqui antes do LinkedIn.', use:'Research com fontes - titular DataMind'},
     {n:'Databricks',    chg:'Genie Code GA', reason:'Agente autonomo substitui Databricks Assistant. Agent Mode cria dashboards por prompt. Quotient AI adquirida para eval continuo.', use:'Stack de dados enterprise - monitorar como alternativa Snowflake'}
   ],
-  absDown: [
+  pctUp: [
+    {n:'Cursor',        chg:'+35% visits',   reason:'Crescimento relativo mais alto entre IDEs. Self-hosted cloud agents + MCP Apps = nova categoria de produto.', use:'IDE agentico com maior velocidade de adocao em Mar 2026'},
+    {n:'Lovable',       chg:'+48% visits',   reason:'Categoria text-to-app em explosao. 200k projetos/dia. Maior crescimento percentual entre plataformas de desenvolvimento.', use:'Product delivery — maior crescimento relativo do periodo'},
+    {n:'Grok',          chg:'+28% visits',   reason:'Grok Imagine Quality Mode impulsionou adocao. Unico com acesso real-time ao X. API mais barata para social intelligence.', use:'Social intelligence e geracao visual — crescimento acelerado'},
+    {n:'Perplexity',    chg:'+22% visits',   reason:'AEO como canal B2B emergente. Practitioners e C-level usando como ponto de entrada para research.', use:'Research com fontes - canal B2B em aceleracao'},
+    {n:'Agentforce',    chg:'+169% ARR',     reason:'Crescimento percentual mais alto em receita recorrente. 29k deals em 15 meses com 75% do top 100 Q4.', use:'Agentes enterprise — maior crescimento de receita do mercado'}
+  ],
+  hype: [
+    {title:'Grok 5',      date:'Q1 2026',      col:'#ff3d6e', use:'6T parametros anunciados, sem lancamento. Claims de AGI especulativos. Ruido ate confirmacao oficial.'},
+    {title:'GPT-5 unificado', date:'Pos Q1',   col:'#4d9fff', use:'Anunciado mas atrasado. GPT-5.3 Instant ja em producao como antecessor. Monitorar lancamento.'},
+    {title:'Agentes substituem humanos', date:'2026', col:'#ffb340', use:'Agentforce cresce em seats, nao em substituicao. Expansao de capacidade, nao demissao em massa.'}
+  ],
+  absDn: [
     {n:'Snowflake Notebooks', chg:'Virou Legacy',    reason:'Renomeado para Legacy Notebooks em 16/03. Plataforma priorizando Genie Code e agentes autonomos em detrimento de notebooks interativos.', use:'Sinal: notebook como centro do stack perde relevancia estrategica'},
     {n:'Copilots rasos',      chg:'Obsolescendo', reason:'Autocomplete perdendo espaco para agentes que executam workflows completos. Cursor, Claude Code e Genie Code definem novo padrao.', use:'Evitar recomendar ferramentas sem capacidade agentica'},
     {n:'Midjourney',          chg:'Perda de buzz', reason:'Grok Imagine Quality Mode e Gemini Veo roubam espaco em geracao visual. Buzz migrando para modelos sem restricoes.', use:'Monitorar: lideranca em geracao de imagem sendo contestada'}
   ],
   moves: [
-    {n:'Genie Code',   chg:'GA 11/03',   reason:'Ex-Databricks Assistant vira agente autonomo multi-step. Coding + dashboards + data science em linguagem natural.',  use:'Databricks users: avaliar como substituto de notebooks manuais'},
-    {n:'BigQuery AI',  chg:'AI.EMBED GA', reason:'Embeddings e similaridade semantica nativos em SQL. RAG sem pipeline externo. ETL conversacional para usuarios de negocio.', use:'Para clientes BigQuery: propor RAG nativo antes de solucao customizada'},
-    {n:'dbt Fusion',   chg:'Novo default', reason:'Fusion Latest default para novos projetos. Semantic Layer YAML novo padrao. State-aware orchestration automatico.', use:'Novos projetos dbt: usar Fusion Latest + Semantic Layer YAML'},
-    {n:'NemoClaw',     chg:'NVIDIA OSS',  reason:'Plataforma open-source para deploy de agentes em qualquer hardware. Democratiza agentes para mid-market sem GPUs dedicadas.', use:'Monitorar para clientes mid-market sem cloud vendor lock-in'}
+    {title:'Genie Code GA',  date:'11 Mar 2026', col:'#00e5a0', use:'Ex-Databricks Assistant vira agente autonomo multi-step. Coding + dashboards + data science em linguagem natural.'},
+    {title:'BigQuery AI.EMBED GA', date:'23 Mar 2026', col:'#4d9fff', use:'Embeddings e similaridade semantica nativos em SQL. RAG sem pipeline externo para clientes BigQuery.'},
+    {title:'dbt Fusion default', date:'Mar 2026', col:'#ffb340', use:'Fusion Latest default para novos projetos. Semantic Layer YAML novo padrao. State-aware orchestration automatico.'},
+    {title:'NemoClaw NVIDIA', date:'Mar 2026', col:'#b06eff', use:'Plataforma open-source para deploy de agentes em qualquer hardware. Mid-market sem GPUs dedicadas.'}
   ]
 };
 
 const EMGS = [
-  {ico:'🍴',n:'OpenCode',seg:'vibe-coding',tier:'hot',cat:'Agentic coding / fork comunitario',why:'Fork do Claude Code surgido em menos de 48h apos o leak. Permite usar qualquer LLM local (Ollama) ou API. Crescimento explosivo no GitHub. Soberania de stack e zero vendor lock-in.',stats:['Any-LLM','Local-first','GitHub stars'],detail:{title:'OpenCode - Fork local-first do Claude Code',eye:'EMERGENTE - 01 ABR 2026',why:'Surgiu organicamente 48h apos o leak. Devs forkearam para ter controle total do agent loop.',impact:'Monitorar como alternativa de baixo custo para clientes que nao querem vendor lock-in na Anthropic.',stats:[{l:'ORIGEM',v:'Leak Claude Code'},{l:'MODELO',v:'Any-LLM'},{l:'SINAL',v:'Movimento real'}]}},
+  {ico:'🍴',n:'OpenCode',seg:'vibe-coding',tier:'hot',cat:'Agentic coding / fork comunitario',why:'Fork do Claude Code surgido em menos de 48h apos o leak. Permite usar qualquer LLM local (Ollama) ou API. Crescimento explosivo no GitHub. Soberania de stack e zero vendor lock-in.',stats:['Any-LLM','Local-first','GitHub stars'],detail:{title:'OpenCode - Fork local-first do Claude Code',eye:'EMERGENTE - 03 ABR 2026',why:'Surgiu organicamente 48h apos o leak. Devs forkearam para ter controle total do agent loop.',impact:'Monitorar como alternativa de baixo custo para clientes que nao querem vendor lock-in na Anthropic.',stats:[{l:'ORIGEM',v:'Leak Claude Code'},{l:'MODELO',v:'Any-LLM'},{l:'SINAL',v:'Movimento real'}]}},
   {ico:'🏭',n:'Project SnowWork',seg:'data-stack',tier:'hot',cat:'Orchestracao agentica / Snowflake',why:'Snowflake lancou SnowWork em 18/03. Semantic views + Cortex Agent evaluations + resource budgets para agentes dentro do warehouse.',stats:['Warehouse-native','Agent evals GA','Resource budgets'],detail:{title:'Project SnowWork - Agentes dentro do Warehouse',eye:'LANCAMENTO - 18 MAR 2026',why:'Snowflake quer ser a camada onde agentes sao criados, avaliados, governados e operados.',impact:'Para clientes Snowflake: avaliar SnowWork antes de contratar orquestrador externo.',stats:[{l:'LANCAMENTO',v:'18 Mar 2026'},{l:'EVALS',v:'Cortex Agent GA'},{l:'BUDGETS',v:'Resource limits'},{l:'SINAL',v:'Warehouse = plataforma agentica'}]}},
   {ico:'🎨',n:'Grok Imagine Quality Mode',seg:'visual',tier:'hot',cat:'Geracao visual / xAI',why:'Maior buzz visual do periodo. Quality Mode com imagens cinematograficas 1080p, sem restricoes. Posts virais do @elonmusk com 5M+ views.',stats:['Sem censura','1080p','Viral no X'],detail:{title:'Grok Imagine Quality Mode - Geracao visual sem restricoes',eye:'EMERGENTE - MAR 2026',why:'xAI apostou em qualidade cinematografica + liberdade criativa. Buzz supera Midjourney entre practitioners.',impact:'Monitorar como alternativa ao Midjourney para clientes com necessidade de geracao visual sem restricoes.',stats:[{l:'MODO',v:'Quality Mode'},{l:'RESOLUCAO',v:'1080p'},{l:'BUZZ',v:'5M+ views'},{l:'VS MIDJOURNEY',v:'Ganhando espaco'}]}},
   {ico:'📊',n:'Quotient AI',seg:'data-stack',tier:'rising',cat:'Eval continuo de agentes / Databricks',why:'Adquirida pela Databricks. O diferencial de producao migrou de geracao para rastreabilidade, orcamento e eval.',stats:['Aquisicao Databricks','Eval continuo','GA em roadmap'],detail:{title:'Quotient AI - Eval Continuo de Agentes',eye:'AQUISICAO - MAR 2026',why:'Databricks comprou para nao perder a camada de avaliacao para Snowflake e OpenAI.',impact:'Sinal: diferencial de producao nao e mais geracao - e avaliacao e seguranca.',stats:[{l:'ADQUIRIDA POR',v:'Databricks'},{l:'FOCO',v:'Eval de agentes'},{l:'SINAL',v:'Producao > Demo'}]}},
