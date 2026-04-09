@@ -821,13 +821,13 @@ function govProg(){ var all=document.querySelectorAll('#govDoc .gov-chk'),done=d
 
 var _GSET={
   igaming:   {label:'iGaming / Apostas',regs:['Secap/MF (Lei 14.790/2023)','LGPD','Prevencao a Lavagem (PLD)','KYC obrigatorio','Sigilo de dados do apostador'],risco:'CRITICO',cor:'#ff3d6e',alta:true},
-  financeiro:{label:'Financeiro / Fintechs',regs:['Bacen','CVM','Open Finance','LGPD','Resolucao CMN 4.893'],risco:'CRITICO',cor:'#ff3d6e',alta:true},
+  financeiro:{label:'Financeiro / Fintechs',regs:['Bacen','CVM','Open Finance','LGPD','Resolucao CMN 5.274/2025 (atualiza 4.893)','Resolucao BCB 538/2025 (nuvem)'],risco:'CRITICO',cor:'#ff3d6e',alta:true},
   seguros:   {label:'Seguros',regs:['SUSEP','LGPD','Dados atuariais','Circular SUSEP 638'],risco:'ALTO',cor:'#ff3d6e',alta:true},
   saude:     {label:'Saude / Healthtechs',regs:['CFM','ANVISA','LGPD Art.11','Res. CFM 2.314/2022','Prontuario eletronico'],risco:'CRITICO',cor:'#ff3d6e',alta:true},
   juridico:  {label:'Juridico / Lawtechs',regs:['OAB','Sigilo profissional','LGPD','Estatuto OAB Art. 7'],risco:'ALTO',cor:'#ff3d6e',alta:true},
-  educacao:  {label:'Educacao',regs:['LGPD menores de 18','ECA Art. 17','Resolucao CNE'],risco:'MEDIO',cor:'#ffb340',alta:false},
+  educacao:  {label:'Educacao',regs:['LGPD Art. 14 (menores de 18)','ECA Art. 17','ECA Digital (Lei 15.211/2025 — vigente 17/mar/2026)','Resolucao CNE/CEB 2/2025'],risco:'MEDIO',cor:'#ffb340',alta:false},
   varejo:    {label:'Varejo / E-commerce',regs:['LGPD','CDC','Marco Civil da Internet'],risco:'MEDIO',cor:'#ffb340',alta:false},
-  rh:        {label:'RH / HRtechs',regs:['LGPD','CLT','eSocial','Dados de saude ocupacional'],risco:'MEDIO',cor:'#ffb340',alta:false},
+  rh:        {label:'RH / HRtechs',regs:['LGPD','CLT','eSocial','Dados de saude ocupacional (LGPD Art. 11)','NR-1 — riscos psicossociais obrigatorios (mai/2025)'],risco:'MEDIO',cor:'#ffb340',alta:false},
   logistica: {label:'Logistica',regs:['LGPD','Dados de rastreamento','ANTT'],risco:'BAIXO',cor:'#4d9fff',alta:false},
   agro:      {label:'Agro',regs:['LGPD','Dados de producao','MAPA'],risco:'BAIXO',cor:'#4d9fff',alta:false},
   marketing: {label:'Marketing / Agencias',regs:['LGPD','CONAR','Lei de Direitos Autorais','Marco Civil'],risco:'BAIXO',cor:'#4d9fff',alta:false},
@@ -854,13 +854,15 @@ function generateGovDoc(){
     '\u003Cstrong\u003EIA nao pode fazer targeting de apostadores vulneraveis\u003C/strong\u003E — vedado pela Secap (Lei 14.790/2023)',
     '\u003Cstrong\u003ELogs de transacao obrigatorios por 5 anos\u003C/strong\u003E — nao 90 dias. Configurar retencao corretamente',
     '\u003Cstrong\u003EZero tolerancia para prompt injection\u003C/strong\u003E — agentes tem acesso a sistemas de pagamento',
+    '\u003Cstrong\u003ELei 15.358/2026 (mar/2026):\u003C/strong\u003E diligencia reforçada PLD — incluiu arts. 21-A, 24-A e 24-C na Lei 14.790/2023',
   ];
   else if(s==='financeiro') alertas = [
     '\u003Cstrong\u003EDecisao automatizada que afeta credito exige explicacao ao cliente\u003C/strong\u003E — LGPD Art. 20 e Bacen',
     '\u003Cstrong\u003EDados de scoring de credito sao RESTRITOS\u003C/strong\u003E mesmo internamente — nao compartilhar entre agentes',
     '\u003Cstrong\u003EOpen Finance:\u003C/strong\u003E dados de outras instituicoes exigem consentimento explicito renovavel',
-    '\u003Cstrong\u003ELogs de auditoria obrigatorios por 10 anos\u003C/strong\u003E — configurar retencao conforme regulacao Bacen',
+    '\u003Cstrong\u003ELogs de auditoria PLD: 5 anos\u003C/strong\u003E — Circular BCB 3.978/2020. Documentos fiscais/contabeis: 10 anos por pratica de mercado',
     '\u003Cstrong\u003EQualquer decisao automatizada relevante precisa de trilha auditavel\u003C/strong\u003E — LGPD Art. 20',
+    '\u003Cstrong\u003ERes. CMN 5.274/2025 (vigente mar/2026):\u003C/strong\u003E teste de intrusao anual obrigatorio + evidencias retidas por 5 anos',
   ];
   else if(s==='saude') alertas = [
     '\u003Cstrong\u003EProntuario eletronico: NUNCA para API externa\u003C/strong\u003E — sem excecao, sem pseudo-anonimizacao',
@@ -876,15 +878,18 @@ function generateGovDoc(){
     '\u003Cstrong\u003EComunicacoes com cliente: nunca processadas por modelo externo\u003C/strong\u003E — risco de quebra de sigilo',
   ];
   else if(s==='educacao') alertas = [
-    '\u003Cstrong\u003EMenores de 18: consentimento parental obrigatorio\u003C/strong\u003E para qualquer dado pessoal',
+    '\u003Cstrong\u003EMenores de 18: consentimento parental obrigatorio\u003C/strong\u003E para qualquer dado pessoal — LGPD Art. 14',
     '\u003Cstrong\u003EIA nao pode tomar decisoes automaticas sobre desempenho\u003C/strong\u003E sem revisao humana obrigatoria',
     '\u003Cstrong\u003EECA: protecao de dados de crianca e absoluta\u003C/strong\u003E — qualquer vazamento e crime',
-    '\u003Cstrong\u003EDados de aluno sao sensiveis\u003C/strong\u003E — base legal LGPD exige consentimento especifico',
+    '\u003Cstrong\u003EECA Digital (Lei 15.211/2025, vigente 17/mar/2026):\u003C/strong\u003E proibe coleta de dados de menores para publicidade, exige verificacao robusta de idade, contas de menores de 16 vinculadas a responsaveis',
+    '\u003Cstrong\u003ERetencao de dados de menor:\u003C/strong\u003E ate maioridade + 5 anos — LGPD Art. 14 + ECA Digital',
   ];
   else if(s==='rh') alertas = [
     '\u003Cstrong\u003EDados trabalhistas sao sigilosos\u003C/strong\u003E — salario, beneficios e historico nao vao para API externa',
     '\u003Cstrong\u003EIA nao pode tomar decisoes de contratacao ou demissao sozinha\u003C/strong\u003E — revisao humana obrigatoria',
-    '\u003Cstrong\u003EDados de saude ocupacional sao sensiveis\u003C/strong\u003E — LGPD Art. 11',
+    '\u003Cstrong\u003EDados de saude ocupacional sao sensiveis\u003C/strong\u003E — LGPD Art. 11. Retencao PPP: 30 anos (aposentadoria especial)',
+    '\u003Cstrong\u003ENR-1 (mai/2025):\u003C/strong\u003E riscos psicossociais obrigatorios no GRO — IA que monitora colaboradores exige avaliacao de impacto',
+    '\u003Cstrong\u003EDIRF extinta em 2026\u003C/strong\u003E — informacoes migradas para eSocial e EFD-Reinf mensais',
   ];
   else alertas = [
     '\u003Cstrong\u003ELGPD se aplica a todos os dados pessoais\u003C/strong\u003E — mapear antes de conectar qualquer fonte a um agente',
@@ -955,11 +960,11 @@ function generateGovDoc(){
   ];
 
   // ── RETENCAO DE LOGS por setor ──
-  var retencao = s==='financeiro' ? '10 anos (Bacen)'
+  var retencao = s==='financeiro' ? '5 anos PLD (Circular BCB 3.978/2020) + 5 anos evidencias ciber (CMN 5.274/2025)'
     : s==='igaming' ? '5 anos (Secap/PLD)'
     : s==='saude' ? '20 anos (CFM — prontuario)'
     : s==='juridico' ? 'Enquanto o processo estiver ativo + 5 anos'
-    : '90 dias (padrao LGPD)';
+    : '90 dias (padrao LGPD) — RH/SST: 30 anos para PPP (aposentadoria especial)';
 
   // ── DADOS table rows ──
   var dadosRows = hi ? [
@@ -993,10 +998,10 @@ function generateGovDoc(){
 
   // ── FORNECEDORES ──
   var forn = [
-    ['Claude (Anthropic)','Nao por padrao (Pro+)','\u003Cspan class="tok-ok"\u003ESeguro\u003C/span\u003E','Pro+ nao treina com seus dados'],
-    ['GPT (OpenAI)','Sim por padrao na API','\u003Cspan class="tok-warn"\u003EAtivar opt-out\u003C/span\u003E','Disable model training nas settings'],
-    ['Gemini (Google)','Nao para Workspace/Enterprise','\u003Cspan class="tok-ok"\u003ESeguro\u003C/span\u003E','Usar Google AI Pro ou Enterprise'],
-    ['DeepSeek','Incerto (origem chinesa)','\u003Cspan class="tok-warn"\u003EVerificar\u003C/span\u003E',hi?'\u003Cstrong\u003ENAO usar\u003C/strong\u003E em setor regulado — substituir por Llama':'Self-host ou verificar terms'],
+    ['Claude (Anthropic)','API: nunca treina. Claude.ai: opt-in desde set/2025','\u003Cspan class="tok-ok"\u003ESeguro (API)\u003C/span\u003E','API retém dados 7 dias (desde set/2025). Claude.ai pessoal: desligar "Improve Claude for everyone" em Settings → Privacy'],
+    ['GPT (OpenAI)','API: nunca treina (desde mar/2023). ChatGPT web: treina por padrao','\u003Cspan class="tok-ok"\u003ESeguro (API)\u003C/span\u003E','API = zero treinamento. ChatGPT Free/Plus: Settings → Data Controls → "Do not train on my content"'],
+    ['Gemini (Google)','Workspace/Enterprise: nunca treina. Plano gratuito e Pro pessoal: treina por padrao',hi ? '\u003Cspan class="tok-ok"\u003ESeguro (Workspace)\u003C/span\u003E' : '\u003Cspan class="tok-warn"\u003EUsar Workspace\u003C/span\u003E','Obrigatorio: licenca Workspace paga com Gemini add-on. Gemini gratuito ou AI Pro pessoal: nao usar com dados regulados'],
+    ['DeepSeek','Treina por padrao. Dados 100% em servidores na China (Hangzhou/Beijing)','\u003Cspan class="tok-no"\u003ENAO usar\u003C/span\u003E',hi?'\u003Cstrong\u003EPROIBIDO\u003C/strong\u003E — LGPD Art. 33 (transferencia internacional sem adequacao ANPD). Self-host unico caminho':'\u003Cstrong\u003ENAO usar\u003C/strong\u003E com dados pessoais — LGPD Art. 33. Se precisar do modelo: self-host em AWS Sao Paulo'],
   ];
 
   // ── CHECKLIST customizado ──
@@ -1012,13 +1017,13 @@ function generateGovDoc(){
   if(hi) c1.push(chkG('Configurar retencao de logs: '+retencao+' — nao usar configuracao padrao de 90 dias','gp-now'));
 
   var c2 = [
-    chkG('Instalar Langfuse self-hosted para audit trail de acoes dos agentes — R$ 0','gp-soon'),
-    chkG('Configurar LiteLLM self-hosted como AI gateway — controle centralizado — R$ 0','gp-soon'),
+    chkG('Instalar Langfuse self-hosted para audit trail de acoes dos agentes — R$ 0 (auto-host AWS Sao Paulo para LGPD)','gp-soon'),
+    chkG('Configurar AI Gateway: Helicone (SaaS, setup 2min, PMEs) ou LiteLLM self-hosted (soberania total, setores regulados)','gp-soon'),
     chkG('Regex DLP no n8n para CPF, CNPJ, email antes de enviar para APIs externas','gp-soon'),
-    chkG('Mapear NIST AI RMF para cada agente do stack (nist.gov/ai/rmf — gratuito)','gp-soon'),
+    chkG('Mapear NIST AI RMF para cada agente do stack (NIST.AI.100-2e2025 — versao atual, nist.gov/ai/rmf — gratuito)','gp-soon'),
     chkG('Alertas automaticos: volume anormal de tokens, acesso fora do horario','gp-soon'),
   ];
-  if(hi) c2.push(chkG('AWS Bedrock Guardrails — filtro semantico de PII e prompt injection — ~R$ 50/mes','gp-soon'));
+  if(hi) c2.push(chkG('AWS Bedrock Guardrails — filtro semantico de PII e prompt injection — R$ 385-1.900/mes (reducao 85% dez/2024)','gp-soon'));
   if(s==='saude') c2.push(chkG('Implementar camada adicional de redaction para dados de saude antes de qualquer processamento','gp-soon'));
   if(s==='igaming') c2.push(chkG('Configurar monitoramento de comportamento compulsivo conforme exigencia Secap','gp-soon'));
   if(p==='misto') c2.push(chkG('Criar processo formal de aprovacao: dev cria workflow, negocio valida, ambos aprovam antes de producao','gp-soon'));
@@ -1178,7 +1183,7 @@ function generateGovDoc(){
     '\u003Cp class="gov-p"\u003E3 camadas entre os canais de entrada (WhatsApp, webhooks, email) e os agentes que executam acoes reais.\u003C/p\u003E'
     +tbl(['CAMADA','FERRAMENTA','O QUE FAZ','CUSTO'],[
       ['1 — Regex','n8n template 7453','Detecta instrucoes maliciosas, XSS, data URI attacks','\u003Cspan class="tok-ok"\u003ER$ 0\u003C/span\u003E'],
-      ['2 — Guardrails LLM',hi?'AWS Bedrock Guardrails':'Portkey ou Bedrock','Classificacao semantica de intencao, filtro de PII',hi?'~R$ 50/mes':'R$ 0-250/mes'],
+      ['2 — Guardrails LLM',hi?'AWS Bedrock Guardrails':'Helicone ou Bedrock','Classificacao semantica de intencao, filtro de PII',hi?'R$ 385-1.900/mes (reducao 85% dez/2024)':'R$ 0-385/mes'],
       ['3 — Context Shaping','Design de prompts','User content NUNCA entra no system prompt','\u003Cspan class="tok-ok"\u003ER$ 0\u003C/span\u003E'],
     ])
     +'\u003Cdiv class="gov-restrict"\u003E\u003Cdiv class="gov-box-label" style="color:var(--red)"\u003EREGRA DE OURO\u003C/div\u003E'
