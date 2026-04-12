@@ -1234,7 +1234,7 @@ function buildStore(){
   function reg(arr, prefix){
     if(!arr) return;
     for(var i=0;i<arr.length;i++){
-      if(arr[i] && arr[i].detail) window._store[prefix+i] = arr[i];
+      if(arr[i]) window._store[prefix+i] = arr[i];
     }
   }
   reg(RUMORS,'RU');
@@ -1251,7 +1251,6 @@ function buildStore(){
   reg(EMGS,'E');
   reg(DATA_TOOLS,'DT');
 }
-
 function addClick(container, cls){
   var items = container.querySelectorAll('.'+cls);
   for(var i=0;i<items.length;i++){
@@ -1263,30 +1262,29 @@ function addClick(container, cls){
 
 function openModal(data){
   if(!data) return;
-  var d = data.detail || data;
+  var d = (data.detail) ? data.detail : data;
   var accent = data.col || '#00e5a0';
   var o = document.getElementById('modalOverlay');
   var stats = '';
   if(d.stats){
     for(var i=0;i<d.stats.length;i++){
-      stats += '<div class="m-stat"><div class="m-stat-l">'+d.stats[i].l+'</div><div class="m-stat-v">'+d.stats[i].v+'</div></div>';
+      stats += '<div class="m-stat"><div class="m-stat-l">'+d.stats[i].l+'</div><div class="m-stat-v" style="color:'+accent+'">'+d.stats[i].v+'</div></div>';
     }
   }
-  var html = '<div class="m-eye" style="color:var(--green)">'+(d.eye||'')+'</div>';
+  var html = '<div class="m-eye" style="color:'+accent+'">'+(d.eye||'')+'</div>';
   html += '<div class="m-title">'+(d.title||'')+'</div>';
-  if(d.context) html += '<div class="m-sec"><div class="m-sec-l" style="color:var(--t3)">CONTEXTO</div><div class="m-text">'+d.context+'</div></div>';
+  if(d.context) html += '<div class="m-sec"><div class="m-sec-l" style="color:'+accent+'">CONTEXTO</div><div class="m-text">'+d.context+'</div></div>';
   if(d.why) html += '<div class="m-sec"><div class="m-sec-l" style="color:var(--gold)">POR QUE IMPORTA</div><div class="m-text">'+d.why+'</div></div>';
-  if(d.impact) html += '<div class="m-hl"><p>'+d.impact+'</p></div>';
+  if(d.impact) html += '<div class="m-hl" style="border-left-color:'+accent+'"><p>'+d.impact+'</p></div>';
   if(d.how) html += '<div class="m-sec"><div class="m-sec-l" style="color:var(--blue)">COMO USAR</div><div class="m-text">'+d.how+'</div></div>';
   if(d.players) html += '<div class="m-sec"><div class="m-sec-l" style="color:var(--t3)">PLAYERS</div><div class="m-text">'+d.players+'</div></div>';
   if(d.risks) html += '<div class="m-sec"><div class="m-sec-l" style="color:var(--red)">RISCOS</div><div class="m-text">'+d.risks+'</div></div>';
   if(d.actions) html += '<div class="m-sec"><div class="m-sec-l" style="color:var(--green)">AÇÕES</div><div class="m-text">'+d.actions+'</div></div>';
-  if(d.example) html += '<div class="m-sec" style="background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.18);border-radius:8px;padding:14px 16px;margin-top:4px"><div class="m-sec-l" style="color:var(--green);margin-bottom:8px">📍 NA PRÁTICA</div><div class="m-text" style="color:var(--t1);line-height:1.7">'+d.example+'</div></div>';
+  if(d.example) html += '<div class="m-sec" style="background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.18);border-radius:8px;padding:14px 16px"><div class="m-sec-l" style="color:var(--green);margin-bottom:8px">NA PRÁTICA</div><div class="m-text" style="color:var(--t1)">'+d.example+'</div></div>';
   if(stats) html += '<div class="m-stats">'+stats+'</div>';
   document.getElementById('modalBody').innerHTML = html;
   o.classList.add('open');
 }
-
 document.getElementById('modalOverlay').addEventListener('click', function(e){
   if(e.target === this || e.target.classList.contains('modal-close')) this.classList.remove('open');
 });
