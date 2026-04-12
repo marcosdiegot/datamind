@@ -1266,6 +1266,10 @@ function addClick(container, cls){
 
 function openModal(d){
   if(!d) return;
+  var _keys = Object.keys(d).join(',');
+  var _ctx = d.context ? 'YES' : 'NO';
+  var _how = d.how ? 'YES' : 'NO';
+  alert('KEYS: ' + _keys + ' | context:' + _ctx + ' | how:' + _how);
   var o = document.getElementById('modalOverlay');
   var stats = '';
   if(d.stats){
