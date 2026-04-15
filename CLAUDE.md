@@ -139,3 +139,4 @@ O Radar é o principal artefato de demonstração da metodologia DataMind e é a
 - **LinkedIn:** https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352
 - **Portfolio:** https://marcosdiegot.github.io/datamind
 - **Radar:** https://marcosdiegot.github.io/datamind/radar.html
+ 
