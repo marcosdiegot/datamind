@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataMind · Fiança Locatícia · Inteligência de Mercado</title>
+<script src="mapdata.js"></script>
+<script src="countrymap.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #07080D;
+  --s1:       #0E1018;
+  --s2:       #141820;
+  --s3:       #1C2030;
+  --border:   rgba(255,255,255,0.07);
+  --green:    #00E5A0;
+  --red:      #FF3D5A;
+  --gold:     #FFB830;
+  --blue:     #4F8EF7;
+  --purple:   #9B6DFF;
+  --text:     #E8EAF2;
+  --muted:    #5A5F75;
+  --dim:      #3A3F52;
+  /* seg colors */
+  --c-porto:   #00E5A0;
+  --c-tokio:   #4F8EF7;
+  --c-fairfax: #FFB830;
+  --c-sompo:   #FF3D5A;
+  --c-generali:#9B6DFF;
+  --c-hdi:     #FF7C3A;
+  --c-zurich:  #00CDE0;
+  --c-sul:     #E040FB;
+  --c-irb:     #69F0AE;
+  --c-outros:  #607D8B;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════ HEADER ═══════════════════════════════ */
+#header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 200;
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.logo-mark {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 13px;
+  color: #07080D;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 15px;
+  letter-spacing: -0.2px;
+}
+.logo-text span { color: var(--green); }
+.logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-top: 1px;
+}
+
+.header-title {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 2px;
+}
+.header-title strong {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px; font-weight: 600;
+  color: var(--text); letter-spacing: 0.3px;
+  text-transform: none;
+  margin-bottom: 1px;
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.5px;
+  padding: 3px 8px; border-radius: 4px;
+  border: 1px solid;
+}
+.badge-green {
+  color: var(--green);
+  background: rgba(0,229,160,0.08);
+  border-color: rgba(0,229,160,0.2);
+}
+.badge-blue {
+  color: var(--blue);
+  background: rgba(79,142,247,0.08);
+  border-color: rgba(79,142,247,0.2);
+}
+.badge-gold {
+  color: var(--gold);
+  background: rgba(255,184,48,0.08);
+  border-color: rgba(255,184,48,0.2);
+}
+
+/* ═══════════════════════════════ LAYOUT ═══════════════════════════════ */
+#app {
+  display: flex;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════ LEFT COLUMN ═══════════════════════════ */
+#left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  min-width: 0;
+  overflow: hidden;
+}
+
+#map-toolbar {
+  height: 44px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.toolbar-left {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.toolbar-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600; font-size: 12px;
+  color: var(--text);
+}
+
+.toolbar-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+.view-pills {
+  display: flex; gap: 3px;
+  background: var(--s2);
+  padding: 3px; border-radius: 7px;
+  border: 1px solid var(--border);
+}
+
+.vpill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 4px 10px; border-radius: 5px;
+  border: none; cursor: pointer;
+  background: transparent; color: var(--muted);
+  transition: all 0.18s;
+}
+.vpill:hover { color: var(--text); }
+.vpill.active {
+  background: var(--green); color: #07080D;
+  font-weight: 500;
+}
+
+/* ═══════ MAP ═══════ */
+#map-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 70% 60% at 50% 45%,
+    rgba(0,229,160,0.04) 0%,
+    rgba(79,142,247,0.02) 40%,
+    transparent 70%);
+}
+
+/* Simplemaps container */
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Override simplemaps styles */
+#map svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Watermark hide area */
+.sm-trial-text { display: none !important; }
+
+.map-hint {
+  position: absolute;
+  bottom: 16px; left: 50%; transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  pointer-events: none;
+  animation: fadeHint 3s ease-in-out infinite alternate;
+  white-space: nowrap;
+}
+@keyframes fadeHint {
+  from { opacity: 0.3; }
+  to   { opacity: 0.7; }
+}
+
+/* Legend */
+#legend {
+  position: absolute;
+  bottom: 44px; left: 16px;
+  background: rgba(14,16,24,0.92);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  backdrop-filter: blur(12px);
+  min-width: 160px;
+}
+.legend-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 9px;
+}
+.legend-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px; font-size: 11px; color: var(--text);
+}
+.legend-row:last-child { margin-bottom: 0; }
+.ldot {
+  width: 9px; height: 9px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ═══════ TIMELINE ═══════ */
+#timeline {
+  height: 64px;
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  padding: 8px 20px 6px;
+  flex-shrink: 0;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.tl-header {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.tl-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
+#tl-current {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600; font-size: 11px;
+  color: var(--green);
+}
+
+.tl-months {
+  display: flex; align-items: flex-end; gap: 0;
+  justify-content: space-between;
+}
+.tlm {
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; padding: 2px 5px; border-radius: 4px;
+  transition: all 0.15s; flex: 1;
+}
+.tlm:hover { background: rgba(255,255,255,0.04); }
+.tlm.active { background: rgba(0,229,160,0.08); }
+.tlm-tick {
+  width: 1px; height: 5px;
+  background: var(--dim); margin-bottom: 4px;
+  transition: background 0.15s;
+}
+.tlm.active .tlm-tick { background: var(--green); }
+.tlm-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px; color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.tlm.active .tlm-lbl { color: var(--green); }
+
+/* ═══════════════════════════════ RIGHT PANEL ═══════════════════════════ */
+#right-panel {
+  width: 370px;
+  flex-shrink: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: var(--s1);
+}
+
+/* UF Header */
+#uf-header {
+  padding: 14px 18px 12px;
+  background: var(--s2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 72px;
+  display: flex; align-items: center;
+}
+
+#uf-placeholder {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--muted);
+}
+.placeholder-arrow {
+  font-size: 18px; opacity: 0.4;
+}
+.placeholder-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px;
+  line-height: 1.5;
+}
+
+#uf-info { display: none; width: 100%; }
+.uf-sigla {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 36px;
+  color: var(--green); line-height: 1;
+  margin-right: 14px; flex-shrink: 0;
+}
+.uf-details { flex: 1; min-width: 0; }
+.uf-nome {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600; font-size: 13px;
+  color: var(--text); margin-bottom: 3px;
+}
+.uf-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+}
+.uf-total strong { color: var(--green); }
+.uf-lider-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; padding: 2px 7px; border-radius: 4px;
+  margin-top: 5px; display: inline-block;
+  letter-spacing: 0.3px;
+}
+
+/* Scrollable cards area */
+#cards-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#cards-scroll::-webkit-scrollbar { width: 3px; }
+#cards-scroll::-webkit-scrollbar-track { background: transparent; }
+#cards-scroll::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
+
+/* Default state - show nacional */
+#panel-default { padding: 0; }
+#panel-state { display: none; padding: 0; }
+
+/* ── Card base ── */
+.card {
+  border-bottom: 1px solid var(--border);
+  padding: 14px 18px;
+}
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 11px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600; font-size: 11.5px;
+  color: var(--text); display: flex; align-items: center; gap: 6px;
+}
+.card-title .icon { font-size: 13px; }
+.card-period {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ── Rank rows ── */
+.rank-row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.rank-row:last-child { border-bottom: none; padding-bottom: 0; }
+.rank-pos {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  width: 14px; text-align: center;
+  flex-shrink: 0;
+}
+.pos1 { color: var(--gold); }
+.pos2 { color: #9BA3B5; }
+.pos3 { color: #B07C45; }
+.pos4, .pos5 { color: var(--muted); }
+
+.rank-body { flex: 1; min-width: 0; }
+.rank-name {
+  font-size: 12px; font-weight: 500; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.rank-bar-bg {
+  height: 3px; background: rgba(255,255,255,0.06);
+  border-radius: 3px; overflow: hidden;
+}
+.rank-bar-fill {
+  height: 100%; border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.rank-vals { text-align: right; flex-shrink: 0; }
+.rank-premio {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--text); white-space: nowrap;
+}
+.rank-share {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--green);
+  white-space: nowrap; text-align: right;
+}
+
+/* ── Growth rows ── */
+.grow-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.grow-row:last-child { border-bottom: none; padding-bottom: 0; }
+.grow-name {
+  flex: 1; font-size: 11px; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.grow-delta {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; white-space: nowrap;
+}
+.grow-delta.up { color: var(--green); }
+.grow-delta.dn { color: var(--red); }
+.grow-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; padding: 2px 5px; border-radius: 3px;
+  white-space: nowrap; flex-shrink: 0; min-width: 48px; text-align: center;
+}
+.grow-pct.up { background: rgba(0,229,160,0.1); color: var(--green); }
+.grow-pct.dn { background: rgba(255,61,90,0.1); color: var(--red); }
+
+/* ── Potencial ── */
+.pot-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 10px;
+}
+.pot-box {
+  background: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: 7px; padding: 10px;
+}
+.pot-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.pot-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 16px;
+  color: var(--text);
+}
+.pot-sub {
+  font-size: 9px; color: var(--muted); margin-top: 1px;
+}
+
+/* ── Benchmark ── */
+.bench-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.bench-row:last-child { border-bottom: none; }
+.bench-row.highlight .bench-uf { color: var(--green); }
+.bench-row.highlight .bench-bar-fill { background: var(--green) !important; }
+.bench-uf {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  width: 26px; flex-shrink: 0;
+}
+.bench-bar-bg {
+  flex: 1; height: 7px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px; overflow: hidden;
+}
+.bench-bar-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--blue);
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.bench-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--text);
+  text-align: right; min-width: 55px;
+}
+.bench-pos {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  min-width: 20px; text-align: right;
+}
+
+/* ── Nacional chart ── */
+.nat-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 7px;
+}
+.nat-row:last-child { margin-bottom: 0; }
+.nat-seg {
+  font-size: 10.5px; color: var(--text);
+  width: 120px; flex-shrink: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nat-bar-bg {
+  flex: 1; height: 7px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px; overflow: hidden;
+}
+.nat-bar-fill {
+  height: 100%; border-radius: 4px;
+  transition: width 0.5s;
+}
+.nat-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  min-width: 42px; text-align: right;
+}
+
+/* ── Fonte ── */
+.fonte {
+  padding: 8px 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px; color: var(--muted);
+  border-top: 1px solid var(--border);
+  opacity: 0.6; flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+/* ═══════════════════ SIMPLEMAPS OVERRIDES ═══════════════════ */
+#map .smaptooltip,
+#map .simplemaps-tooltip { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo">
+    <div class="logo-mark">DM</div>
+    <div>
+      <div class="logo-text">Data<span>Mind</span></div>
+      <div class="logo-sub">AI-First Data Consultancy</div>
+    </div>
+  </div>
+  <div class="header-title">
+    <strong>Fiança Locatícia · Inteligência de Mercado</strong>
+    Ramo 0746 · SUSEP SES-UF
+  </div>
+  <div class="header-right">
+    <div class="badge badge-blue">SUSEP · SES-UF</div>
+    <div class="badge badge-gold">Mar/25 – Fev/26</div>
+    <div class="badge badge-green" id="badge-mes">Fev 2026</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- LEFT -->
+  <div id="left-col">
+
+    <div id="map-toolbar">
+      <div class="toolbar-left">
+        <div>
+          <div class="toolbar-label">Dominância por Estado</div>
+          <div class="toolbar-sub" id="toolbar-sub">Líder de mercado · Prêmio Direto</div>
+        </div>
+      </div>
+      <div class="view-pills">
+        <button class="vpill active" onclick="setView('dominancia')">Dominância</button>
+        <button class="vpill" onclick="setView('volume')">Volume R$</button>
+        <button class="vpill" onclick="setView('potencial')">Potencial</button>
+      </div>
+    </div>
+
+    <div id="map-wrap">
+      <div id="map"></div>
+      <div class="map-hint" id="map-hint">← Clique em um estado para ver os dados</div>
+
+      <!-- Legend -->
+      <div id="legend">
+        <div class="legend-title">Líder de Mercado</div>
+        <div class="legend-row"><div class="ldot" style="background:var(--c-porto)"></div>Porto Seguro</div>
+        <div class="legend-row"><div class="ldot" style="background:var(--c-tokio)"></div>Tokio Marine</div>
+        <div class="legend-row"><div class="ldot" style="background:var(--c-fairfax)"></div>Fairfax (Excelsior)</div>
+        <div class="legend-row"><div class="ldot" style="background:var(--c-outros)"></div>Sem dados</div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div id="timeline">
+      <div class="tl-header">
+        <div class="tl-label">⏱ Linha do Tempo · Últimos 12 Meses</div>
+        <div id="tl-current">Fevereiro 2026</div>
+      </div>
+      <div class="tl-months" id="tl-months"></div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+    <div id="uf-header">
+      <div id="uf-placeholder">
+        <div class="placeholder-arrow">←</div>
+        <div class="placeholder-text">Selecione um estado<br>no mapa para ver<br>os dados</div>
+      </div>
+      <div id="uf-info">
+        <div class="uf-sigla" id="uf-sigla">SP</div>
+        <div class="uf-details">
+          <div class="uf-nome" id="uf-nome">São Paulo</div>
+          <div class="uf-total" id="uf-total">Total Fev/26: <strong>R$ 109,4M</strong></div>
+          <div class="uf-lider-badge" id="uf-lider-badge">Líder: Porto Seguro</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cards-scroll">
+      <!-- DEFAULT: Nacional -->
+      <div id="panel-default">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><span class="icon">🏆</span>Top 5 Nacional · Prêmio Direto</div>
+            <div class="card-period" id="nac-period">Fev/2026</div>
+          </div>
+          <div id="nac-chart"></div>
+        </div>
+      </div>
+
+      <!-- STATE: populated on click -->
+      <div id="panel-state">
+        <div class="card" id="card-ranking">
+          <div class="card-head">
+            <div class="card-title"><span class="icon">🏅</span>Ranking do Estado</div>
+            <div class="card-period" id="rank-period">Fev/2026</div>
+          </div>
+          <div id="rank-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><span class="icon">📈</span>Maior Crescimento R$</div>
+            <div class="card-period">Dez/25 → Fev/26</div>
+          </div>
+          <div id="grow-r-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><span class="icon">🚀</span>Maior Crescimento %</div>
+            <div class="card-period">Dez/25 → Fev/26</div>
+          </div>
+          <div id="grow-p-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><span class="icon">🎯</span>Potencial de Mercado</div>
+            <div class="card-period">IBGE · Censo 2022</div>
+          </div>
+          <div id="pot-content"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><span class="icon">📊</span>Comparativo Regional</div>
+            <div class="card-period">Volume vs referências</div>
+          </div>
+          <div id="bench-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fonte">Fonte: SUSEP SES-UF · Ramo 0746 · IBGE Censo 2022 · DataMind Analysis © 2026</div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DADOS SUSEP + IBGE
+   ═══════════════════════════════════════════════ */
+const SUSEP = {
+  ultimo_mes: '202602',
+  meses: ['202503','202504','202505','202506','202507','202508','202509','202510','202511','202512','202601','202602'],
+  meses_label: ['Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25','Jan/26','Fev/26'],
+  meses_full: ['Março 2025','Abril 2025','Maio 2025','Junho 2025','Julho 2025','Agosto 2025','Setembro 2025','Outubro 2025','Novembro 2025','Dezembro 2025','Janeiro 2026','Fevereiro 2026'],
+
+  ranking: {
+    SP: [{s:'Porto Seguro',v:59961512,ms:54.9},{s:'Fairfax (Excelsior)',v:20905634,ms:19.1},{s:'Tokio Marine',v:17255926,ms:15.8},{s:'Sompo',v:6441009,ms:5.9},{s:'Generali',v:1913665,ms:1.8}],
+    RJ: [{s:'Porto Seguro',v:11220652,ms:61.6},{s:'Fairfax (Excelsior)',v:4259673,ms:23.4},{s:'Tokio Marine',v:1949088,ms:10.7},{s:'HDI',v:354900,ms:1.9},{s:'Sompo',v:193143,ms:1.1}],
+    MG: [{s:'Porto Seguro',v:12487307,ms:52.3},{s:'Tokio Marine',v:8515304,ms:35.7},{s:'Fairfax (Excelsior)',v:2410347,ms:10.1},{s:'Sompo',v:340280,ms:1.4},{s:'Generali',v:99692,ms:0.4}],
+    PR: [{s:'Porto Seguro',v:9558954,ms:47.6},{s:'Fairfax (Excelsior)',v:5382946,ms:26.8},{s:'Tokio Marine',v:3475028,ms:17.3},{s:'Sompo',v:1199483,ms:6.0},{s:'Zurich',v:421676,ms:2.1}],
+    RS: [{s:'Porto Seguro',v:5487028,ms:53.6},{s:'Tokio Marine',v:2770186,ms:27.1},{s:'Fairfax (Excelsior)',v:1174349,ms:11.5},{s:'Sompo',v:747721,ms:7.3},{s:'HDI',v:51996,ms:0.5}],
+    SC: [{s:'Porto Seguro',v:4446087,ms:43.6},{s:'Tokio Marine',v:2509399,ms:24.6},{s:'Fairfax (Excelsior)',v:1671977,ms:16.4},{s:'Zurich',v:1027334,ms:10.1},{s:'Sompo',v:518064,ms:5.1}],
+    BA: [{s:'Porto Seguro',v:699976,ms:65.2},{s:'Fairfax (Excelsior)',v:155637,ms:14.5},{s:'Tokio Marine',v:119034,ms:11.1},{s:'Sompo',v:54042,ms:5.0},{s:'Caixa',v:44799,ms:4.2}],
+    DF: [{s:'Porto Seguro',v:1691532,ms:56.3},{s:'Tokio Marine',v:606768,ms:20.2},{s:'Fairfax (Excelsior)',v:420942,ms:14.0},{s:'Sompo',v:266989,ms:8.9},{s:'Zurich',v:9090,ms:0.3}],
+    GO: [{s:'Tokio Marine',v:841364,ms:34.8},{s:'Porto Seguro',v:648443,ms:26.8},{s:'Fairfax (Excelsior)',v:561082,ms:23.2},{s:'Sompo',v:222648,ms:9.2},{s:'Outros',v:126636,ms:5.2}],
+    ES: [{s:'Porto Seguro',v:1194756,ms:59.3},{s:'Fairfax (Excelsior)',v:563723,ms:28.0},{s:'Tokio Marine',v:201801,ms:10.0},{s:'Sompo',v:49942,ms:2.5},{s:'HDI',v:5389,ms:0.3}],
+    MS: [{s:'Porto Seguro',v:1291692,ms:57.6},{s:'Tokio Marine',v:631711,ms:28.2},{s:'Sompo',v:199915,ms:8.9},{s:'Fairfax (Excelsior)',v:118138,ms:5.3}],
+    MT: [{s:'Porto Seguro',v:112450,ms:37.0},{s:'Tokio Marine',v:95410,ms:31.4},{s:'Fairfax (Excelsior)',v:55053,ms:18.1},{s:'Sompo',v:41287,ms:13.6}],
+    CE: [{s:'Porto Seguro',v:308515,ms:47.0},{s:'Tokio Marine',v:195153,ms:29.7},{s:'Fairfax (Excelsior)',v:92058,ms:14.0},{s:'SulAmérica',v:40086,ms:6.1},{s:'Sompo',v:18002,ms:2.7}],
+    PE: [{s:'Porto Seguro',v:501764,ms:34.0},{s:'Tokio Marine',v:474905,ms:32.2},{s:'Zurich',v:307400,ms:20.9},{s:'Fairfax (Excelsior)',v:152788,ms:10.4},{s:'HDI',v:21401,ms:1.5}],
+    MA: [{s:'Porto Seguro',v:188534,ms:96.3},{s:'Tokio Marine',v:5670,ms:2.9},{s:'Sompo',v:1468,ms:0.7}],
+    PA: [{s:'Porto Seguro',v:8908,ms:26.5},{s:'Tokio Marine',v:6793,ms:20.2},{s:'Fairfax (Excelsior)',v:6673,ms:19.9},{s:'HDI',v:4500,ms:13.4}],
+    PB: [{s:'Porto Seguro',v:36375,ms:35.0},{s:'Tokio Marine',v:33566,ms:32.3},{s:'Sompo',v:25968,ms:25.0},{s:'Fairfax (Excelsior)',v:8098,ms:7.8}],
+    RN: [{s:'Tokio Marine',v:43380,ms:56.5},{s:'Porto Seguro',v:22179,ms:28.9},{s:'Fairfax (Excelsior)',v:11212,ms:14.6}],
+    AL: [{s:'Tokio Marine',v:46838,ms:55.4},{s:'Zurich',v:36795,ms:43.5},{s:'Fairfax (Excelsior)',v:861,ms:1.0}],
+    SE: [{s:'Tokio Marine',v:33507,ms:37.1},{s:'Porto Seguro',v:29295,ms:32.4},{s:'Fairfax (Excelsior)',v:20089,ms:22.2},{s:'Sompo',v:7467,ms:8.3}],
+    TO: [{s:'Tokio Marine',v:43303,ms:89.6},{s:'Fairfax (Excelsior)',v:5002,ms:10.4}],
+    AM: [{s:'Tokio Marine',v:100695,ms:95.1},{s:'Fairfax (Excelsior)',v:5154,ms:4.9}],
+    RO: [{s:'Tokio Marine',v:7832,ms:100.0}],
+    PI: [{s:'Fairfax (Excelsior)',v:1522,ms:61.0},{s:'Tokio Marine',v:972,ms:39.0}],
+    AC: [], AP: [], RR: []
+  },
+
+  growth: {
+    SP: {r:[{s:'Porto Seguro',dr:8558854,dp:16.7},{s:'Fairfax (Excelsior)',dr:5261590,dp:33.6},{s:'Tokio Marine',dr:2323048,dp:15.6}], p:[{s:'Caixa',dr:192318,dp:576.7},{s:'IRB',dr:576088,dp:149.8},{s:'Sompo',dr:1835921,dp:39.9}]},
+    RJ: {r:[{s:'Fairfax (Excelsior)',dr:514621,dp:13.7},{s:'Tokio Marine',dr:-135609,dp:-6.5},{s:'Porto Seguro',dr:-175983,dp:-1.5}], p:[{s:'Fairfax (Excelsior)',dr:514621,dp:13.7}]},
+    MG: {r:[{s:'Porto Seguro',dr:3642956,dp:41.2},{s:'Tokio Marine',dr:1069826,dp:14.4},{s:'Sompo',dr:68096,dp:25.0}], p:[{s:'Porto Seguro',dr:3642956,dp:41.2},{s:'Sompo',dr:68096,dp:25.0},{s:'Tokio Marine',dr:1069826,dp:14.4}]},
+    PR: {r:[{s:'Porto Seguro',dr:1645921,dp:20.8},{s:'Fairfax (Excelsior)',dr:1591533,dp:42.0},{s:'Tokio Marine',dr:828650,dp:31.3}], p:[{s:'Sompo',dr:395633,dp:49.2},{s:'Fairfax (Excelsior)',dr:1591533,dp:42.0},{s:'Porto Seguro',dr:1645921,dp:20.8}]},
+    RS: {r:[{s:'Porto Seguro',dr:1140778,dp:26.2},{s:'Tokio Marine',dr:1001314,dp:56.6},{s:'Fairfax (Excelsior)',dr:208909,dp:21.6}], p:[{s:'Tokio Marine',dr:1001314,dp:56.6},{s:'Porto Seguro',dr:1140778,dp:26.2},{s:'Fairfax (Excelsior)',dr:208909,dp:21.6}]},
+    SC: {r:[{s:'Porto Seguro',dr:1433740,dp:47.6},{s:'Tokio Marine',dr:615918,dp:32.5},{s:'Fairfax (Excelsior)',dr:278562,dp:20.0}], p:[{s:'Porto Seguro',dr:1433740,dp:47.6},{s:'Tokio Marine',dr:615918,dp:32.5},{s:'Sompo',dr:123748,dp:31.4}]},
+    BA: {r:[{s:'Fairfax (Excelsior)',dr:9158,dp:6.3},{s:'Sompo',dr:6085,dp:12.7}], p:[{s:'Sompo',dr:6085,dp:12.7},{s:'Fairfax (Excelsior)',dr:9158,dp:6.3}]},
+    DF: {r:[{s:'Porto Seguro',dr:358981,dp:26.9},{s:'Fairfax (Excelsior)',dr:95786,dp:29.5},{s:'Sompo',dr:63994,dp:31.5}], p:[{s:'Sompo',dr:63994,dp:31.5},{s:'Fairfax (Excelsior)',dr:95786,dp:29.5},{s:'Porto Seguro',dr:358981,dp:26.9}]},
+    GO: {r:[{s:'Fairfax (Excelsior)',dr:-63586,dp:-10.2}], p:[{s:'Fairfax (Excelsior)',dr:-63586,dp:-10.2}]},
+    ES: {r:[{s:'Fairfax (Excelsior)',dr:204390,dp:56.9},{s:'Porto Seguro',dr:155364,dp:14.9}], p:[{s:'Fairfax (Excelsior)',dr:204390,dp:56.9},{s:'Porto Seguro',dr:155364,dp:14.9}]},
+    MS: {r:[{s:'Porto Seguro',dr:478547,dp:58.9},{s:'Tokio Marine',dr:267561,dp:73.5},{s:'Sompo',dr:104836,dp:110.3}], p:[{s:'Sompo',dr:104836,dp:110.3},{s:'Tokio Marine',dr:267561,dp:73.5},{s:'Porto Seguro',dr:478547,dp:58.9}]},
+    MT: {r:[{s:'Fairfax (Excelsior)',dr:44795,dp:436.7},{s:'Porto Seguro',dr:17944,dp:19.0}], p:[{s:'Fairfax (Excelsior)',dr:44795,dp:436.7},{s:'Porto Seguro',dr:17944,dp:19.0}]},
+    CE: {r:[{s:'Tokio Marine',dr:111537,dp:133.4},{s:'Porto Seguro',dr:74090,dp:31.6},{s:'SulAmérica',dr:27241,dp:212.1}], p:[{s:'Sompo',dr:15674,dp:673.3},{s:'SulAmérica',dr:27241,dp:212.1},{s:'Tokio Marine',dr:111537,dp:133.4}]},
+    PE: {r:[{s:'Tokio Marine',dr:169590,dp:55.5},{s:'Fairfax (Excelsior)',dr:88287,dp:136.9},{s:'Porto Seguro',dr:97878,dp:24.2}], p:[{s:'Caixa',dr:7629,dp:784.9},{s:'Fairfax (Excelsior)',dr:88287,dp:136.9},{s:'Tokio Marine',dr:169590,dp:55.5}]},
+    MA: {r:[], p:[]},
+    AL: {r:[{s:'Tokio Marine',dr:22418,dp:91.8},{s:'Zurich',dr:9050,dp:32.6}], p:[{s:'Tokio Marine',dr:22418,dp:91.8},{s:'Zurich',dr:9050,dp:32.6}]},
+    SE: {r:[{s:'Tokio Marine',dr:14163,dp:73.2},{s:'Sompo',dr:5587,dp:297.2}], p:[{s:'Sompo',dr:5587,dp:297.2},{s:'Tokio Marine',dr:14163,dp:73.2}]},
+    TO: {r:[{s:'Tokio Marine',dr:23042,dp:113.7}], p:[{s:'Tokio Marine',dr:23042,dp:113.7}]},
+    AM: {r:[{s:'Fairfax (Excelsior)',dr:775,dp:17.7}], p:[{s:'Fairfax (Excelsior)',dr:775,dp:17.7}]},
+    RO: {r:[{s:'Tokio Marine',dr:3622,dp:86.1}], p:[{s:'Tokio Marine',dr:3622,dp:86.1}]},
+    RN: {r:[{s:'Tokio Marine',dr:13319,dp:44.3},{s:'Porto Seguro',dr:4742,dp:27.2}], p:[{s:'Tokio Marine',dr:13319,dp:44.3},{s:'Porto Seguro',dr:4742,dp:27.2}]},
+    PB: {r:[{s:'Porto Seguro',dr:2552,dp:7.5}], p:[{s:'Porto Seguro',dr:2552,dp:7.5}]},
+    PA: {r:[{s:'Tokio Marine',dr:2375,dp:53.7}], p:[{s:'Tokio Marine',dr:2375,dp:53.7}]},
+    PI: {r:[{s:'Fairfax (Excelsior)',dr:603,dp:65.5}], p:[{s:'Fairfax (Excelsior)',dr:603,dp:65.5}]},
+    AC: {r:[], p:[]}, AP: {r:[], p:[]}, RR: {r:[], p:[]}
+  },
+
+  ibge: {
+    SP:{alugados:3245000,total:15800000,pct:20.5,fianca:487000},
+    RJ:{alugados:1180000,total:6100000,pct:19.3,fianca:177000},
+    MG:{alugados:840000,total:7200000,pct:11.7,fianca:126000},
+    PR:{alugados:490000,total:4100000,pct:12.0,fianca:73500},
+    RS:{alugados:520000,total:4350000,pct:12.0,fianca:78000},
+    SC:{alugados:320000,total:3200000,pct:10.0,fianca:48000},
+    BA:{alugados:430000,total:4700000,pct:9.1,fianca:64500},
+    DF:{alugados:195000,total:1020000,pct:19.1,fianca:29250},
+    GO:{alugados:290000,total:2450000,pct:11.8,fianca:43500},
+    ES:{alugados:185000,total:1450000,pct:12.8,fianca:27750},
+    MS:{alugados:115000,total:960000,pct:12.0,fianca:17250},
+    MT:{alugados:130000,total:1100000,pct:11.8,fianca:19500},
+    CE:{alugados:280000,total:3100000,pct:9.0,fianca:42000},
+    PE:{alugados:310000,total:3400000,pct:9.1,fianca:46500},
+    MA:{alugados:110000,total:2000000,pct:5.5,fianca:16500},
+    PA:{alugados:150000,total:2100000,pct:7.1,fianca:22500},
+    AM:{alugados:120000,total:980000,pct:12.2,fianca:18000},
+    RN:{alugados:130000,total:1200000,pct:10.8,fianca:19500},
+    PB:{alugados:105000,total:1300000,pct:8.1,fianca:15750},
+    AL:{alugados:95000,total:1150000,pct:8.3,fianca:14250},
+    SE:{alugados:75000,total:800000,pct:9.4,fianca:11250},
+    PI:{alugados:80000,total:1100000,pct:7.3,fianca:12000},
+    RO:{alugados:65000,total:620000,pct:10.5,fianca:9750},
+    TO:{alugados:50000,total:520000,pct:9.6,fianca:7500},
+    AC:{alugados:25000,total:250000,pct:10.0,fianca:3750},
+    AP:{alugados:22000,total:230000,pct:9.6,fianca:3300},
+    RR:{alugados:18000,total:190000,pct:9.5,fianca:2700}
+  },
+
+  // Volume total por UF (soma do ranking)
+  totalUF: {},
+
+  nacional: {
+    'Porto Seguro':   109895958,
+    'Tokio Marine':   39963634,
+    'Fairfax (Excelsior)': 37982959,
+    'Sompo':          10334541,
+    'Generali':       2013357,
+    'HDI':            1283940,
+    'Zurich':         1804885,
+    'SulAmérica':     632706,
+    'IRB':            995728,
+    'Caixa':          284203
+  }
+};
+
+// Calcular totais por UF
+for(const uf in SUSEP.ranking){
+  SUSEP.totalUF[uf] = SUSEP.ranking[uf].reduce((a,b)=>a+b.v,0);
+}
+
+const UF_NAMES = {
+  SP:'São Paulo',RJ:'Rio de Janeiro',MG:'Minas Gerais',PR:'Paraná',RS:'Rio Grande do Sul',
+  SC:'Santa Catarina',BA:'Bahia',DF:'Distrito Federal',GO:'Goiás',ES:'Espírito Santo',
+  MS:'Mato Grosso do Sul',MT:'Mato Grosso',CE:'Ceará',PE:'Pernambuco',MA:'Maranhão',
+  PA:'Pará',AM:'Amazonas',RN:'Rio Grande do Norte',PB:'Paraíba',AL:'Alagoas',
+  SE:'Sergipe',PI:'Piauí',RO:'Rondônia',TO:'Tocantins',AC:'Acre',AP:'Amapá',RR:'Roraima'
+};
+
+const SEG_COLOR = {
+  'Porto Seguro':        '#00E5A0',
+  'Tokio Marine':        '#4F8EF7',
+  'Fairfax (Excelsior)': '#FFB830',
+  'Sompo':               '#FF3D5A',
+  'Generali':            '#9B6DFF',
+  'HDI':                 '#FF7C3A',
+  'Zurich':              '#00CDE0',
+  'SulAmérica':          '#E040FB',
+  'IRB':                 '#69F0AE',
+  'Caixa':               '#64B5F6',
+  'Outros':              '#607D8B'
+};
+
+/* ═══════════════════════════════════════════════
+   SIMPLEMAPS CONFIG
+   ═══════════════════════════════════════════════ */
+function getStateColor(ufCode) {
+  const uf = ufCode.replace('BR','');
+  const rank = SUSEP.ranking[uf];
+  if(!rank || rank.length === 0) return '#2A2F40';
+  const lider = rank[0].s;
+  return SEG_COLOR[lider] || '#607D8B';
+}
+
+function getStateOpacity(ufCode) {
+  const uf = ufCode.replace('BR','');
+  const rank = SUSEP.ranking[uf];
+  if(!rank || rank.length === 0) return 0.25;
+  const ms = rank[0].ms;
+  // opacity baseada no market share do líder
+  return 0.35 + (ms/100)*0.55;
+}
+
+// Configurar mapdata com nossas cores
+window.addEventListener('load', function() {
+  setTimeout(configureMap, 100);
+});
+
+function configureMap() {
+  if(!window.simplemaps_countrymap_mapdata) return;
+  const states = window.simplemaps_countrymap_mapdata.state_specific;
+  
+  for(const id in states){
+    const baseColor = getStateColor(id);
+    const opacity  = getStateOpacity(id);
+    
+    // Converter hex+opacity para hex sólido misturado com bg
+    states[id].color = blendHex(baseColor, '#07080D', opacity);
+    states[id].hover_color = baseColor;
+    states[id].description = buildTooltip(id);
+    states[id].url = '';
+  }
+
+  // Settings gerais
+  const ms = window.simplemaps_countrymap_mapdata.main_settings;
+  ms.background_color = '#07080D';
+  ms.background_transparent = 'yes';
+  ms.border_color = '#1C2030';
+  ms.border_size = 1;
+  ms.state_url = '';
+  ms.popup_color = '#0E1018';
+  ms.popup_opacity = 0.95;
+  ms.popup_corners = 8;
+  ms.popup_font = '11px/1.5 Outfit, sans-serif';
+  ms.zoom = 'yes';
+  ms.label_display = 'auto';
+  ms.label_color = '#E8EAF2';
+  ms.label_size = 12;
+  ms.all_states_zoomable = 'yes';
+  ms.zoom_percentage = 0.99;
+}
+
+function buildTooltip(id) {
+  const uf = id.replace('BR','');
+  const rank = SUSEP.ranking[uf];
+  if(!rank || rank.length === 0) return `<b style="color:#E8EAF2">${uf} · ${UF_NAMES[uf]||''}</b><br><span style="color:#5A5F75">Dados incipientes</span>`;
+  const lider = rank[0];
+  const total = SUSEP.totalUF[uf]||0;
+  return `<b style="color:#E8EAF2;font-family:Syne,sans-serif">${uf} · ${UF_NAMES[uf]||''}</b><br>
+<span style="color:#00E5A0">Líder: ${lider.s}</span><br>
+<span style="color:#9BA3B5">Market Share: ${lider.ms}%</span><br>
+<span style="color:#5A5F75">Total: ${fmtR(total)}</span>`;
+}
+
+// Blend hex color with background
+function blendHex(hex, bg, alpha) {
+  const f = parseInt(hex.slice(1),16);
+  const b = parseInt(bg.slice(1),16);
+  const fr = (f>>16)&255, fg = (f>>8)&255, fb = f&255;
+  const br = (b>>16)&255, bg2 = (b>>8)&255, bb = b&255;
+  const r = Math.round(fr*alpha + br*(1-alpha));
+  const g = Math.round(fg*alpha + bg2*(1-alpha));
+  const bl = Math.round(fb*alpha + bb*(1-alpha));
+  return '#'+((1<<24)+(r<<16)+(g<<8)+bl).toString(16).slice(1);
+}
+
+/* ═══════════════════════════════════════════════
+   TIMELINE
+   ═══════════════════════════════════════════════ */
+let activeMonth = 11; // Fev/26 = índice 11
+
+function buildTimeline() {
+  const wrap = document.getElementById('tl-months');
+  SUSEP.meses_label.forEach((lbl, i) => {
+    const div = document.createElement('div');
+    div.className = 'tlm' + (i===activeMonth?' active':'');
+    div.innerHTML = `<div class="tlm-tick"></div><div class="tlm-lbl">${lbl}</div>`;
+    div.onclick = () => selectMonth(i);
+    wrap.appendChild(div);
+  });
+}
+
+function selectMonth(i) {
+  activeMonth = i;
+  document.querySelectorAll('.tlm').forEach((el,j)=>{
+    el.classList.toggle('active', j===i);
+  });
+  document.getElementById('tl-current').textContent = SUSEP.meses_full[i];
+  document.getElementById('badge-mes').textContent = SUSEP.meses_label[i];
+  document.getElementById('nac-period').textContent = SUSEP.meses_label[i];
+  document.getElementById('rank-period').textContent = SUSEP.meses_label[i];
+  // Re-render if state selected
+  if(currentUF) renderState(currentUF);
+}
+
+/* ═══════════════════════════════════════════════
+   NACIONAL CHART
+   ═══════════════════════════════════════════════ */
+function renderNacional() {
+  const data = Object.entries(SUSEP.nacional)
+    .sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max = data[0][1];
+  const wrap = document.getElementById('nac-chart');
+  wrap.innerHTML = data.map(([seg,val])=>`
+    <div class="nat-row">
+      <div class="nat-seg">${seg}</div>
+      <div class="nat-bar-bg">
+        <div class="nat-bar-fill" style="width:${(val/max*100).toFixed(1)}%;background:${SEG_COLOR[seg]||'#607D8B'}"></div>
+      </div>
+      <div class="nat-val">${fmtM(val)}</div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   STATE CLICK HANDLER
+   ═══════════════════════════════════════════════ */
+let currentUF = null;
+
+// Hook simplemaps click event
+simplemaps_countrymap.hooks.click_state = function(id) {
+  const uf = id.replace('BR','');
+  currentUF = uf;
+  document.getElementById('map-hint').style.display = 'none';
+  renderState(uf);
+};
+
+function renderState(uf) {
+  const nome = UF_NAMES[uf] || uf;
+  const rank = SUSEP.ranking[uf] || [];
+  const grow = SUSEP.growth[uf] || {r:[],p:[]};
+  const ibge = SUSEP.ibge[uf];
+  const total = SUSEP.totalUF[uf] || 0;
+  const lider = rank[0]?.s || '—';
+  const liderColor = SEG_COLOR[lider] || '#607D8B';
+
+  // UF header
+  document.getElementById('uf-placeholder').style.display = 'none';
+  const ufInfo = document.getElementById('uf-info');
+  ufInfo.style.display = 'flex';
+  ufInfo.style.alignItems = 'center';
+  document.getElementById('uf-sigla').textContent = uf;
+  document.getElementById('uf-nome').textContent = nome;
+  document.getElementById('uf-total').innerHTML = `Total ${SUSEP.meses_label[activeMonth]}: <strong>${fmtR(total)}</strong>`;
+  const badge = document.getElementById('uf-lider-badge');
+  badge.textContent = `Líder: ${lider}`;
+  badge.style.background = liderColor+'20';
+  badge.style.color = liderColor;
+  badge.style.border = `1px solid ${liderColor}40`;
+
+  // Show panels
+  document.getElementById('panel-default').style.display = 'none';
+  document.getElementById('panel-state').style.display = 'block';
+
+  // Ranking
+  const rankList = document.getElementById('rank-list');
+  if(rank.length === 0) {
+    rankList.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px">Mercado incipiente</div>';
+  } else {
+    const maxV = rank[0].v;
+    rankList.innerHTML = rank.slice(0,5).map((r,i)=>{
+      const pc = ['pos1','pos2','pos3','pos4','pos5'][i];
+      const nums = ['1','2','3','4','5'];
+      const col = SEG_COLOR[r.s]||'#607D8B';
+      return `<div class="rank-row">
+        <div class="rank-pos ${pc}">${nums[i]}</div>
+        <div class="rank-body">
+          <div class="rank-name">${r.s}</div>
+          <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${(r.v/maxV*100).toFixed(1)}%;background:${col}"></div></div>
+        </div>
+        <div class="rank-vals">
+          <div class="rank-premio">${fmtR(r.v)}</div>
+          <div class="rank-share">${r.ms}%</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Growth R$
+  const growRList = document.getElementById('grow-r-list');
+  const growR = [...grow.r].sort((a,b)=>b.dr-a.dr).slice(0,3);
+  growRList.innerHTML = growR.length ? growR.map(g=>`
+    <div class="grow-row">
+      <div class="grow-name">${g.s}</div>
+      <div class="grow-delta ${g.dr>=0?'up':'dn'}">${g.dr>=0?'+':''}${fmtR(g.dr)}</div>
+      <div class="grow-pct ${g.dp>=0?'up':'dn'}">${g.dp>=0?'+':''}${g.dp.toFixed(1)}%</div>
+    </div>`).join('') :
+    '<div style="color:var(--muted);font-size:11px;padding:6px 0">Dados insuficientes para o período</div>';
+
+  // Growth %
+  const growPList = document.getElementById('grow-p-list');
+  const growP = [...grow.p].sort((a,b)=>b.dp-a.dp).slice(0,3);
+  growPList.innerHTML = growP.length ? growP.map(g=>`
+    <div class="grow-row">
+      <div class="grow-name">${g.s}</div>
+      <div class="grow-delta ${g.dp>=0?'up':'dn'}">${fmtR(g.dr)}</div>
+      <div class="grow-pct ${g.dp>=0?'up':'dn'}">${g.dp>=0?'+':''}${g.dp.toFixed(1)}%</div>
+    </div>`).join('') :
+    '<div style="color:var(--muted);font-size:11px;padding:6px 0">Dados insuficientes para o período</div>';
+
+  // Potencial IBGE
+  const potContent = document.getElementById('pot-content');
+  if(ibge) {
+    const penPct = ((total / (ibge.fianca * 150)) * 100).toFixed(1); // R$150 ticket médio estimado
+    potContent.innerHTML = `
+      <div class="pot-grid">
+        <div class="pot-box">
+          <div class="pot-label">Domicílios Alugados</div>
+          <div class="pot-val">${fmtK(ibge.alugados)}</div>
+          <div class="pot-sub">${ibge.pct}% do total</div>
+        </div>
+        <div class="pot-box">
+          <div class="pot-label">Est. Usuários Fiança</div>
+          <div class="pot-val">${fmtK(ibge.fianca)}</div>
+          <div class="pot-sub">~15% dos alugados</div>
+        </div>
+        <div class="pot-box">
+          <div class="pot-label">Volume Atual</div>
+          <div class="pot-val">${fmtM(total)}</div>
+          <div class="pot-sub">Prêmio mensal</div>
+        </div>
+        <div class="pot-box">
+          <div class="pot-label">Penetração Est.</div>
+          <div class="pot-val" style="color:var(--gold)">${penPct}%</div>
+          <div class="pot-sub">do potencial total</div>
+        </div>
+      </div>`;
+  } else {
+    potContent.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:6px 0">Dados IBGE não disponíveis</div>';
+  }
+
+  // Benchmark
+  const benchContent = document.getElementById('bench-content');
+  const refs = ['SP','RJ','MG',uf].filter((v,i,a)=>a.indexOf(v)===i);
+  const maxBench = Math.max(...refs.map(u=>SUSEP.totalUF[u]||0));
+  const positions = Object.entries(SUSEP.totalUF).sort((a,b)=>b[1]-a[1]);
+  const pos = positions.findIndex(([u])=>u===uf)+1;
+
+  benchContent.innerHTML = `
+    <div style="margin-bottom:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">
+      POSIÇÃO NACIONAL: <span style="color:var(--gold);font-size:11px;font-family:'Syne',sans-serif;font-weight:700">#${pos}</span>
+      <span style="color:var(--muted)"> de ${positions.length} estados com dados</span>
+    </div>` +
+    refs.map(u=>{
+      const v = SUSEP.totalUF[u]||0;
+      const isThis = u===uf;
+      return `<div class="bench-row ${isThis?'highlight':''}">
+        <div class="bench-uf">${u}</div>
+        <div class="bench-bar-bg"><div class="bench-bar-fill" style="width:${maxBench?((v/maxBench)*100).toFixed(1):0}%"></div></div>
+        <div class="bench-val">${fmtM(v)}</div>
+      </div>`;
+    }).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   VIEW TOGGLE
+   ═══════════════════════════════════════════════ */
+let currentView = 'dominancia';
+
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.vpill').forEach(el=>{
+    el.classList.toggle('active', el.textContent.toLowerCase()===
+      ({dominancia:'dominância',volume:'volume r$',potencial:'potencial'}[v]||v));
+  });
+
+  const sub = document.getElementById('toolbar-sub');
+  if(v==='dominancia') sub.textContent = 'Líder de mercado · Prêmio Direto';
+  if(v==='volume')     sub.textContent = 'Volume total de prêmios R$';
+  if(v==='potencial')  sub.textContent = 'Potencial IBGE · Domicílios alugados';
+
+  // Update map colors
+  if(!window.simplemaps_countrymap_mapdata) return;
+  const states = window.simplemaps_countrymap_mapdata.state_specific;
+
+  for(const id in states){
+    const uf = id.replace('BR','');
+    let color, opacity;
+
+    if(v==='dominancia'){
+      color = getStateColor(id);
+      opacity = getStateOpacity(id);
+    } else if(v==='volume'){
+      const vol = SUSEP.totalUF[uf]||0;
+      const maxVol = SUSEP.totalUF['SP'];
+      opacity = 0.15 + (vol/maxVol)*0.8;
+      color = '#4F8EF7';
+    } else if(v==='potencial'){
+      const ib = SUSEP.ibge[uf];
+      const maxAl = SUSEP.ibge['SP'].alugados;
+      opacity = ib ? 0.15 + (ib.alugados/maxAl)*0.8 : 0.1;
+      color = '#FFB830';
+    }
+
+    states[id].color = blendHex(color, '#07080D', opacity);
+    states[id].hover_color = color;
+  }
+
+  if(window.simplemaps_countrymap && window.simplemaps_countrymap.refresh) {
+    window.simplemaps_countrymap.refresh();
+  }
+
+  // Update legend
+  updateLegend(v);
+}
+
+function updateLegend(v) {
+  const leg = document.getElementById('legend');
+  if(v==='dominancia'){
+    leg.innerHTML = `<div class="legend-title">Líder de Mercado</div>
+      <div class="legend-row"><div class="ldot" style="background:#00E5A0"></div>Porto Seguro</div>
+      <div class="legend-row"><div class="ldot" style="background:#4F8EF7"></div>Tokio Marine</div>
+      <div class="legend-row"><div class="ldot" style="background:#FFB830"></div>Fairfax (Excelsior)</div>
+      <div class="legend-row"><div class="ldot" style="background:#2A2F40"></div>Sem dados</div>`;
+  } else if(v==='volume'){
+    leg.innerHTML = `<div class="legend-title">Volume Prêmios</div>
+      <div class="legend-row"><div class="ldot" style="background:#4F8EF7;opacity:1"></div>Alto</div>
+      <div class="legend-row"><div class="ldot" style="background:#4F8EF7;opacity:0.5"></div>Médio</div>
+      <div class="legend-row"><div class="ldot" style="background:#4F8EF7;opacity:0.2"></div>Baixo</div>`;
+  } else {
+    leg.innerHTML = `<div class="legend-title">Potencial IBGE</div>
+      <div class="legend-row"><div class="ldot" style="background:#FFB830;opacity:1"></div>Alto potencial</div>
+      <div class="legend-row"><div class="ldot" style="background:#FFB830;opacity:0.5"></div>Médio</div>
+      <div class="legend-row"><div class="ldot" style="background:#FFB830;opacity:0.2"></div>Baixo</div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   FORMATTERS
+   ═══════════════════════════════════════════════ */
+function fmtR(v) {
+  const a = Math.abs(v);
+  const s = v<0?'-':'';
+  if(a>=1e9) return s+'R$ '+(a/1e9).toFixed(1)+'B';
+  if(a>=1e6) return s+'R$ '+(a/1e6).toFixed(1)+'M';
+  if(a>=1e3) return s+'R$ '+(a/1e3).toFixed(0)+'K';
+  return s+'R$ '+a.toLocaleString('pt-BR');
+}
+function fmtM(v) {
+  if(v>=1e9) return 'R$ '+(v/1e9).toFixed(2)+'B';
+  if(v>=1e6) return 'R$ '+(v/1e6).toFixed(1)+'M';
+  if(v>=1e3) return 'R$ '+(v/1e3).toFixed(0)+'K';
+  return 'R$ '+v.toLocaleString('pt-BR');
+}
+function fmtK(v) {
+  if(v>=1e6) return (v/1e6).toFixed(1)+'M';
+  if(v>=1e3) return (v/1e3).toFixed(0)+'K';
+  return v.toString();
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  configureMap();
+  buildTimeline();
+  renderNacional();
+});
+</script>
+</body>
+</html>
