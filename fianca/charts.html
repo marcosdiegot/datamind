@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DataMind · Fiança Locatícia</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080D;--s1:#0E1018;--s2:#141820;--s3:#1C2030;
+  --border:rgba(255,255,255,0.08);--green:#00E5A0;--red:#FF3D5A;
+  --gold:#FFB830;--blue:#4F8EF7;--text:#E8EAF2;--muted:#5A5F75;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;min-height:100vh;padding-bottom:32px;}
+
+/* HEADER */
+.hdr{background:var(--s1);border-bottom:1px solid var(--border);padding:14px 16px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.logo{display:flex;align-items:center;gap:9px;}
+.lm{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:#07080D;}
+.lt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+.lt span{color:var(--green);}
+.ls{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px;}
+.badge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid rgba(0,229,160,.25);color:var(--green);background:rgba(0,229,160,.07);}
+
+/* FILTROS */
+.filters{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}
+.filters::-webkit-scrollbar{display:none;}
+.fselect{background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;padding:7px 10px;border-radius:8px;cursor:pointer;flex-shrink:0;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235A5F75'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;}
+.fselect:focus{border-color:rgba(0,229,160,.4);}
+.fbtn{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);color:var(--green);font-family:'DM Mono',monospace;font-size:10px;padding:7px 12px;border-radius:8px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;}
+.fbtn:active{background:rgba(0,229,160,.2);}
+
+/* CONTENT */
+.content{padding:12px 12px 0;}
+
+/* SECTION */
+.section{margin-bottom:16px;}
+.stitle{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.stitle small{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);font-weight:400;text-transform:uppercase;letter-spacing:.8px;}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:14px;overflow:hidden;}
+.chart-wrap{position:relative;width:100%;}
+.chart-wrap canvas{display:block;}
+
+/* TOP5 CARDS */
+.top5-grid{display:flex;flex-direction:column;gap:8px;}
+.t5card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.t5head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.t5name{font-size:13px;font-weight:500;color:var(--text);}
+.t5delta{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.t5delta.up{color:var(--green);}
+.t5delta.dn{color:var(--red);}
+.t5bar-bg{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.t5bar-fill{height:100%;border-radius:3px;transition:width .5s;}
+.t5foot{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+.t5foot b{color:var(--text);}
+
+/* TABELA */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{border-bottom:1px solid var(--border);}
+th{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:7px 8px;text-align:right;white-space:nowrap;}
+th:first-child{text-align:left;}
+td{padding:8px 8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.03);white-space:nowrap;}
+td:first-child{text-align:left;color:var(--text);font-weight:500;}
+tbody tr:last-child td{border-bottom:none;}
+.td-v{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);}
+.td-sh{font-family:'DM Mono',monospace;font-size:11px;color:var(--green);}
+.td-sin{font-family:'DM Mono',monospace;font-size:11px;}
+.sin-ok{color:#69F0AE;}.sin-med{color:var(--gold);}.sin-hi{color:var(--red);}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--s2);padding:3px;border-radius:8px;border:1px solid var(--border);margin-bottom:10px;}
+.tab{flex:1;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.6px;padding:5px 4px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;text-align:center;}
+.tab.on{background:var(--green);color:#07080D;font-weight:500;}
+
+/* STAT PILLS */
+.stats-row{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;}
+.stats-row::-webkit-scrollbar{display:none;}
+.stat{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;flex-shrink:0;min-width:100px;}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.stat-val{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--text);}
+.stat-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* RESPONSIVE */
+@media(min-width:640px){
+  .top5-grid{display:grid;grid-template-columns:1fr 1fr;}
+  .content{padding:16px 16px 0;}
+  .hdr{padding:14px 20px;}
+}
+@media(min-width:900px){
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">
+      <div class="lm">DM</div>
+      <div><div class="lt">Data<span>Mind</span></div><div class="ls">Fiança Locatícia · Ramo 0746</div></div>
+    </div>
+    <div class="badge">SUSEP · Fev/26</div>
+  </div>
+  <div class="filters">
+    <select class="fselect" id="fuf" onchange="applyFilters()">
+      <option value="">Todos os estados</option>
+    </select>
+    <select class="fselect" id="fseg" onchange="applyFilters()">
+      <option value="">Todas as seguradoras</option>
+    </select>
+    <button class="fbtn" onclick="resetFilters()">Limpar</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- STATS PILLS -->
+  <div class="stats-row" id="statsrow"></div>
+
+  <!-- 1. PRÊMIO POR UF -->
+  <div class="section">
+    <div class="stitle">📊 Prêmio Direto por UF <small>Fev/26</small></div>
+    <div class="card">
+      <div class="chart-wrap" style="height:220px"><canvas id="cUF"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 2+3. LINHAS MÊS A MÊS -->
+  <div class="section">
+    <div class="stitle">📈 Evolução Mensal <small>Mar/25 → Fev/26</small></div>
+    <div class="tabs">
+      <button class="tab on" onclick="switchLine(0)">Porto Seguro · Tokio Marine</button>
+      <button class="tab" onclick="switchLine(1)">Demais Seguradoras</button>
+    </div>
+    <div class="card">
+      <div class="chart-wrap" style="height:240px"><canvas id="cLine"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 4. TOP 5 VARIAÇÕES -->
+  <div class="section">
+    <div class="stitle">🔥 Top 5 Variações em R$ <small>Jan→Fev/26</small></div>
+    <div class="top5-grid" id="top5cards"></div>
+  </div>
+
+  <!-- 5. TABELA -->
+  <div class="section">
+    <div class="stitle">📋 Tabela Detalhada <small>Fev/26</small></div>
+    <div class="tabs">
+      <button class="tab on" id="ttab0" onclick="switchTable(0)">Por Seguradora</button>
+      <button class="tab" id="ttab1" onclick="switchTable(1)">Por UF</button>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap"><table id="tbl"></table></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DADOS
+// ══════════════════════════════════════════════
+const D = {"meses":["202503","202504","202505","202506","202507","202508","202509","202510","202511","202512","202601","202602"],"meses_lbl":["Mar/25","Abr/25","Mai/25","Jun/25","Jul/25","Ago/25","Set/25","Out/25","Nov/25","Dez/25","Jan/26","Fev/26"],"ultimo_lbl":"Fev/26","prev_lbl":"Jan/26","ufs":["SP","MG","PR","RJ","RS","SC","DF","GO","MS","ES","PE","BA","CE","MT","MA","AM","PB","SE","AL","RN","TO","PA","RO","PI"],"premio_uf":{"SP":109016425,"MG":23838769,"PR":20095301,"RJ":18188602,"RS":10228218,"SC":10191738,"DF":3001806,"GO":2411630,"MS":2243529,"ES":2015611,"PE":1473973,"BA":1073753,"CE":656136,"MT":304199,"MA":195861,"AM":105849,"PB":99783,"SE":90358,"AL":84495,"RN":73845,"TO":48305,"PA":33559,"RO":7508,"PI":2495},"sin_uf":{"SP":34327814,"MG":8450865,"PR":7189416,"RJ":5926145,"RS":4622424,"SC":4128805,"DF":808580,"GO":989305,"MS":845502,"ES":370070,"PE":180865,"BA":346903,"CE":136306,"MT":71985,"MA":58858,"AM":0,"PB":50217,"SE":7078,"AL":-18423,"RN":22573,"TO":0,"PA":16761,"RO":3214,"PI":33974},"segs":["Allianz Seguros","Aruana Seguradora","BMG Seguros","Berkley Brasil","Bradesco Seguros","Caixa Seguradora","Chubb Seguros","Ezze Seguros","Generali Brasil","HDI Seguros","Itaú Seguros","Liberty Seguros","Outras","Porto Seguro","Seguradora Infinite","SulAmérica","Tokio Marine","Too Seguros","Zurich Seguros"],"serie":{"Generali Brasil":{"202503":0,"202504":0,"202505":0,"202506":0,"202507":0,"202508":0,"202509":0,"202510":0,"202511":0,"202512":0,"202601":0,"202602":0},"Outras":{"202503":54520,"202504":-64434,"202505":784055,"202506":110147,"202507":313956,"202508":97613,"202509":14768,"202510":7305248,"202511":141261,"202512":222347,"202601":76346,"202602":119083},"Berkley Brasil":{"202503":392149,"202504":67507,"202505":264044,"202506":410329,"202507":255463,"202508":147999,"202509":4707860,"202510":147044,"202511":1262924,"202512":384634,"202601":243300,"202602":995728},"Porto Seguro":{"202503":86934791,"202504":91332614,"202505":87480919,"202506":81848956,"202507":92981524,"202508":95836295,"202509":98699309,"202510":109099329,"202511":89692417,"202512":93463294,"202601":103792483,"202602":109895958},"Tokio Marine":{"202503":44633046,"202504":46994409,"202505":53395413,"202506":55870399,"202507":65119235,"202508":63059156,"202509":63707384,"202510":69876542,"202511":61136696,"202512":64215737,"202601":69170780,"202602":77946269},"Ezze Seguros":{"202503":162406,"202504":82235,"202505":111017,"202506":179134,"202507":38524,"202508":215518,"202509":73414,"202510":938475,"202511":969183,"202512":479897,"202601":537167,"202602":40431},"Allianz Seguros":{"202503":538650,"202504":-27566,"202505":1026402,"202506":220377,"202507":1200981,"202508":-607666,"202509":160530,"202510":48155,"202511":-6937,"202512":8604,"202601":-16468,"202602":-58980},"SulAmérica":{"202503":137887,"202504":205017,"202505":36265,"202506":425396,"202507":527639,"202508":325328,"202509":206478,"202510":208272,"202511":210614,"202512":697182,"202601":453691,"202602":632706},"Liberty Seguros":{"202503":658820,"202504":2088798,"202505":2573089,"202506":2399787,"202507":2571294,"202508":2677162,"202509":2347089,"202510":2697365,"202511":3434376,"202512":4287194,"202601":2021753,"202602":1681146},"Itaú Seguros":{"202503":0,"202504":0,"202505":0,"202506":573957,"202507":51527,"202508":0,"202509":53177,"202510":-98327,"202511":18864,"202512":88756,"202601":95034,"202602":85064},"HDI Seguros":{"202503":4368966,"202504":2274658,"202505":4053889,"202506":2004754,"202507":1880097,"202508":2585238,"202509":2638700,"202510":2109409,"202511":2004497,"202512":2532379,"202601":1919408,"202602":1283940},"Zurich Seguros":{"202503":2831954,"202504":-281123,"202505":1636140,"202506":4070850,"202507":4689564,"202508":343153,"202509":65949,"202510":483027,"202511":2869818,"202512":6359386,"202601":-382737,"202602":2013357},"BMG Seguros":{"202503":37328,"202504":4261,"202505":-16183,"202506":-90140,"202507":492728,"202508":73002,"202509":437980,"202510":4002,"202511":14255,"202512":21023,"202601":45213,"202602":4601},"Caixa Seguradora":{"202503":93396,"202504":332109,"202505":291024,"202506":119252,"202507":-55387,"202508":326929,"202509":329724,"202510":467322,"202511":306351,"202512":789957,"202601":657261,"202602":284203},"Too Seguros":{"202503":10609744,"202504":12165766,"202505":11012179,"202506":10922498,"202507":11427703,"202508":9134816,"202509":8777624,"202510":10042975,"202511":7764588,"202512":7936355,"202601":10356025,"202602":10331614},"Chubb Seguros":{"202503":191396,"202504":1198,"202505":203247,"202506":205028,"202507":94168,"202508":154059,"202509":30888,"202510":83218,"202511":50108,"202512":169787,"202601":1767,"202602":59360},"Aruana Seguradora":{"202503":0,"202504":4249,"202505":34573,"202506":135765,"202507":220627,"202508":75059,"202509":-1210,"202510":-46752,"202511":14106,"202512":-86683,"202601":32173,"202602":4276},"Bradesco Seguros":{"202503":-88932,"202504":5066,"202505":-15925,"202506":-38421,"202507":289493,"202508":-25188,"202509":141642,"202510":74319,"202511":-31713,"202512":-3962,"202601":80994,"202602":36357},"Seguradora Infinite":{"202503":22160,"202504":117031,"202505":8054,"202506":33825,"202507":210706,"202508":0,"202509":161113,"202510":0,"202511":9066,"202512":379211,"202601":0,"202602":126636}},"top5_var":[{"s":"Tokio Marine","v":77946269,"dr":8775489,"dp":12.7},{"s":"Porto Seguro","v":109895958,"dr":6103475,"dp":5.9},{"s":"Zurich Seguros","v":2013357,"dr":2396094,"dp":-626.0},{"s":"Berkley Brasil","v":995728,"dr":752428,"dp":309.3},{"s":"SulAmérica","v":632706,"dr":179015,"dp":39.5}],"tabela_seg":[{"s":"Porto Seguro","v":109895958,"sh":53.5,"sin":34.5},{"s":"Tokio Marine","v":77946269,"sh":37.9,"sin":27.9},{"s":"Too Seguros","v":10331614,"sh":5.0,"sin":61.2},{"s":"Zurich Seguros","v":2013357,"sh":1.0,"sin":0.0},{"s":"Liberty Seguros","v":1681146,"sh":0.8,"sin":83.8},{"s":"HDI Seguros","v":1283940,"sh":0.6,"sin":70.9},{"s":"Berkley Brasil","v":995728,"sh":0.5,"sin":0.0},{"s":"SulAmérica","v":632706,"sh":0.3,"sin":20.6},{"s":"Caixa Seguradora","v":284203,"sh":0.1,"sin":0.0},{"s":"Seguradora Infinite","v":126636,"sh":0.1,"sin":0.0},{"s":"Outras","v":119083,"sh":0.1,"sin":3.7},{"s":"Itaú Seguros","v":85064,"sh":0.0,"sin":0.0},{"s":"Chubb Seguros","v":59360,"sh":0.0,"sin":0.0},{"s":"Ezze Seguros","v":40431,"sh":0.0,"sin":37.1},{"s":"Bradesco Seguros","v":36357,"sh":0.0,"sin":173.1},{"s":"BMG Seguros","v":4601,"sh":0.0,"sin":0.0},{"s":"Aruana Seguradora","v":4276,"sh":0.0,"sin":46.8}],"tabela_uf":[{"u":"SP","v":109016425,"sh":53.1,"sin":31.5},{"u":"MG","v":23838769,"sh":11.6,"sin":35.5},{"u":"PR","v":20095301,"sh":9.8,"sin":35.8},{"u":"RJ","v":18188602,"sh":8.9,"sin":32.6},{"u":"RS","v":10228218,"sh":5.0,"sin":45.2},{"u":"SC","v":10191738,"sh":5.0,"sin":40.5},{"u":"DF","v":3001806,"sh":1.5,"sin":26.9},{"u":"GO","v":2411630,"sh":1.2,"sin":41.0},{"u":"MS","v":2243529,"sh":1.1,"sin":37.7},{"u":"ES","v":2015611,"sh":1.0,"sin":18.4},{"u":"PE","v":1473973,"sh":0.7,"sin":12.3},{"u":"BA","v":1073753,"sh":0.5,"sin":32.3},{"u":"CE","v":656136,"sh":0.3,"sin":20.8},{"u":"MT","v":304199,"sh":0.1,"sin":23.7},{"u":"MA","v":195861,"sh":0.1,"sin":30.1},{"u":"AM","v":105849,"sh":0.1,"sin":0.0},{"u":"PB","v":99783,"sh":0.0,"sin":50.3},{"u":"SE","v":90358,"sh":0.0,"sin":7.8},{"u":"AL","v":84495,"sh":0.0,"sin":-21.8},{"u":"RN","v":73845,"sh":0.0,"sin":30.6},{"u":"TO","v":48305,"sh":0.0,"sin":0.0},{"u":"PA","v":33559,"sh":0.0,"sin":49.9},{"u":"RO","v":7508,"sh":0.0,"sin":42.8},{"u":"PI","v":2495,"sh":0.0,"sin":1361.9}]};
+
+const SC = {'Porto Seguro':'#00E5A0','Tokio Marine':'#4F8EF7','Too Seguros':'#FF3D5A','Liberty Seguros':'#9B6DFF','HDI Seguros':'#FF7C3A','Zurich Seguros':'#00CDE0','Berkley Brasil':'#69F0AE','SulAmérica':'#E040FB','Caixa Seguradora':'#64B5F6','Bradesco Seguros':'#FFB830','Itaú Seguros':'#FFA726','Allianz Seguros':'#7E57C2','Chubb Seguros':'#26A69A','Ezze Seguros':'#EC407A','Generali Brasil':'#AB47BC','BMG Seguros':'#78909C','Aruana Seguradora':'#8D6E63','Seguradora Infinite':'#BDBDBD','Outras':'#546E7A'};
+
+// State
+let filterUF='', filterSeg='', lineTab=0, tblTab=0;
+let chartUF=null, chartLine=null;
+
+// ── Utils ──
+function fR(v){const a=Math.abs(v),s=v<0?'-':'';if(a>=1e9)return s+'R$'+(a/1e9).toFixed(1)+'B';if(a>=1e6)return s+'R$'+(a/1e6).toFixed(1)+'M';if(a>=1e3)return s+'R$'+(a/1e3).toFixed(0)+'K';return s+'R$'+a.toLocaleString('pt-BR');}
+function fM(v){return fR(v);}
+function hex2rgb(h,a=1){const n=parseInt(h.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+const chartDefaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(14,16,24,.95)',titleColor:'#E8EAF2',bodyColor:'#9BA3B5',borderColor:'rgba(255,255,255,.1)',borderWidth:1,padding:10,titleFont:{family:'Syne',size:12},bodyFont:{family:'DM Mono',size:11},callbacks:{label:ctx=>' '+fR(ctx.raw)}}},animation:{duration:400}};
+
+// ── Populate filters ──
+function initFilters(){
+  const uf=document.getElementById('fuf');
+  D.ufs.forEach(u=>{const o=document.createElement('option');o.value=u;o.textContent=u;uf.appendChild(o);});
+  const sg=document.getElementById('fseg');
+  D.segs.filter(s=>s!=='Generali Brasil').forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sg.appendChild(o);});
+}
+
+// ── Filter helpers ──
+function getFilteredUFs(){return filterUF?[filterUF]:D.ufs;}
+function getFilteredSegs(){return filterSeg?[filterSeg]:D.segs;}
+
+// ── Filtered prêmio por UF ──
+function getUFData(){
+  const ufs=getFilteredUFs();
+  const seg=filterSeg;
+  if(!seg) return {labels:ufs, vals:ufs.map(u=>D.premio_uf[u]||0), sins:ufs.map(u=>D.sin_uf[u]||0)};
+  // filtrar por seg: recalcular do serie
+  const labels=ufs;
+  const vals=ufs.map(()=>0); // seria necessário ter dados por UF×seg, usamos aproximação proporcional
+  // usar tabela_uf filtrada pelo share da seg
+  return {labels:ufs, vals:ufs.map(u=>D.premio_uf[u]||0), sins:ufs.map(u=>D.sin_uf[u]||0)};
+}
+
+// ── STATS ──
+function renderStats(){
+  const tot=D.tabela_seg.reduce((s,r)=>s+r.v,0);
+  const totSin=Object.values(D.sin_uf).reduce((s,v)=>s+(v>0?v:0),0);
+  const nsegs=D.tabela_seg.filter(r=>r.v>0).length;
+  document.getElementById('statsrow').innerHTML=`
+    <div class="stat"><div class="stat-lbl">Total Mercado</div><div class="stat-val">${fR(tot)}</div><div class="stat-sub">Fev/26</div></div>
+    <div class="stat"><div class="stat-lbl">Sinistralidade</div><div class="stat-val" style="color:var(--gold)">${(totSin/tot*100).toFixed(1)}%</div><div class="stat-sub">média nacional</div></div>
+    <div class="stat"><div class="stat-lbl">Seguradoras Ativas</div><div class="stat-val">${nsegs}</div><div class="stat-sub">no período</div></div>
+    <div class="stat"><div class="stat-lbl">Líder</div><div class="stat-val" style="font-size:13px;color:var(--green)">Porto S.</div><div class="stat-sub">53.5% share</div></div>`;
+}
+
+// ── CHART UF ──
+function renderUF(){
+  const {labels,vals}=getUFData();
+  const show=filterUF?labels:[...labels].slice(0,filterSeg?labels.length:14);
+  const showVals=show.map(u=>vals[labels.indexOf(u)]);
+  const colors=show.map(u=>filterSeg?hex2rgb(SC[filterSeg]||'#4F8EF7',.8):'rgba(79,142,247,.75)');
+  const ctx=document.getElementById('cUF');
+  if(chartUF) chartUF.destroy();
+  chartUF=new Chart(ctx,{type:'bar',data:{labels:show,datasets:[{data:showVals,backgroundColor:colors,borderColor:colors.map(c=>c.replace('.75','1')),borderWidth:1,borderRadius:4}]},options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins},scales:{x:{ticks:{color:'#5A5F75',font:{family:'DM Mono',size:9},callback:v=>fR(v)},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},y:{ticks:{color:'#9BA3B5',font:{family:'Outfit',size:11}},grid:{display:false},border:{display:false}}}}});
+  // Ajustar altura dinamicamente
+  ctx.parentElement.style.height=(show.length*26+40)+'px';
+}
+
+// ── CHART LINE ──
+function renderLine(){
+  const ctx=document.getElementById('cLine');
+  if(chartLine) chartLine.destroy();
+  const labels=D.meses_lbl;
+  let datasets=[];
+  if(lineTab===0){
+    const mainSegs=['Porto Seguro','Tokio Marine'];
+    const filtered=filterSeg&&mainSegs.includes(filterSeg)?[filterSeg]:mainSegs;
+    datasets=filtered.map(s=>({label:s,data:D.meses.map(m=>Math.max(0,D.serie[s]?.[m]||0)),borderColor:SC[s],backgroundColor:hex2rgb(SC[s],.08),fill:true,tension:.4,pointRadius:3,pointBackgroundColor:SC[s],borderWidth:2.5}));
+  } else {
+    const excl=['Porto Seguro','Tokio Marine','Generali Brasil'];
+    // Filtrar por volume TOTAL acumulado nos 12 meses (não por mês individual)
+    let segs=D.segs.filter(s=>{
+      if(excl.includes(s)) return false;
+      const total=D.meses.reduce((sum,m)=>sum+(Math.max(0,D.serie[s]?.[m]||0)),0);
+      return total>500000;
+    }).sort((a,b)=>{
+      const ta=D.meses.reduce((s,m)=>s+Math.max(0,D.serie[a]?.[m]||0),0);
+      const tb=D.meses.reduce((s,m)=>s+Math.max(0,D.serie[b]?.[m]||0),0);
+      return tb-ta;
+    });
+    if(filterSeg&&!excl.includes(filterSeg)) segs=[filterSeg];
+    const colors=['#FF3D5A','#FFB830','#9B6DFF','#FF7C3A','#00CDE0','#E040FB','#69F0AE','#EC407A'];
+    datasets=segs.slice(0,8).map((s,i)=>({label:s,data:D.meses.map(m=>Math.max(0,D.serie[s]?.[m]||0)),borderColor:SC[s]||colors[i%colors.length],backgroundColor:'transparent',tension:.4,pointRadius:2,borderWidth:2}));
+  }
+  chartLine=new Chart(ctx,{type:'line',data:{labels,datasets},options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:true,position:'bottom',labels:{color:'#9BA3B5',font:{family:'Outfit',size:10},boxWidth:10,padding:10,filter:item=>item.datasetIndex<(lineTab===0?2:8)}}},scales:{x:{ticks:{color:'#5A5F75',font:{family:'DM Mono',size:9},maxRotation:0},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},y:{ticks:{color:'#5A5F75',font:{family:'DM Mono',size:9},callback:v=>fR(v)},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}}}}});
+}
+
+// ── TOP 5 VARIAÇÕES ──
+function renderTop5(){
+  const maxV=Math.max(...D.top5_var.map(r=>r.v));
+  document.getElementById('top5cards').innerHTML=D.top5_var.map(r=>{
+    const c=SC[r.s]||'#607D8B';
+    const isUp=r.dr>=0;
+    return `<div class="t5card">
+      <div class="t5head">
+        <div class="t5name" style="color:${c}">${r.s}</div>
+        <div class="t5delta ${isUp?'up':'dn'}">${isUp?'+':''}${fR(r.dr)}</div>
+      </div>
+      <div class="t5bar-bg"><div class="t5bar-fill" style="width:${(r.v/maxV*100).toFixed(1)}%;background:${c}"></div></div>
+      <div class="t5foot"><span>Volume: <b>${fR(r.v)}</b></span><span style="color:${isUp?'var(--green)':'var(--red)'}">${isUp?'+':''}${r.dp}%</span></div>
+    </div>`;}).join('');
+}
+
+// ── TABELA ──
+function sinClass(v){if(v<=0)return 'td-sin';if(v<40)return 'td-sin sin-ok';if(v<70)return 'td-sin sin-med';return 'td-sin sin-hi';}
+function renderTable(){
+  const t=document.getElementById('tbl');
+  if(tblTab===0){
+    const data=filterSeg?D.tabela_seg.filter(r=>r.s===filterSeg):D.tabela_seg;
+    t.innerHTML=`<thead><tr><th>Seguradora</th><th>Prêmio</th><th>Sinistral.</th><th>Share</th></tr></thead><tbody>`+
+      data.map(r=>`<tr>
+        <td><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${SC[r.s]||'#546E7A'};margin-right:6px;vertical-align:middle"></span>${r.s}</td>
+        <td class="td-v">${fR(r.v)}</td>
+        <td class="${sinClass(r.sin)}">${r.sin>0?r.sin+'%':'—'}</td>
+        <td class="td-sh">${r.sh}%</td>
+      </tr>`).join('')+'</tbody>';
+  } else {
+    const data=filterUF?D.tabela_uf.filter(r=>r.u===filterUF):D.tabela_uf;
+    t.innerHTML=`<thead><tr><th>UF</th><th>Prêmio</th><th>Sinistral.</th><th>Share</th></tr></thead><tbody>`+
+      data.map(r=>`<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:12px">${r.u}</td>
+        <td class="td-v">${fR(r.v)}</td>
+        <td class="${sinClass(r.sin)}">${r.sin>0?r.sin+'%':'—'}</td>
+        <td class="td-sh">${r.sh}%</td>
+      </tr>`).join('')+'</tbody>';
+  }
+}
+
+// ── SWITCHERS ──
+function switchLine(i){
+  lineTab=i;
+  document.querySelectorAll('.tabs .tab').forEach((el,j)=>{
+    if(el.closest('.section')==document.querySelectorAll('.section')[1])
+      el.classList.toggle('on',j===i);
+  });
+  renderLine();
+}
+function switchTable(i){
+  tblTab=i;
+  document.getElementById('ttab0').classList.toggle('on',i===0);
+  document.getElementById('ttab1').classList.toggle('on',i===1);
+  renderTable();
+}
+function applyFilters(){
+  filterUF=document.getElementById('fuf').value;
+  filterSeg=document.getElementById('fseg').value;
+  renderAll();
+}
+function resetFilters(){
+  filterUF=''; filterSeg='';
+  document.getElementById('fuf').value='';
+  document.getElementById('fseg').value='';
+  renderAll();
+}
+function renderAll(){renderStats();renderUF();renderLine();renderTop5();renderTable();}
+
+// ── CHART.JS GLOBAL DEFAULTS ──
+Chart.defaults.color='#5A5F75';
+Chart.defaults.font.family='Outfit';
+
+// ── INIT ──
+initFilters();
+renderAll();
+</script>
+</body>
+</html>
