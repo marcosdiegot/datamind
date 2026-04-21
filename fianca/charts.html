@@ -212,19 +212,44 @@ function renderStats(){
 // ── POSICIONAMENTO ──
 function renderPos(){
   const ramos=getRamos(),ufs=getUFs(),segs=getSegs();
-  // Total do mercado filtrado (ramo+UF, TODAS as segs) para share correto
-  const totMkt=C.segs.reduce((acc,s)=>acc+ramos.reduce((t,r)=>t+ufs.reduce((tt,u)=>tt+pv(r,u,s,C.ultimo),0),0),0);
+
+  // Volume por seg no último mês
+  function volSeg(s,m){return ramos.reduce((t,r)=>t+ufs.reduce((tt,u)=>tt+pv(r,u,s,m),0),0);}
+  // Total do mercado (todas as segs) no mês
+  function volTotal(m){return C.segs.reduce((t,s)=>t+ramos.reduce((tt,r)=>tt+ufs.reduce((ttt,u)=>ttt+pv(r,u,s,m),0),0),0);}
+
+  const totMkt=volTotal(C.ultimo);
 
   const rows=segs.map(s=>{
-    const vU=ramos.reduce((t,r)=>t+ufs.reduce((tt,u)=>tt+pv(r,u,s,C.ultimo),0),0);
-    const vP=ramos.reduce((t,r)=>t+ufs.reduce((tt,u)=>tt+pv(r,u,s,C.prev),0),0);
-    const dr=vU-vP,dp=vP>0?((dr/vP)*100):0;
-    return {s,vU,dr,dp};
+    const vU=volSeg(s,C.ultimo);
+    const vP=volSeg(s,C.prev);
+    const dr=vU-vP, dp=vP>0?((dr/vP)*100):0;
+    // Share por mês nos últimos 6 meses para tendência
+    const sh6=C.meses.slice(-6).map(m=>{const tot=volTotal(m);return tot>0?volSeg(s,m)/tot*100:0;});
+    const shInicio=(sh6[0]+sh6[1]+sh6[2])/3;
+    const shFim=(sh6[3]+sh6[4]+sh6[5])/3;
+    const deltaShare=shFim-shInicio;
+    const cresc6m=sh6[0]>0?(volSeg(s,C.meses[C.meses.length-1])-volSeg(s,C.meses[C.meses.length-6]))/volSeg(s,C.meses[C.meses.length-6])*100:0;
+    return {s,vU,dr,dp,deltaShare,cresc6m};
   }).filter(r=>r.vU>0);
 
-  const principais=rows.sort((a,b)=>b.vU-a.vU).slice(0,3);
-  const crescentes=rows.filter(r=>r.dp>2&&!principais.find(x=>x.s===r.s)).sort((a,b)=>b.dp-a.dp).slice(0,3);
-  const queda=rows.filter(r=>r.dp<-2).sort((a,b)=>a.dp-b.dp).slice(0,3);
+  const sorted=rows.slice().sort((a,b)=>b.vU-a.vU);
+  // Principais: Top 3 por volume
+  const principais=sorted.slice(0,3);
+  const mainSet=new Set(principais.map(x=>x.s));
+
+  // Desafiantes: Top 4-15 por volume + ganhando share nos últimos 6 meses
+  const desafiantes=sorted.slice(3,15)
+    .filter(r=>r.deltaShare>0||r.cresc6m>5)
+    .sort((a,b)=>b.deltaShare-a.deltaShare)
+    .slice(0,3);
+
+  // Em queda: Top 4-15 por volume + perdendo share consistentemente
+  const queda=sorted.slice(3,15)
+    .filter(r=>r.deltaShare<-0.1&&r.dp<0)
+    .sort((a,b)=>a.deltaShare-b.deltaShare)
+    .slice(0,3);
+
   const maxV=principais[0]?.vU||1;
 
   function grp(items,label,cls,mode){
@@ -233,10 +258,12 @@ function renderPos(){
       <div class="pos-label ${cls}">${label}</div>
       ${items.map((r,i)=>{
         const c=sc(r.s);
-        const pct=mode==='vol'?((r.vU/maxV)*100).toFixed(0):Math.min(100,Math.abs(r.dp)).toFixed(0);
+        const pct=mode==='vol'?((r.vU/maxV)*100).toFixed(0):Math.min(100,Math.abs(r.deltaShare)*20).toFixed(0);
         const badge=mode==='vol'
           ?`<span class="pos-pct neu">${totMkt>0?((r.vU/totMkt)*100).toFixed(1)+'%':'—'}</span>`
-          :`<span class="pos-pct ${r.dp>=0?'up':'dn'}">${r.dp>=0?'+':''}${r.dp.toFixed(1)}%</span>`;
+          :mode==='desafiante'
+            ?`<span class="pos-pct up">+${r.deltaShare.toFixed(2)}pp</span>`
+            :`<span class="pos-pct dn">${r.deltaShare.toFixed(2)}pp</span>`;
         const rankCol=i===0?'var(--gold)':i===1?'#9BA3B5':'#CD7F45';
         return `<div class="pos-item">
           <div class="pos-rank" style="color:${rankCol}">${i+1}</div>
@@ -250,8 +277,8 @@ function renderPos(){
   }
   document.getElementById('pos-grid').innerHTML=
     grp(principais,'🏆 Principais','principal','vol')+
-    grp(crescentes,'📈 Desafiantes','desafiante','pct')+
-    grp(queda,'📉 Em Queda','queda','pct');
+    grp(desafiantes,'📈 Desafiantes','desafiante','desafiante')+
+    grp(queda,'📉 Em Queda','queda','queda');
 }
 
 // ── TABELA ──
