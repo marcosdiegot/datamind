@@ -265,13 +265,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
       var idx = radarHtml.indexOf('const SQUAD = [');
       if (idx === -1) return;
       var block = radarHtml.slice(idx, idx + 30000);
-      var re = /\{ico:'([^']+)',name:'([^']+)',func:'([^']+)',status:'([^']+)'/g;
+      var re = /name:'([^']+)'[^}]*?status:'(titular|especialista)'/g;
       var names = [];
       var m;
       while ((m = re.exec(block)) !== null) {
-        if (m[4] === 'titular' || m[4] === 'especialista') {
-          names.push(m[2]);
-        }
+        names.push(m[1]);
       }
       if (!names.length) return;
       var el = document.getElementById('stack-ia-badges');
@@ -279,7 +277,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
         return '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">' + n + '</span>';
       }).join('');
     })
-    .catch(function(){ /* silencioso */ });
+    .catch(function(){ });
 })();
 </script>
 
