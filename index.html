@@ -3,354 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marcos Diego Ribeiro — Head of Data · DataMind</title>
-<meta name="description" content="Founder & Head of Data da DataMind. Governança primeiro, inteligência depois.">
+<title>Marcos Diego Ribeiro — Head of Data & IA Aplicada</title>
+<meta name="description" content="Head of Data & IA Aplicada. Arquitetura analítica, governança e estratégia de dados. Fundador da DataMind.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #07080D;
-  --bg2: #0d0f18;
-  --bg3: #111420;
-  --green: #00E5A0;
-  --red: #FF3D5A;
-  --amber: #FFB830;
-  --blue: #4F8EF7;
-  --white: #F0F2F8;
-  --muted: #5a5f7a;
-  --border: rgba(255,255,255,0.06);
+  --bg:#07080D; --bg2:#0d0f18; --bg3:#111420;
+  --green:#00E5A0; --red:#FF3D5A; --amber:#FFB830; --blue:#4F8EF7;
+  --white:#F0F2F8; --muted:#5a5f7a; --border:rgba(255,255,255,0.06);
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Syne', sans-serif;
-  overflow-x: hidden;
-  cursor: default;
-}
-/* NOISE OVERLAY */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.4;
-}
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--green); border-radius: 2px; }
-/* TYPOGRAPHY */
-.mono { font-family: 'JetBrains Mono', monospace; }
-/* REVEAL ANIMATION */
-.reveal {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-/* ─── NAV ─── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  padding: 16px 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(7,8,13,0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-logo img {
-  height: 32px;
-  width: auto;
-  filter: brightness(0.9);
-}
-.nav-links {
-  display: flex;
-  gap: 36px;
-  list-style: none;
-}
-.nav-links a {
-  color: var(--muted);
-  text-decoration: none;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.nav-links a:hover { color: var(--green); }
-.nav-cta {
-  display: flex;
-  gap: 12px;
-}
-.btn-ghost {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 8px 18px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-ghost:hover { border-color: var(--green); color: var(--green); }
-.btn-primary {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 8px 18px;
-  border: 1px solid var(--green);
-  background: rgba(0,229,160,0.08);
-  color: var(--green);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-primary:hover { background: rgba(0,229,160,0.18); }
-/* ─── HERO ─── */
-#hero {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  padding: 100px 48px 60px;
-  position: relative;
-  overflow: hidden;
-}
-.hero-bg-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
-.hero-bg-glow {
-  position: absolute;
-  top: 20%;
-  right: 10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(79,142,247,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-left {
-  position: relative;
-  z-index: 2;
-  padding-right: 60px;
-}
-.hero-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.hero-tag::before {
-  content: '';
-  width: 32px;
-  height: 1px;
-  background: var(--green);
-}
-.hero-name {
-  font-size: clamp(36px, 4vw, 56px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-  color: var(--white);
-}
-.hero-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 40px;
-  letter-spacing: 0.05em;
-}
-.hero-phrase {
-  font-size: clamp(22px, 2.5vw, 32px);
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  color: var(--white);
-}
-.hero-phrase span {
-  color: var(--green);
-  position: relative;
-}
-.hero-sub {
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 48px;
-  max-width: 420px;
-}
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-/* COUNTERS */
-.hero-stats {
-  display: flex;
-  gap: 40px;
-  margin-top: 56px;
-  padding-top: 40px;
-  border-top: 1px solid var(--border);
-}
-.stat-item {}
-.stat-num {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--white);
-  line-height: 1;
-}
-.stat-num span { color: var(--green); }
-.stat-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-/* HERO RIGHT — FOTO */
-.hero-right {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-}
-.photo-frame {
-  position: relative;
-  width: 380px;
-}
-.photo-frame::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, var(--green), transparent 60%, var(--blue));
-  opacity: 0.4;
-  clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
-}
-.photo-frame img {
-  width: 100%;
-  display: block;
-  clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
-  filter: grayscale(15%) contrast(1.05);
-}
-.photo-badge {
-  position: absolute;
-  bottom: -16px;
-  left: -24px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 12px 20px;
-}
-.photo-badge .badge-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--green);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-.photo-badge .badge-val {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--white);
-  margin-top: 3px;
-}
-/* ─── MANIFESTO ─── */
-#manifesto {
-  padding: 80px 48px;
-  background: var(--bg2);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-}
-#manifesto::before {
-  content: '"';
-  position: absolute;
-  top: -40px;
-  left: 40px;
-  font-size: 300px;
-  color: rgba(0,229,160,0.03);
-  font-weight: 800;
-  line-height: 1;
-  pointer-events: none;
-  font-family: 'Syne', sans-serif;
-}
-.manifesto-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-}
-.manifesto-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 32px;
-}
-.manifesto-text {
-  font-size: clamp(20px, 2.5vw, 30px);
-  font-weight: 600;
-  line-height: 1.5;
-  color: var(--white);
-}
-.manifesto-text em {
-  color: var(--green);
-  font-style: normal;
-}
-.manifesto-text strong {
-  color: var(--amber);
-  font-weight: 700;
-}
-/* RESPONSIVE NAV */
-@media (max-width: 768px) {
-  nav { padding: 14px 20px; }
-  .nav-links { display: none; }
-  #hero { grid-template-columns: 1fr; padding: 90px 20px 40px; gap: 40px; }
-  .hero-left { padding-right: 0; }
-  .hero-right { justify-content: flex-start; }
-  .photo-frame { width: 280px; }
-  .hero-stats { gap: 24px; flex-wrap: wrap; }
-  #manifesto { padding: 60px 20px; }
-  .manifesto-text { font-size: 18px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--green);border-radius:2px;}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.btn-ghost{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 20px;border:1px solid var(--border);background:transparent;color:var(--muted);text-decoration:none;display:inline-block;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);}
+.btn-primary{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 20px;border:1px solid var(--green);background:rgba(0,229,160,.08);color:var(--green);text-decoration:none;display:inline-block;transition:all .2s;}
+.btn-primary:hover{background:rgba(0,229,160,.18);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,8,13,.87);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo img{height:30px;width:auto;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--green);}
+.nav-cta{display:flex;gap:10px;}
+/* HERO */
+#hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 48px 60px;position:relative;overflow:hidden;}
+.hero-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,160,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.hero-bg-glow{position:absolute;top:15%;right:5%;width:600px;height:600px;background:radial-gradient(circle,rgba(79,142,247,.05) 0%,transparent 70%);pointer-events:none;}
+.hero-left{position:relative;z-index:2;padding-right:60px;}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:22px;display:flex;align-items:center;gap:12px;}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--green);}
+.hero-name{font-size:clamp(36px,4vw,54px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:8px;}
+.hero-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:32px;letter-spacing:.06em;}
+.hero-phrase{font-size:clamp(20px,2.2vw,30px);font-weight:700;line-height:1.25;margin-bottom:18px;}
+.hero-phrase span{color:var(--green);}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:40px;max-width:440px;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-stats{display:flex;gap:36px;margin-top:48px;padding-top:36px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat-num{font-size:26px;font-weight:800;line-height:1;}
+.stat-num span{color:var(--green);}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:5px;}
+.hero-right{position:relative;z-index:2;display:flex;justify-content:center;align-items:flex-end;}
+.photo-frame{position:relative;width:370px;}
+.photo-frame::before{content:'';position:absolute;inset:-2px;background:linear-gradient(135deg,var(--green),transparent 60%,var(--blue));opacity:.3;clip-path:polygon(20px 0%,100% 0%,100% calc(100% - 20px),calc(100% - 20px) 100%,0% 100%,0% 20px);}
+.photo-frame img{width:100%;display:block;clip-path:polygon(20px 0%,100% 0%,100% calc(100% - 20px),calc(100% - 20px) 100%,0% 100%,0% 20px);filter:grayscale(10%) contrast(1.05);}
+.photo-badge{position:absolute;bottom:-16px;left:-20px;background:var(--bg3);border:1px solid var(--border);padding:12px 18px;}
+.photo-badge .badge-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.15em;text-transform:uppercase;}
+.photo-badge .badge-val{font-size:13px;font-weight:700;margin-top:3px;}
+/* MANIFESTO */
+#manifesto{padding:80px 48px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+#manifesto::before{content:'"';position:absolute;top:-60px;left:28px;font-size:320px;color:rgba(0,229,160,.025);font-weight:800;line-height:1;pointer-events:none;}
+.manifesto-inner{max-width:880px;margin:0 auto;text-align:center;}
+.manifesto-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:30px;}
+.manifesto-text{font-size:clamp(18px,2.2vw,28px);font-weight:600;line-height:1.65;}
+.manifesto-text em{color:var(--green);font-style:normal;}
+.manifesto-text strong{color:var(--amber);font-weight:700;}
+@media(max-width:900px){
+  nav{padding:14px 20px;} .nav-links{display:none;}
+  #hero{grid-template-columns:1fr;padding:90px 20px 40px;gap:40px;}
+  .hero-left{padding-right:0;} .hero-right{justify-content:flex-start;}
+  .photo-frame{width:100%;max-width:300px;}
+  #manifesto{padding:60px 20px;}
 }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#hero">
-    <img src="./assets/datamind_logo.png" alt="DataMind">
-  </a>
+  <a class="nav-logo" href="#hero"><img src="./assets/datamind_logo.png" alt="DataMind"></a>
   <ul class="nav-links">
     <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#stack">Stack</a></li>
     <li><a href="#metodologia">Metodologia</a></li>
     <li><a href="#projetos">Projetos</a></li>
     <li><a href="#experiencia">Experiência</a></li>
@@ -363,16 +91,15 @@ nav {
   </div>
 </nav>
 
-<!-- HERO -->
 <section id="hero">
   <div class="hero-bg-grid"></div>
   <div class="hero-bg-glow"></div>
   <div class="hero-left reveal">
-    <div class="hero-tag">Founder &amp; Head of Data</div>
+    <div class="hero-tag">Head of Data &amp; IA Aplicada</div>
     <h1 class="hero-name">Marcos Diego<br>Ribeiro</h1>
-    <p class="hero-title mono">datamind · osasco, sp · ai-first</p>
+    <p class="hero-title">fundador datamind &nbsp;·&nbsp; osasco, sp &nbsp;·&nbsp; ai-first</p>
     <p class="hero-phrase">"<span>Governança primeiro</span>,<br>inteligência depois."</p>
-    <p class="hero-sub">10+ anos conectando dados, governança e inteligência artificial em seguros, saúde e varejo. Construo a fundação que faz a IA funcionar de verdade.</p>
+    <p class="hero-sub">Mais de 10 anos liderando transformações analíticas em setores de alta complexidade. Arquitetura de dados, governança e IA aplicada — do diagnóstico à produção.</p>
     <div class="hero-actions">
       <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-primary">LinkedIn ↗</a>
       <a href="https://github.com/marcosdiegot" target="_blank" class="btn-ghost">GitHub ↗</a>
@@ -384,16 +111,20 @@ nav {
         <div class="stat-label">Anos de experiência</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">3</div>
-        <div class="stat-label">Setores-alvo</div>
+        <div class="stat-num">~R$1,5<span>M</span></div>
+        <div class="stat-label">Economia/mês gerada</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">5<span>x</span></div>
-        <div class="stat-label">Squad IA ativo</div>
+        <div class="stat-num">50<span>+</span></div>
+        <div class="stat-label">Profissionais capacitados</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">40<span>%</span></div>
+        <div class="stat-label">Redução de retrabalho</div>
       </div>
     </div>
   </div>
-  <div class="hero-right reveal" style="transition-delay:0.2s">
+  <div class="hero-right reveal" style="transition-delay:.2s">
     <div class="photo-frame">
       <img src="./assets/diego_photo.jpeg" alt="Marcos Diego Ribeiro">
       <div class="photo-badge">
@@ -404,422 +135,441 @@ nav {
   </div>
 </section>
 
-<!-- MANIFESTO -->
 <section id="manifesto">
   <div class="manifesto-inner reveal">
     <div class="manifesto-label">// manifesto</div>
     <p class="manifesto-text">
-      A maioria das empresas quer <em>IA</em>.<br>
-      Poucas têm os <strong>dados</strong> para isso.<br><br>
+      A maioria das empresas quer <em>IA</em>. Poucas têm os <strong>dados</strong> para isso.<br><br>
       Eu construo a fundação que faz a inteligência artificial funcionar —<br>
-      <em>governança, qualidade, estrutura</em>.<br>
-      Depois a inteligência.
+      <em>governança, qualidade, arquitetura escalável</em>.<br><br>
+      Um profissional completo de dados não escolhe entre estratégia e técnica.<br>
+      <em>Ele entrega os dois</em>.
     </p>
   </div>
 </section>
 
-<!-- ─── SOBRE ─── -->
-<section id="sobre" style="padding: 100px 48px; max-width: 1200px; margin: 0 auto;">
-  <div class="reveal">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// sobre</div>
-    <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:48px;letter-spacing:-0.02em;">Head of Data.<br><span style="color:var(--muted);font-weight:400;">Não um consultor de slides.</span></h2>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;" class="reveal">
-    <div>
-      <p style="font-size:16px;line-height:1.8;color:#b0b5cc;margin-bottom:24px;">
-        Com mais de 10 anos de experiência em BI, Analytics e IA aplicada, atuo no nível estratégico e técnico de dados — tanto como consultor independente quanto como executivo Head of Data em empresas.
-      </p>
-      <p style="font-size:16px;line-height:1.8;color:#b0b5cc;margin-bottom:24px;">
-        Fundei a <strong style="color:var(--white);">DataMind</strong>, consultoria AI-First focada em seguros, saúde e varejo, com a tese de que governança de dados não é opcional — é pré-requisito para qualquer iniciativa de IA que funcione de verdade.
-      </p>
-      <p style="font-size:16px;line-height:1.8;color:#b0b5cc;">
-        Atualmente cursando MBA Executivo na <strong style="color:var(--white);">FGV</strong> (2026–2027), aprofundando visão de negócio e liderança organizacional.
-      </p>
+<!-- SOBRE -->
+<section id="sobre" style="padding:100px 48px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// sobre</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:44px;letter-spacing:-.02em;">Profissional completo de dados.<br><span style="color:var(--muted);font-weight:400;">Estratégia, arquitetura e IA — sem escolher.</span></h2>
     </div>
-    <div style="display:flex;flex-direction:column;gap:16px;">
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--green);">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Especialidade</div>
-        <div style="font-size:14px;color:var(--white);">Governança de dados · Arquitetura analítica · IA aplicada em produção</div>
+    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:start;" class="reveal">
+      <div>
+        <p style="font-size:16px;line-height:1.85;color:#b0b5cc;margin-bottom:22px;">Com mais de 10 anos de experiência em BI, Analytics e IA aplicada, atuo nos dois extremos que a maioria separa: <strong style="color:var(--white);">estratégia de negócio e execução técnica de dados</strong>. Não terceirizo nenhum dos dois.</p>
+        <p style="font-size:16px;line-height:1.85;color:#b0b5cc;margin-bottom:22px;">Fundei a <strong style="color:var(--white);">DataMind</strong> com a tese de que nenhuma iniciativa de IA funciona de verdade sem a fundação correta — governança, qualidade e arquitetura escalável vêm antes dos modelos.</p>
+        <p style="font-size:16px;line-height:1.85;color:#b0b5cc;">Opero com método AI-First: orquestração de squads multi-LLM como alavanca de produtividade, não como marketing. Cada ferramenta tem um papel — e o resultado precisa ir para produção.</p>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--blue);">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Setores</div>
-        <div style="font-size:14px;color:var(--white);">Seguros · Saúde · Varejo</div>
-      </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--amber);">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Formação</div>
-        <div style="font-size:14px;color:var(--white);">FGV Executive MBA · em curso 2026–2027</div>
-      </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--red);">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Disponível para</div>
-        <div style="font-size:14px;color:var(--white);">Consultoria · Posições CLT Head of Data</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="background:var(--bg3);border:1px solid var(--border);padding:18px 22px;border-left:2px solid var(--green);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px;">Diferencial</div>
+          <div style="font-size:14px;color:var(--white);line-height:1.6;">Traduz problemas de negócio em arquitetura escalável e comunica estratégia de dados para C-level</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);padding:18px 22px;border-left:2px solid var(--blue);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px;">Setores</div>
+          <div style="font-size:14px;color:var(--white);line-height:1.6;">Seguros · Manufatura · Serviços Financeiros · Varejo · Saúde · Apostas Esportivas</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);padding:18px 22px;border-left:2px solid var(--amber);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px;">Formação</div>
+          <div style="font-size:14px;color:var(--white);line-height:1.6;">MBA Analytics &amp; IA · FIA Business School (2021–2023)<br>Adm. · FIEO (2009–2013)</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);padding:18px 22px;border-left:2px solid var(--red);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px;">Disponível para</div>
+          <div style="font-size:14px;color:var(--white);line-height:1.6;">Consultoria AI-First · Posições CLT Head of Data em empresas que querem IA que funciona</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── STACK TÉCNICO ─── -->
+<!-- STACK TÉCNICO — 3 ECOSSISTEMAS -->
 <section id="stack" style="padding:80px 48px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
   <div style="max-width:1200px;margin:0 auto;">
     <div class="reveal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// stack técnico</div>
-      <h2 style="font-size:clamp(24px,2.5vw,36px);font-weight:800;margin-bottom:48px;">Ferramentas que uso.<br><span style="color:var(--muted);font-weight:400;">Na prática, não no slide.</span></h2>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// stack técnico</div>
+      <h2 style="font-size:clamp(24px,2.5vw,38px);font-weight:800;margin-bottom:12px;">Três ecossistemas.<br><span style="color:var(--muted);font-weight:400;">Domínio completo nos três.</span></h2>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:48px;">Google · Microsoft · AWS — não como conhecimento teórico, mas em projetos reais em produção.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;" class="reveal">
+    <!-- ECOSSISTEMAS -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;" class="reveal">
+      <!-- GOOGLE -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-top:2px solid #4285F4;padding:28px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:28px;height:28px;background:rgba(66,133,244,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">G</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4285F4;letter-spacing:.1em;text-transform:uppercase;font-weight:700;">Google Cloud</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">BigQuery</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Looker Studio</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Cloud Storage</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Cloud Functions</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;">Vertex AI</div>
+        </div>
+      </div>
+      <!-- MICROSOFT -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-top:2px solid #0078D4;padding:28px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:28px;height:28px;background:rgba(0,120,212,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">M</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#0078D4;letter-spacing:.1em;text-transform:uppercase;font-weight:700;">Microsoft Azure</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Microsoft Fabric</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Azure Data Factory</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Azure Synapse</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Power BI (Expert)</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;">Azure OpenAI</div>
+        </div>
+      </div>
+      <!-- AWS -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-top:2px solid #FF9900;padding:28px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:28px;height:28px;background:rgba(255,153,0,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">A</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#FF9900;letter-spacing:.1em;text-transform:uppercase;font-weight:700;">AWS</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Redshift</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">S3 · Glue</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Lambda</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;border-bottom:1px solid var(--border);">Athena</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);padding:6px 0;">SageMaker</div>
+        </div>
+      </div>
+    </div>
+    <!-- LINHA 2: DADOS + IA + GOVERNANÇA -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="reveal">
       <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">Dados &amp; Modelagem</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Power BI</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">BigQuery</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">dbt Core</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">SQL · Python</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Dimensional Modeling</span>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">Dados &amp; Modelagem</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">dbt Core</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">SQL Avançado</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Python</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Dimensional Model</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Lakehouse</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">ETL/ELT</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Pandas · Scikit-learn</span>
         </div>
       </div>
       <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">Cloud &amp; Infra</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Microsoft Fabric</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Azure Data Factory</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Azure Synapse</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Google Cloud</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Docker</span>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">IA &amp; Automação</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Claude · GPT-4o</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Gemini · Grok</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Perplexity</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Claude Code</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">n8n self-hosted</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">MCP · OpenRouter</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Make · Zapier</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Cursor · Lovable</span>
         </div>
       </div>
       <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">IA &amp; Automação</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Claude Code</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">n8n self-hosted</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">MCP Plugins</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">OpenRouter</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Make · Zapier</span>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">Governança &amp; Compliance</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">LGPD</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">RBAC · DLP</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">DAMA-DMBOK v2</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">TOGAF ADM</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">NIST AI Framework</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Data Quality</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Data Mesh</span>
         </div>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">Governança</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">LGPD</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">RBAC · DLP</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">NIST AI Framework</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Data Mesh</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Data Quality</span>
-        </div>
-      </div>
+    </div>
+    <div style="margin-top:20px;padding:16px 20px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);" class="reveal">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">// Para o inventário completo e atualizado de ferramentas de IA monitoradas &rarr; <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;">Radar IA DataMind ↗</a></p>
     </div>
   </div>
 </section>
 
-<!-- ─── METODOLOGIA / RADAR IA ─── -->
+<!-- METODOLOGIA / RADAR IA -->
 <section id="metodologia" style="padding:100px 48px;">
   <div style="max-width:1200px;margin:0 auto;">
     <div class="reveal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// metodologia</div>
-      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:16px;">Radar IA.<br><span style="color:var(--muted);font-weight:400;">AI-First como filosofia operacional.</span></h2>
-      <p style="font-size:15px;color:var(--muted);max-width:600px;line-height:1.7;margin-bottom:60px;">Não uso IA como ferramenta pontual. Opero com um squad estruturado onde cada modelo tem função definida — e eu sou o orquestrador que valida, decide e entrega.</p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// metodologia</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:14px;">Radar IA.<br><span style="color:var(--muted);font-weight:400;">AI-First como filosofia operacional.</span></h2>
+      <p style="font-size:15px;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:56px;">Não uso IA como ferramenta pontual. Opero com um squad estruturado onde cada modelo tem função definida — e sou o orquestrador que valida, decide e entrega.</p>
     </div>
-    <!-- SQUAD GRID -->
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:48px;" class="reveal">
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;position:relative;">
-        <div style="width:40px;height:40px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">🔍</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px;">Perplexity</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Pesquisa</div>
-        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Inteligência de mercado e dados em tempo real</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:40px;" class="reveal">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:22px 16px;text-align:center;">
+        <div style="width:38px;height:38px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:16px;">🔍</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-bottom:5px;">Perplexity</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Pesquisa</div>
+        <div style="font-size:11px;color:#6a6f8a;line-height:1.5;">Inteligência de mercado em tempo real</div>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;">
-        <div style="width:40px;height:40px;background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">📡</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);font-weight:700;margin-bottom:6px;">Grok</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Social Intel</div>
-        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Leitura de tendências e narrativas de mercado</div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:22px 16px;text-align:center;">
+        <div style="width:38px;height:38px;background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:16px;">📡</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);font-weight:700;margin-bottom:5px;">Grok</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Social Intel</div>
+        <div style="font-size:11px;color:#6a6f8a;line-height:1.5;">Tendências e narrativas do mercado</div>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;">
-        <div style="width:40px;height:40px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">⚡</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);font-weight:700;margin-bottom:6px;">GPT-4o</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Síntese</div>
-        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Consolidação e estruturação de conteúdo</div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:22px 16px;text-align:center;">
+        <div style="width:38px;height:38px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:16px;">⚡</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);font-weight:700;margin-bottom:5px;">GPT-4o</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Síntese</div>
+        <div style="font-size:11px;color:#6a6f8a;line-height:1.5;">Consolidação e estruturação</div>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;">
-        <div style="width:40px;height:40px;background:rgba(255,61,90,0.1);border:1px solid rgba(255,61,90,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">🎨</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);font-weight:700;margin-bottom:6px;">Gemini</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Visual</div>
-        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Execução visual e geração de imagens</div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:22px 16px;text-align:center;">
+        <div style="width:38px;height:38px;background:rgba(255,61,90,.1);border:1px solid rgba(255,61,90,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:16px;">🎨</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);font-weight:700;margin-bottom:5px;">Gemini</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Visual</div>
+        <div style="font-size:11px;color:#6a6f8a;line-height:1.5;">Execução visual e geração</div>
       </div>
-      <div style="background:var(--bg3);border:2px solid rgba(0,229,160,0.3);padding:24px;text-align:center;position:relative;">
-        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--green);color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;">Orquestrador</div>
-        <div style="width:40px;height:40px;background:rgba(0,229,160,0.15);border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">🧠</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px;">Claude</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Validador</div>
-        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Orquestração, validação e entrega final</div>
+      <div style="background:var(--bg3);border:2px solid rgba(0,229,160,.3);padding:22px 16px;text-align:center;position:relative;">
+        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--green);color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;white-space:nowrap;">Orquestrador</div>
+        <div style="width:38px;height:38px;background:rgba(0,229,160,.15);border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:16px;">🧠</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-bottom:5px;">Claude</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Validador</div>
+        <div style="font-size:11px;color:#6a6f8a;line-height:1.5;">Orquestração e entrega final</div>
       </div>
     </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);padding:24px;border-left:2px solid var(--green);" class="reveal">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);">// nota operacional</p>
-      <p style="font-size:14px;color:var(--muted);margin-top:8px;line-height:1.7;">Squad ativo. Cada ferramenta tem uma função. Nenhuma substitui o raciocínio do operador. O resultado final passa sempre pelo julgamento humano — eu sou o ponto de convergência de tudo.</p>
+    <div style="background:var(--bg2);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--green);margin-bottom:28px;" class="reveal">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);margin-bottom:6px;">// nota operacional</p>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;">Squad ativo. Cada ferramenta tem uma função. Nenhuma substitui o raciocínio do operador. O resultado precisa ir para produção — não para um deck de apresentação.</p>
     </div>
-    <div style="margin-top:32px;text-align:center;" class="reveal">
-      <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" class="btn-primary" style="display:inline-block;padding:14px 32px;font-size:12px;">Ver Radar IA completo ↗</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─── SETORES ─── -->
-<section id="setores" style="padding:80px 48px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-  <div style="max-width:1200px;margin:0 auto;">
-    <div class="reveal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// setores-alvo</div>
-      <h2 style="font-size:clamp(24px,2.5vw,36px);font-weight:800;margin-bottom:48px;">Onde atuo.<br><span style="color:var(--muted);font-weight:400;">E qual problema resolvo em cada um.</span></h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="reveal">
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);"></div>
-        <div style="font-size:32px;margin-bottom:20px;">🏥</div>
-        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--green);">Seguros</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Dados fragmentados entre sistemas legados impedem análise de risco, compliance e automação de sinistros em tempo real.</p>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.1);padding:10px 14px;">Entrega: plataforma analítica unificada com governança LGPD e RLS por perfil</div>
-      </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);"></div>
-        <div style="font-size:32px;margin-bottom:20px;">💊</div>
-        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--blue);">Saúde</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Alta regulação e dados sensíveis exigem governança robusta antes de qualquer uso de IA — especialmente com LGP e dados de pacientes.</p>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.1);padding:10px 14px;">Entrega: data foundation com RBAC, DLP e trilha auditável por regulação</div>
-      </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);"></div>
-        <div style="font-size:32px;margin-bottom:20px;">🛒</div>
-        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--amber);">Varejo</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Volume alto de dados transacionais sem modelagem adequada gera análises lentas, dashboards inconsistentes e decisões por intuição.</p>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);background:rgba(255,184,48,0.05);border:1px solid rgba(255,184,48,0.1);padding:10px 14px;">Entrega: dimensional model + Power BI com camada semântica e KPIs confiáveis</div>
-      </div>
+    <div style="text-align:center;" class="reveal">
+      <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" class="btn-primary" style="padding:14px 32px;font-size:12px;">Ver Radar IA completo — todas as ferramentas ↗</a>
     </div>
   </div>
 </section>
 
-<!-- ─── PROJETOS ─── -->
-<section id="projetos" style="padding:100px 48px;">
+<!-- PROJETOS -->
+<section id="projetos" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
   <div style="max-width:1200px;margin:0 auto;">
     <div class="reveal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// portfólio</div>
-      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:48px;">Entregas reais.<br><span style="color:var(--muted);font-weight:400;">Não conceitos em slide.</span></h2>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// projetos</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:14px;">Construções reais.<br><span style="color:var(--muted);font-weight:400;">Arquitetura, produto e metodologia.</span></h2>
+      <p style="font-size:15px;color:var(--muted);margin-bottom:48px;max-width:580px;line-height:1.7;">Projetos públicos e frameworks proprietários — do produto ao método de trabalho.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;" class="reveal">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;" class="reveal">
       <!-- Projeto 1 -->
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(0,229,160,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
-          <div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">01 · Produto</div>
-            <h3 style="font-size:20px;font-weight:700;color:var(--white);">DataMind AI Radar</h3>
-          </div>
-          <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;font-size:20px;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">↗</a>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:32px;transition:border-color .2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(0,229,160,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">01 · Produto Público</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <h3 style="font-size:19px;font-weight:700;">DataMind AI Radar</h3>
+          <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;font-size:18px;opacity:.7;transition:opacity .2s;flex-shrink:0;margin-left:12px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">↗</a>
         </div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Dashboard de inteligência sobre ferramentas de IA — 6 abas cobrindo Feed, Market, Squad, Emergentes, Timeline e Governança. Atualizado manualmente via GitHub API com squad de IA ativo.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">HTML/JS</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,0.2);padding:4px 10px;">GitHub API</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">AI Squad</span>
+        <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;">Dashboard de inteligência sobre o ecossistema de IA — 6 abas cobrindo Feed, Market, Squad, Emergentes, Timeline e Governança. Atualizado via GitHub API com squad multi-LLM. Inventário vivo de ferramentas categorizadas por função, maturidade e relevância para dados.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,.2);padding:3px 9px;">HTML/JS</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,.2);padding:3px 9px;">GitHub API</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,.2);padding:3px 9px;">Squad AI</span>
         </div>
       </div>
       <!-- Projeto 2 -->
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(79,142,247,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
-          <div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">02 · Seguros</div>
-            <h3 style="font-size:20px;font-weight:700;color:var(--white);">Unioncorp — Plataforma de Dados</h3>
-          </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:32px;transition:border-color .2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(255,61,90,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">02 · Framework Proprietário</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <h3 style="font-size:19px;font-weight:700;">IDP-26 — Modern Data Team</h3>
         </div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Proposta e arquitetura completa para seguradora de fiança locatícia. Stack Microsoft Fabric F2 + Azure Data Factory + dbt Core + Power BI com RLS. 5 fases, 16 semanas.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,0.2);padding:4px 10px;">Microsoft Fabric</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">dbt Core</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">Power BI</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);border:1px solid rgba(255,61,90,0.2);padding:4px 10px;">Seguros</span>
+        <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;">Framework de diagnóstico e estruturação de times de dados com Radar Universal de 10 eixos, 8 perfis estruturais e sistema de scoring ponderado por setor. Criado para diagnósticos pagos, conteúdo público e posicionamento como referência em maturidade analítica.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);border:1px solid rgba(255,61,90,.2);padding:3px 9px;">Metodologia</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,.2);padding:3px 9px;">Diagnóstico</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,.2);padding:3px 9px;">Scoring</span>
         </div>
       </div>
       <!-- Projeto 3 -->
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,184,48,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
-          <div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">03 · Indústria</div>
-            <h3 style="font-size:20px;font-weight:700;color:var(--white);">Hines Brasil — AI-First Operacional</h3>
-          </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:32px;transition:border-color .2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(255,184,48,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">03 · Arquitetura</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <h3 style="font-size:19px;font-weight:700;">Lakehouse ELT — BigQuery + dbt</h3>
         </div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Deck executivo de transformação operacional AI-First para hub logístico em Cajamar. Estrutura de investimento em 3 fases com ROI mapeado por iniciativa.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">Estratégia</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,0.2);padding:4px 10px;">AI-First</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">Logística</span>
+        <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;">Arquitetura lakehouse completa (Raw → Trusted → Refined) em BigQuery com modelagem versionada em dbt. Eliminação de versões conflitantes de métricas, governança por domínio de negócio, camada semântica unificada. Resultado: 40% de redução de retrabalho e ~R$1,5M de economia/mês.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,.2);padding:3px 9px;">BigQuery</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,.2);padding:3px 9px;">dbt Core</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,.2);padding:3px 9px;">ELT</span>
         </div>
       </div>
       <!-- Projeto 4 -->
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,61,90,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
-          <div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">04 · Framework</div>
-            <h3 style="font-size:20px;font-weight:700;color:var(--white);">IDP-26 — Modern Data Team</h3>
-          </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:32px;transition:border-color .2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(79,142,247,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">04 · Automação</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <h3 style="font-size:19px;font-weight:700;">AI-First Operations — n8n + MCP</h3>
         </div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Framework proprietário com Radar Universal de 10 eixos, 8 perfis estruturais e sistema de scoring ponderado para diagnóstico e estruturação de times de dados.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);border:1px solid rgba(255,61,90,0.2);padding:4px 10px;">Framework</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">Diagnóstico</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">Metodologia</span>
+        <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;">Stack de automação self-hosted com n8n, Claude Code e MCP plugins integrando GitHub, ClickUp, Gmail, Google Calendar, Canva e Make. Fluxos de atualização de conteúdo, push de código e orquestração de tarefas via chat — sem intervenção manual.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,.2);padding:3px 9px;">n8n</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,.2);padding:3px 9px;">Claude Code</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,.2);padding:3px 9px;">MCP</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── EXPERIÊNCIA ─── -->
-<section id="experiencia" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
-  <div style="max-width:1200px;margin:0 auto;">
+<!-- EXPERIÊNCIA -->
+<section id="experiencia" style="padding:100px 48px;border-top:1px solid var(--border);">
+  <div style="max-width:1000px;margin:0 auto;">
     <div class="reveal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// experiência</div>
-      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:60px;">Trajetória.<br><span style="color:var(--muted);font-weight:400;">10 anos de dados na prática.</span></h2>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// trajetória</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:56px;">10 anos.<br><span style="color:var(--muted);font-weight:400;">Do zero à produção, em cada empresa.</span></h2>
     </div>
     <div style="position:relative;" class="reveal">
       <div style="position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--border);"></div>
-      <div style="display:flex;flex-direction:column;gap:0;">
-        <!-- Item 1 -->
-        <div style="padding-left:40px;padding-bottom:48px;position:relative;">
-          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--green);border-radius:50%;"></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">2023 — atual</div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Founder &amp; Head of Data</h3>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">DataMind · Osasco, SP</div>
-          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Consultoria AI-First especializada em seguros, saúde e varejo. Metodologia própria de governança-primeiro, operação com squad de IA, entrega de projetos de dados com stack Microsoft Fabric, dbt e Power BI.</p>
+      <!-- DataMind -->
+      <div style="padding-left:36px;padding-bottom:48px;position:relative;">
+        <div style="position:absolute;left:-5px;top:5px;width:10px;height:10px;background:var(--green);border-radius:50%;box-shadow:0 0 8px rgba(0,229,160,.5);"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Fev 2025 — atual · 1 ano · PJ</div>
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px;">Fundador &amp; Head of Data</h3>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px;">DataMind Consultoria · São Paulo, SP</div>
+        <p style="font-size:13px;color:#8a8faa;line-height:1.8;max-width:680px;margin-bottom:14px;">Liderança de transformação de dados em operadora nacional de alto volume transacional — do diagnóstico técnico à entrega de arquitetura lakehouse em produção em 12 meses.</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:13px;color:#7a7f9a;line-height:1.6;padding-left:14px;border-left:1px solid rgba(0,229,160,.2);">Arquitetura ELT em BigQuery com dbt (Raw → Trusted → Refined) — eliminando versões conflitantes e estabelecendo governança por domínio</div>
+          <div style="font-size:13px;color:#7a7f9a;line-height:1.6;padding-left:14px;border-left:1px solid rgba(0,229,160,.2);">4 intervenções críticas na Fase 0: inconsistências contábeis, queda de conversão Pix, mapeamento de campanhas, análise de cenários executivos</div>
+          <div style="font-size:13px;color:#7a7f9a;line-height:1.6;padding-left:14px;border-left:1px solid rgba(0,229,160,.2);">Resultado: <strong style="color:var(--green);">40% redução de retrabalho · ~R$1,5M economia/mês · time 100% analítico</strong></div>
         </div>
-        <!-- Item 2 -->
-        <div style="padding-left:40px;padding-bottom:48px;position:relative;">
-          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--blue);border-radius:50%;"></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Anterior</div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Analytics &amp; BI Lead</h3>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">MAPFRE · Seguros</div>
-          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Liderança de times de análise e business intelligence no setor de seguros. Modelagem dimensional, Power BI, governança de dados em ambiente regulado.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);border:1px solid var(--border);padding:3px 8px;">DAMA-DMBOK v2</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);border:1px solid var(--border);padding:3px 8px;">TOGAF ADM</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);border:1px solid var(--border);padding:3px 8px;">dbt best practices</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);border:1px solid var(--border);padding:3px 8px;">ADKAR</span>
         </div>
-        <!-- Item 3 -->
-        <div style="padding-left:40px;padding-bottom:48px;position:relative;">
-          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--amber);border-radius:50%;"></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Anterior</div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Head of BI</h3>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">Too Seguros · Seguros</div>
-          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Estruturação da área de Business Intelligence. Implementação de stack analítica, treinamento de equipes e cultura de decisão baseada em dados.</p>
+      </div>
+      <!-- Too Seguros -->
+      <div style="padding-left:36px;padding-bottom:48px;position:relative;">
+        <div style="position:absolute;left:-5px;top:5px;width:10px;height:10px;background:var(--blue);border-radius:50%;"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Mai 2018 — Fev 2025 · 6 anos 10 meses</div>
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px;">Especialista de Business Intelligence</h3>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px;">Too Seguros · São Paulo, SP</div>
+        <p style="font-size:13px;color:#8a8faa;line-height:1.8;max-width:680px;margin-bottom:14px;">Implantação e evolução completa do ecossistema analítico — da concepção estratégica à operação sustentada por mais de 6 anos como referência interna de maturidade analítica.</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:13px;color:#7a7f9a;line-height:1.6;padding-left:14px;border-left:1px solid rgba(79,142,247,.2);">Ecossistema de BI do zero: 12+ fontes heterogêneas centralizadas, 20+ dashboards estratégicos para C-level</div>
+          <div style="font-size:13px;color:#7a7f9a;line-height:1.6;padding-left:14px;border-left:1px solid rgba(79,142,247,.2);">Modelos preditivos de fraud detection — redução de perdas operacionais na casa dos milhões</div>
+          <div style="font-size:13px;color:#7a7f9a;line-height:1.6;padding-left:14px;border-left:1px solid rgba(79,142,247,.2);"><strong style="color:var(--blue);">50+ profissionais capacitados</strong> em cultura analítica — elevando maturidade de forma estrutural</div>
         </div>
-        <!-- Item 4 -->
-        <div style="padding-left:40px;position:relative;">
-          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--muted);border-radius:50%;"></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Anterior</div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Analista de BI</h3>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">Yamaha Motor · Automotivo</div>
-          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Análise de performance comercial, dashboards de vendas e distribuição. Início da especialização em modelagem dimensional e SQL avançado.</p>
+      </div>
+      <!-- Yamaha -->
+      <div style="padding-left:36px;padding-bottom:48px;position:relative;">
+        <div style="position:absolute;left:-5px;top:5px;width:10px;height:10px;background:var(--amber);border-radius:50%;"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Jan 2017 — Mai 2018 · Guarulhos, SP</div>
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px;">Analista de BI Sênior</h3>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px;">Yamaha Motor do Brasil · Manufatura</div>
+        <p style="font-size:13px;color:#7a7f9a;line-height:1.8;max-width:680px;">Integração de dados financeiros, operacionais e comerciais para visão estratégica consolidada. Automação de relatórios e processos analíticos.</p>
+      </div>
+      <!-- MAPFRE -->
+      <div style="padding-left:36px;position:relative;">
+        <div style="position:absolute;left:-5px;top:5px;width:10px;height:10px;background:var(--muted);border-radius:50%;"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Jan 2012 — Jan 2017 · 5 anos · São Paulo, SP</div>
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px;">Analista de BI | Analista de Controladoria</h3>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px;">MAPFRE Assistência · Seguros</div>
+        <p style="font-size:13px;color:#7a7f9a;line-height:1.8;max-width:680px;">Relatórios gerenciais, KPIs e visualização de dados para gestão executiva e Controladoria. Acompanhamento de indicadores financeiros e análise de saúde do negócio.</p>
+      </div>
+    </div>
+    <!-- FORMAÇÃO -->
+    <div style="margin-top:60px;padding:28px;background:var(--bg3);border:1px solid var(--border);" class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px;">// formação acadêmica</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-size:15px;font-weight:700;">MBA em Analytics e Inteligência Artificial</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px;">FIA Business School</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);">2021 – 2023</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:15px;font-weight:700;">Bacharelado em Administração</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px;">Centro Universitário FIEO</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">2009 – 2013</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── CONTEÚDO LINKEDIN ─── -->
-<section id="conteudo" style="padding:100px 48px;border-top:1px solid var(--border);">
+<!-- CONTEÚDO LINKEDIN -->
+<section id="conteudo" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
   <div style="max-width:1200px;margin:0 auto;">
     <div class="reveal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// conteúdo</div>
-      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:16px;">Perspectiva &amp; Publicações.</h2>
-      <p style="font-size:15px;color:var(--muted);margin-bottom:48px;">O que publico no LinkedIn sobre dados, IA e governança.</p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// conteúdo</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:12px;">Publico todo dia.</h2>
+      <p style="font-size:15px;color:var(--muted);margin-bottom:48px;max-width:580px;line-height:1.7;">Dados, governança, IA aplicada e método de trabalho AI-First — no LinkedIn, quase todos os dias. Sem conteúdo de vitrine.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="reveal">
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:28px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(0,229,160,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:16px;">Abr 2026</div>
-        <p style="font-size:14px;color:var(--white);line-height:1.7;margin-bottom:20px;">"Governança de dados não é burocracia. É o que separa a IA que funciona da IA de vitrine. Antes de qualquer modelo, os dados precisam estar corretos."</p>
-        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.1em;">LinkedIn ↗</a>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px;" class="reveal">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:26px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(0,229,160,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:14px;">Governança</div>
+        <p style="font-size:14px;color:var(--white);line-height:1.75;margin-bottom:18px;">"Governança de dados não é burocracia. É o que separa a IA que funciona da IA de vitrine. Antes de qualquer modelo, os dados precisam estar corretos."</p>
+        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:.1em;">Ver no LinkedIn ↗</a>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:28px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(79,142,247,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:16px;">Mar 2026</div>
-        <p style="font-size:14px;color:var(--white);line-height:1.7;margin-bottom:20px;">"AI-First não é sobre usar mais ferramentas de IA. É sobre redesenhar como você trabalha — com cada modelo em seu papel certo, e o humano como orquestrador de tudo."</p>
-        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.1em;">LinkedIn ↗</a>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:26px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(79,142,247,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:14px;">AI-First</div>
+        <p style="font-size:14px;color:var(--white);line-height:1.75;margin-bottom:18px;">"AI-First não é sobre usar mais ferramentas de IA. É sobre redesenhar como você trabalha — com cada modelo no papel certo e o humano como orquestrador de tudo."</p>
+        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:.1em;">Ver no LinkedIn ↗</a>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:28px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,184,48,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:16px;">Fev 2026</div>
-        <p style="font-size:14px;color:var(--white);line-height:1.7;margin-bottom:20px;">"Meu squad de IA: Perplexity pesquisa, Grok lê o mercado, GPT sintetiza, Gemini executa visual, Claude orquestra e valida. Isso não é stack — é método de trabalho."</p>
-        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.1em;">LinkedIn ↗</a>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:26px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(255,184,48,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:14px;">Método</div>
+        <p style="font-size:14px;color:var(--white);line-height:1.75;margin-bottom:18px;">"Meu squad de IA tem função, não modismo. Perplexity pesquisa, Grok lê o mercado, GPT sintetiza, Gemini executa visual, Claude orquestra. Isso é método — não stack."</p>
+        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:.1em;">Ver no LinkedIn ↗</a>
       </div>
     </div>
-    <div style="text-align:center;margin-top:36px;" class="reveal">
-      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-ghost" style="display:inline-block;padding:14px 32px;font-size:12px;">Ver todos os posts ↗</a>
+    <div style="text-align:center;" class="reveal">
+      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-ghost" style="padding:14px 32px;font-size:12px;">Ver todos os posts no LinkedIn ↗</a>
     </div>
   </div>
 </section>
 
-<!-- ─── CONTATO ─── -->
-<section id="contato" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
-  <div style="max-width:800px;margin:0 auto;text-align:center;" class="reveal">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// contato</div>
-    <h2 style="font-size:clamp(28px,3vw,48px);font-weight:800;margin-bottom:24px;line-height:1.1;">Tem um projeto<br>que precisa de <span style="color:var(--green);">dados de verdade</span>?</h2>
-    <p style="font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:48px;max-width:520px;margin-left:auto;margin-right:auto;">Aberto para projetos de consultoria em seguros, saúde e varejo — e para posições CLT Head of Data em empresas que querem fazer IA funcionar.</p>
-    <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
-      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-primary" style="padding:16px 36px;font-size:13px;">LinkedIn ↗</a>
-      <a href="https://github.com/marcosdiegot" target="_blank" class="btn-ghost" style="padding:16px 36px;font-size:13px;">GitHub ↗</a>
+<!-- CONTATO -->
+<section id="contato" style="padding:100px 48px;border-top:1px solid var(--border);">
+  <div style="max-width:780px;margin:0 auto;text-align:center;" class="reveal">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:14px;">// contato</div>
+    <h2 style="font-size:clamp(28px,3vw,48px);font-weight:800;margin-bottom:22px;line-height:1.1;">Tem um desafio de dados<br>que precisa de quem <span style="color:var(--green);">resolve</span>?</h2>
+    <p style="font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:48px;max-width:500px;margin-left:auto;margin-right:auto;">Aberto para projetos de consultoria e posições CLT Head of Data em empresas que querem construir dados que sustentam IA de verdade.</p>
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:36px;">
+      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-primary" style="padding:14px 32px;font-size:12px;">LinkedIn ↗</a>
+      <a href="https://wa.me/5511995772800" target="_blank" class="btn-ghost" style="padding:14px 32px;font-size:12px;">WhatsApp ↗</a>
+      <a href="https://github.com/marcosdiegot" target="_blank" class="btn-ghost" style="padding:14px 32px;font-size:12px;">GitHub ↗</a>
     </div>
-    <div style="margin-top:48px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">
-      Osasco, SP · Disponível para projetos remotos e presenciais em SP
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8;">
+      marcosdiegot@gmail.com &nbsp;·&nbsp; (11) 99577-2800 &nbsp;·&nbsp; Osasco, SP<br>
+      Disponível para projetos remotos e presenciais
     </div>
   </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
-<footer style="padding:32px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-  <div style="display:flex;align-items:center;gap:16px;">
-    <img src="./assets/datamind_logo.png" alt="DataMind" style="height:24px;width:auto;filter:brightness(0.7);">
+<!-- FOOTER -->
+<footer style="padding:28px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;background:var(--bg2);">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <img src="./assets/datamind_logo.png" alt="DataMind" style="height:22px;width:auto;filter:brightness(.65);">
     <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">AI-First Data Consultancy</span>
   </div>
-  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">
-    Governança primeiro, inteligência depois.
-  </div>
-  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">
-    © 2026 Marcos Diego Ribeiro
-  </div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">Governança primeiro, inteligência depois.</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">© 2026 Marcos Diego Ribeiro</div>
 </footer>
 
-<!-- ─── JS: SCROLL REVEAL ─── -->
+<!-- JS -->
 <script>
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// Nav active state
 window.addEventListener('scroll', () => {
-  const nav = document.querySelector('nav');
-  if (window.scrollY > 60) {
-    nav.style.borderBottomColor = 'rgba(0,229,160,0.1)';
-  } else {
-    nav.style.borderBottomColor = 'rgba(255,255,255,0.06)';
-  }
+  document.querySelector('nav').style.borderBottomColor =
+    window.scrollY > 60 ? 'rgba(0,229,160,.08)' : 'rgba(255,255,255,.06)';
 });
-
-// Mobile nav toggle
-const navLinks = document.querySelector('.nav-links');
 </script>
 
-<!-- MOBILE STYLES -->
 <style>
-@media (max-width: 900px) {
-  #stack > div > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
-  #metodologia > div > div[style*="repeat(5"] { grid-template-columns: repeat(2,1fr) !important; }
-  #setores > div > div { grid-template-columns: 1fr !important; }
-  #projetos > div > div { grid-template-columns: 1fr !important; }
-  #conteudo > div > div[style*="repeat(3"] { grid-template-columns: 1fr !important; }
-  footer { flex-direction: column; align-items: flex-start; padding: 24px 20px; }
-  #sobre > div:last-child, #sobre > div { padding: 0 20px !important; }
+@media(max-width:900px){
+  #sobre>div>div:last-child{grid-template-columns:1fr!important;}
+  #stack>div>div:nth-child(3){grid-template-columns:1fr!important;}
+  #stack>div>div:nth-child(4){grid-template-columns:1fr 1fr!important;}
+  #metodologia>div>div:nth-child(4){grid-template-columns:repeat(2,1fr)!important;}
+  #projetos>div>div:nth-child(3){grid-template-columns:1fr!important;}
+  #conteudo>div>div:nth-child(3){grid-template-columns:1fr!important;}
+  footer{flex-direction:column;align-items:flex-start;padding:20px;}
 }
-@media (max-width: 768px) {
-  #sobre, #stack, #metodologia, #setores, #projetos, #experiencia, #conteudo, #contato {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-  }
-  #sobre > div:nth-child(2) { grid-template-columns: 1fr !important; gap: 24px !important; }
-  #stack > div > div:last-child { grid-template-columns: 1fr 1fr !important; }
+@media(max-width:768px){
+  #sobre,#stack,#metodologia,#projetos,#experiencia,#conteudo,#contato{padding-left:20px!important;padding-right:20px!important;}
+  #sobre>div>div:nth-child(2){grid-template-columns:1fr!important;gap:32px!important;}
+  #stack>div>div:nth-child(3){grid-template-columns:1fr!important;}
 }
 </style>
 </body>
