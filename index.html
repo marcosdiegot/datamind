@@ -296,7 +296,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
       var idx = radarHtml.indexOf('const GOV = [');
       if (idx === -1) return;
       var block = radarHtml.slice(idx, idx + 15000);
-      var re = /,nome:'([^']+)',badge:'[^']+',badgeLabel:'([^']+)'/g;
+      var re = /,nome:'([^']+)'/g;
       var items = [];
       var m;
       while ((m = re.exec(block)) !== null) {
