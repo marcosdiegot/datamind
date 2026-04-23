@@ -302,10 +302,82 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
       <p style="font-size:15px;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:56px;">Não uso IA como ferramenta pontual. Opero com um squad estruturado onde cada modelo tem função definida — e sou o orquestrador que valida, decide e entrega. O squad abaixo é lido em tempo real do Radar IA.</p>
     </div>
     <!-- Squad dinâmico: lido do radar.html em tempo real -->
-    <div id="squad-loading" style="text-align:center;padding:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">Carregando squad do Radar IA...</div>
-    <div id="squad-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:40px;"></div>
+    
+    <div id="squad-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:40px;"><div style="background:var(--bg3);border:1px solid #b06eff33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#b06eff88'" onmouseout="this.style.borderColor='#b06eff33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#b06eff,transparent);"></div>
+<div style="position:absolute;top:8px;right:10px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#b06eff;letter-spacing:.1em;text-transform:uppercase;background:#b06eff15;padding:2px 8px;border:1px solid #b06eff33;">Orquestrador</div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#b06eff15;border:1px solid #b06eff30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚡</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">Claude</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#b06eff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">ORQUESTRADOR PRINCIPAL</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Orquestrador central do DataMind.</div>
+</div><div style="background:var(--bg3);border:1px solid #b06eff33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#b06eff88'" onmouseout="this.style.borderColor='#b06eff33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#b06eff,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#b06eff15;border:1px solid #b06eff30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🖥️</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">Claude Code</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#b06eff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">EXECUCAO TECNICA E CODING AGENTIVO</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Computer Use GA em producao.</div>
+</div><div style="background:var(--bg3);border:1px solid #4d9fff33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#4d9fff88'" onmouseout="this.style.borderColor='#4d9fff33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#4d9fff,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#4d9fff15;border:1px solid #4d9fff30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔍</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">Perplexity</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4d9fff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">PESQUISA EXTERNA E VALIDACAO DE DADOS</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Camada de dados externos do DataMind.</div>
+</div><div style="background:var(--bg3);border:1px solid #4d9fff33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#4d9fff88'" onmouseout="this.style.borderColor='#4d9fff33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#4d9fff,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#4d9fff15;border:1px solid #4d9fff30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📓</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">NotebookLM</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4d9fff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">MEMORIA PROPRIETARIA E SINTESE DE FONTES</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Repositorio de conhecimento proprietario do DataMind.</div>
+</div><div style="background:var(--bg3);border:1px solid #4d9fff33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#4d9fff88'" onmouseout="this.style.borderColor='#4d9fff33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#4d9fff,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#4d9fff15;border:1px solid #4d9fff30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🎨</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">Gemini 2.5 Flash</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4d9fff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">VOLUME, VISUAL E CONTEXTO LONGO</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Substituto direto do Gemini 2.</div>
+</div><div style="background:var(--bg3);border:1px solid #ffb34033;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#ffb34088'" onmouseout="this.style.borderColor='#ffb34033'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ffb340,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#ffb34015;border:1px solid #ffb34030;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚙️</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">n8n + Make</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#ffb340;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">AUTOMACAO E INTEGRACAO DE WORKFLOWS</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Backbone de automacao do DataMind.</div>
+</div><div style="background:var(--bg3);border:1px solid #4d9fff33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#4d9fff88'" onmouseout="this.style.borderColor='#4d9fff33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#4d9fff,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#4d9fff15;border:1px solid #4d9fff30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🧠</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">GPT-5.4</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4d9fff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">CODING AGENTIVO E AUTOMACAO COMPLEXA</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Melhor modelo de coding agentivo da OpenAI em 2026.</div>
+</div><div style="background:var(--bg3);border:1px solid #ff3d6e33;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#ff3d6e88'" onmouseout="this.style.borderColor='#ff3d6e33'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ff3d6e,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#ff3d6e15;border:1px solid #ff3d6e30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📡</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">Grok 4.20</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#ff3d6e;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">VOLUME EXTREMO E CONTEXTO 2M</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">Grok 4.</div>
+</div><div style="background:var(--bg3);border:1px solid #00e5a033;padding:22px 18px;position:relative;overflow:hidden;transition:border-color .2s;" onmouseover="this.style.borderColor='#00e5a088'" onmouseout="this.style.borderColor='#00e5a033'">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00e5a0,transparent);"></div>
+
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<div style="width:36px;height:36px;background:#00e5a015;border:1px solid #00e5a030;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🖱️</div>
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">Cursor</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#00e5a0;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">IDE AGENTICO E AUTOMACOES DE BACKGROUND</div></div></div>
+<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">IDE agentico #1 para desenvolvimento em 2026.</div>
+</div></div>
     <div id="squad-error" style="display:none;background:var(--bg3);border:1px solid rgba(255,61,90,.2);padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);">Não foi possível carregar o squad. <a href="https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html" target="_blank" style="color:var(--green);">Ver Radar diretamente ↗</a></div>
-    <div id="squad-meta" style="display:none;background:var(--bg2);border:1px solid var(--border);padding:16px 20px;border-left:2px solid var(--green);margin-bottom:28px;" class="reveal">
+    <div id="squad-meta" style="display:block;background:var(--bg2);border:1px solid var(--border);padding:16px 20px;border-left:2px solid var(--green);margin-bottom:28px;" class="reveal">
       <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);margin-bottom:6px;">// nota operacional</p>
       <p style="font-size:14px;color:var(--muted);line-height:1.7;">Squad ativo. Cada ferramenta tem uma função. Nenhuma substitui o raciocínio do operador. O resultado precisa ir para produção — não para um deck de apresentação.</p>
     </div>
@@ -315,61 +387,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
   </div>
 </section>
 
-<script>
-(function loadSquad() {
-  fetch('https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html')
-    .then(function(r){ return r.text(); })
-    .then(function(html) {
-      // Extrair array SQUAD do radar
-      var idx = html.indexOf('const SQUAD = [');
-      if (idx === -1) throw new Error('SQUAD não encontrado');
-      var block = html.slice(idx, idx + 30000);
-      // Extrair entries via regex
-      var re = /\{ico:'([^']+)',name:'([^']+)',func:'([^']+)',status:'([^']+)',isNew:[^,]+,col:'([^']+)',why:'([^']{0,120})/g;
-      var members = [];
-      var m;
-      while ((m = re.exec(block)) !== null) {
-        members.push({ ico: m[1], name: m[2], func: m[3], status: m[4], col: m[5], why: m[6].replace(/'/g,"'") });
-      }
-      if (!members.length) throw new Error('Nenhum membro extraído');
-      // Filtrar só titulares
-      var titulares = members.filter(function(x){ return x.status === 'titular'; });
-      // Renderizar
-      var grid = document.getElementById('squad-grid');
-      var html_out = '';
-      titulares.forEach(function(s) {
-        var isOrq = s.func.indexOf('ORQUESTRADOR') !== -1;
-        var funcLabel = s.func.split('·')[0].trim();
-        // Limpar texto why — remover até ponto final
-        var why = s.why;
-        var dotIdx = why.indexOf('.');
-        if (dotIdx !== -1 && dotIdx < 100) why = why.slice(0, dotIdx + 1);
-        html_out += '<div style="background:var(--bg3);border:1px solid ' + s.col + '33;' +
-          (isOrq ? 'border:2px solid ' + s.col + '66;' : '') +
-          'padding:22px 18px;position:relative;transition:border-color .2s;overflow:hidden;"' +
-          ' onmouseover="this.style.borderColor='' + s.col + '88'"' +
-          ' onmouseout="this.style.borderColor='' + s.col + '33'">' +
-          '<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,' + s.col + ',transparent);"></div>' +
-          (isOrq ? '<div style="position:absolute;top:8px;right:10px;font-family:'JetBrains Mono',monospace;font-size:8px;color:' + s.col + ';letter-spacing:.1em;text-transform:uppercase;background:' + s.col + '15;padding:2px 8px;border:1px solid ' + s.col + '33;">Orquestrador</div>' : '') +
-          '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-          '<div style="width:36px;height:36px;background:' + s.col + '15;border:1px solid ' + s.col + '30;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">' + s.ico + '</div>' +
-          '<div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);">' + s.name + '</div>' +
-          '<div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:' + s.col + ';letter-spacing:.08em;text-transform:uppercase;margin-top:2px;opacity:.8;">' + funcLabel + '</div></div></div>' +
-          '<div style="font-size:11px;color:#7a7f9a;line-height:1.6;">' + why + '</div>' +
-          '</div>';
-      });
-      grid.innerHTML = html_out;
-      grid.style.display = 'grid';
-      document.getElementById('squad-loading').style.display = 'none';
-      document.getElementById('squad-meta').style.display = 'block';
-    })
-    .catch(function(err) {
-      document.getElementById('squad-loading').style.display = 'none';
-      document.getElementById('squad-error').style.display = 'block';
-      console.warn('Squad load error:', err);
-    });
-})();
-</script>
+
 
 <!-- PROJETOS -->
 <section id="projetos" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
