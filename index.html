@@ -253,64 +253,39 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
       <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
         <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">IA &amp; Automação</div>
         <div id="stack-ia-badges" style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Carregando...</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Claude</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Claude Code</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Perplexity</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">NotebookLM</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Gemini 2.5 Flash</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">n8n + Make</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">GPT-5.4</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Grok 4.20</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Cursor</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Gemini 3.1 Pro</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Lovable</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Gamma</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">DeepSeek V3.2</span>
         </div>
       </div>
       
-<script>
-(function loadStackIA() {
-  fetch('https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html')
-    .then(function(r){ return r.text(); })
-    .then(function(radarHtml) {
-      var idx = radarHtml.indexOf('const SQUAD = [');
-      if (idx === -1) return;
-      var block = radarHtml.slice(idx, idx + 30000);
-      var re = /name:'([^']+)'[^}]*?status:'(titular|especialista)'/g;
-      var names = [];
-      var m;
-      while ((m = re.exec(block)) !== null) {
-        names.push(m[1]);
-      }
-      if (!names.length) return;
-      var el = document.getElementById('stack-ia-badges');
-      el.innerHTML = names.map(function(n) {
-        return '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">' + n + '</span>';
-      }).join('');
-    })
-    .catch(function(){ });
-})();
-</script>
+
 
 <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
         <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">Governança &amp; Compliance</div>
         <div id="stack-gov-badges" style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Carregando...</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Zonas de Liberdade</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">O que e Auditado</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Classificacao de Dados</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">RBAC por Agente</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Prompt Injection Defense</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Resposta a Incidentes</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">NIST AI RMF</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">ISO 42001 e SOC 2</span>
         </div>
       </div>
 
-<script>
-(function loadStackGov() {
-  fetch('https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html')
-    .then(function(r){ return r.text(); })
-    .then(function(radarHtml) {
-      var idx = radarHtml.indexOf('const GOV = [');
-      if (idx === -1) return;
-      var block = radarHtml.slice(idx, idx + 15000);
-      var re = /,nome:'([^']+)'/g;
-      var items = [];
-      var m;
-      while ((m = re.exec(block)) !== null) {
-        items.push(m[1]);
-      }
-      if (!items.length) return;
-      var el = document.getElementById('stack-gov-badges');
-      el.innerHTML = items.map(function(n) {
-        return '<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">' + n + '</span>';
-      }).join('');
-    })
-    .catch(function(){ });
-})();
-</script>
+
     </div>
     <div style="margin-top:20px;padding:16px 20px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);" class="reveal">
       <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">// Para o inventário completo e atualizado de ferramentas de IA monitoradas &rarr; <a href="https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html" target="_blank" style="color:var(--green);text-decoration:none;">Radar IA DataMind ↗</a></p>
