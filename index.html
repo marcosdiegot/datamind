@@ -3,1612 +3,824 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marcos Diego Ribeiro — Head of Data · DataMind AI-First</title>
-<meta name="description" content="Construo o time e a arquitetura de dados que a empresa ainda não sabe que precisa. Head of Data, fundador da DataMind AI-First Consulting.">
+<title>Marcos Diego Ribeiro — Head of Data · DataMind</title>
+<meta name="description" content="Founder & Head of Data da DataMind. Governança primeiro, inteligência depois.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   TOKENS
-   ============================================================ */
+:root {
+  --bg: #07080D;
+  --bg2: #0d0f18;
+  --bg3: #111420;
+  --green: #00E5A0;
+  --red: #FF3D5A;
+  --amber: #FFB830;
+  --blue: #4F8EF7;
+  --white: #F0F2F8;
+  --muted: #5a5f7a;
+  --border: rgba(255,255,255,0.06);
+}
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-
-:root {
-  --bg:        #04060f;
-  --bg2:       #070b18;
-  --bg3:       #0a1020;
-  --surface:   rgba(255,255,255,0.04);
-  --surface2:  rgba(255,255,255,0.07);
-  --border:    rgba(255,255,255,0.07);
-  --border2:   rgba(59,130,246,0.25);
-
-  --blue:      #3b82f6;
-  --blue2:     #2563eb;
-  --blue-glow: #60a5fa;
-  --cyan:      #22d3ee;
-  --white:     #eef2ff;
-  --text:      #8b9ab5;
-  --muted:     #3d4f6b;
-
-  --radius:    10px;
-  --radius-lg: 18px;
-  --shadow-blue: 0 0 48px rgba(59,130,246,0.12);
-  --glow-text: linear-gradient(135deg, #60a5fa, #22d3ee);
-}
-
 body {
   background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  line-height: 1.7;
+  color: var(--white);
+  font-family: 'Syne', sans-serif;
   overflow-x: hidden;
+  cursor: default;
 }
-
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+/* SCROLLBAR */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
-
-/* ============================================================
-   NAV
-   ============================================================ */
+::-webkit-scrollbar-thumb { background: var(--green); border-radius: 2px; }
+/* TYPOGRAPHY */
+.mono { font-family: 'JetBrains Mono', monospace; }
+/* REVEAL ANIMATION */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ─── NAV ─── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  height: 68px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 48px;
-  background: rgba(4,6,15,0.88);
-  backdrop-filter: blur(24px);
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7,8,13,0.85);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  transition: all 0.3s;
 }
-nav.scrolled { height: 58px; background: rgba(4,6,15,0.97); }
-
-.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.nav-logo img { height: 36px; width: auto; }
-
-.nav-links { display: flex; gap: 4px; list-style: none; }
+.nav-logo img {
+  height: 32px;
+  width: auto;
+  filter: brightness(0.9);
+}
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
 .nav-links a {
-  color: var(--text); text-decoration: none;
-  font-size: 13px; font-weight: 500;
-  padding: 6px 14px; border-radius: 8px;
-  transition: all 0.2s; letter-spacing: 0.01em;
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s;
 }
-.nav-links a:hover { color: var(--white); background: var(--surface2); }
-
-.nav-right { display: flex; gap: 10px; align-items: center; }
-
-.btn-sm {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 18px; border-radius: 8px;
-  font-size: 13px; font-weight: 600; text-decoration: none;
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+  display: flex;
+  gap: 12px;
+}
+.btn-ghost {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  text-decoration: none;
+  cursor: pointer;
   transition: all 0.2s;
 }
-.btn-sm-ghost { color: var(--text); border: 1px solid var(--border); }
-.btn-sm-ghost:hover { color: var(--white); border-color: var(--border2); }
-.btn-sm-fill { background: var(--blue); color: #fff; box-shadow: 0 0 20px rgba(59,130,246,0.3); }
-.btn-sm-fill:hover { background: var(--blue-glow); box-shadow: 0 0 32px rgba(59,130,246,0.5); transform: translateY(-1px); }
-
-.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
-.nav-toggle span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
-
-/* ============================================================
-   MOBILE NAV
-   ============================================================ */
-.mobile-nav {
-  display: none; position: fixed; inset: 0;
-  background: rgba(4,6,15,0.98); z-index: 999;
-  flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+.btn-ghost:hover { border-color: var(--green); color: var(--green); }
+.btn-primary {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid var(--green);
+  background: rgba(0,229,160,0.08);
+  color: var(--green);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.mobile-nav.open { display: flex; }
-.mobile-nav a {
-  color: var(--white); text-decoration: none;
-  font-size: 20px; font-weight: 700;
-  padding: 12px 40px; border-radius: var(--radius);
-  transition: all 0.2s; width: 260px; text-align: center;
-}
-.mobile-nav a:hover { background: var(--surface2); color: var(--blue-glow); }
-.mobile-nav-close {
-  position: absolute; top: 22px; right: 22px;
-  font-size: 26px; color: var(--text); cursor: pointer;
-  background: none; border: none; padding: 8px;
-}
-
-/* ============================================================
-   HERO
-   ============================================================ */
-.hero {
+.btn-primary:hover { background: rgba(0,229,160,0.18); }
+/* ─── HERO ─── */
+#hero {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  padding: 100px 48px 80px;
+  padding: 100px 48px 60px;
   position: relative;
   overflow: hidden;
-  gap: 60px;
 }
-
-.hero-bg {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 70% at 70% 50%, rgba(59,130,246,0.06) 0%, transparent 70%),
-              radial-gradient(ellipse 50% 50% at 20% 80%, rgba(34,211,238,0.04) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-.hero-grid-bg {
-  position: absolute; inset: 0;
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
   background-image:
-    linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 20%, transparent 80%);
+    linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
   pointer-events: none;
 }
-
-/* Left: text */
-.hero-text { position: relative; z-index: 2; }
-
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 5px 12px; border-radius: 100px;
-  border: 1px solid var(--border2);
-  background: rgba(59,130,246,0.08);
-  font-size: 11px; font-weight: 700;
-  color: var(--blue-glow); letter-spacing: 0.1em; text-transform: uppercase;
-  margin-bottom: 28px;
-  animation: fadeUp 0.6s ease both;
+.hero-bg-glow {
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(79,142,247,0.06) 0%, transparent 70%);
+  pointer-events: none;
 }
-.hero-eyebrow::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
-
-.hero-name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(14px, 1.5vw, 18px);
-  font-weight: 600; color: var(--text);
-  letter-spacing: 0.05em; text-transform: uppercase;
-  margin-bottom: 12px;
-  animation: fadeUp 0.6s 0.05s ease both;
-}
-
-.hero-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 800;
-  font-size: clamp(32px, 4.5vw, 60px);
-  line-height: 1.1;
-  color: var(--white);
-  letter-spacing: -0.03em;
-  margin-bottom: 28px;
-  animation: fadeUp 0.6s 0.1s ease both;
-}
-
-.hero-title .accent {
-  background: var(--glow-text);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-anchor {
-  font-size: clamp(16px, 2vw, 22px);
-  font-weight: 600; color: var(--white);
-  line-height: 1.5; margin-bottom: 32px;
-  border-left: 3px solid var(--blue);
-  padding-left: 20px;
-  animation: fadeUp 0.6s 0.15s ease both;
-}
-
-.hero-sub {
-  font-size: 15px; color: var(--text);
-  line-height: 1.8; max-width: 480px;
-  margin-bottom: 40px;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-.hero-sub strong { color: var(--white); font-weight: 600; }
-
-.hero-actions {
-  display: flex; gap: 12px; flex-wrap: wrap;
-  margin-bottom: 52px;
-  animation: fadeUp 0.6s 0.25s ease both;
-}
-
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 28px; border-radius: var(--radius);
-  background: var(--blue); color: #fff;
-  font-size: 14px; font-weight: 700; text-decoration: none;
-  transition: all 0.25s; box-shadow: 0 0 28px rgba(59,130,246,0.35);
-}
-.btn-primary:hover { background: var(--blue-glow); box-shadow: 0 0 44px rgba(59,130,246,0.55); transform: translateY(-2px); }
-
-.btn-secondary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 28px; border-radius: var(--radius);
-  background: var(--surface); color: var(--white);
-  font-size: 14px; font-weight: 600; text-decoration: none;
-  border: 1px solid var(--border); transition: all 0.25s;
-}
-.btn-secondary:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-2px); }
-
-.hero-kpis {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 0; border-top: 1px solid var(--border); padding-top: 36px;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-.kpi-item { padding-right: 24px; border-right: 1px solid var(--border); }
-.kpi-item:last-child { border-right: none; }
-.kpi-val {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px;
-  background: var(--glow-text);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
-
-/* Right: photo */
-.hero-photo-wrap {
-  position: relative; z-index: 2;
-  display: flex; align-items: center; justify-content: center;
-  animation: fadeUp 0.6s 0.1s ease both;
-}
-
-.hero-photo-frame {
+.hero-left {
   position: relative;
-  width: 420px; max-width: 100%;
+  z-index: 2;
+  padding-right: 60px;
 }
-
-.hero-photo-frame::before {
-  content: '';
-  position: absolute; inset: -2px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--blue), var(--cyan), var(--blue));
-  z-index: -1;
-  opacity: 0.6;
-  filter: blur(1px);
-}
-
-.hero-photo-frame::after {
-  content: '';
-  position: absolute; inset: -20px;
-  border-radius: 30px;
-  background: radial-gradient(ellipse at center, rgba(59,130,246,0.12) 0%, transparent 70%);
-  z-index: -2;
-}
-
-.hero-photo-frame img {
-  width: 100%;
-  border-radius: 18px;
-  display: block;
-  object-fit: cover;
-  object-position: center top;
-  aspect-ratio: 4/5;
-}
-
-.hero-photo-badge {
-  position: absolute;
-  bottom: -16px; left: -16px;
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: var(--shadow-blue);
-}
-.badge-icon { font-size: 22px; }
-.badge-text { font-size: 12px; }
-.badge-text strong { display: block; color: var(--white); font-size: 14px; font-weight: 700; }
-
-.hero-photo-tag {
-  position: absolute;
-  top: -16px; right: -16px;
-  background: rgba(59,130,246,0.15);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 10px 16px;
-  font-size: 12px; font-weight: 700;
-  color: var(--blue-glow);
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-
-@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-
-/* ============================================================
-   SECTIONS
-   ============================================================ */
-section { padding: 96px 48px; position: relative; }
-.container { max-width: 1200px; margin: 0 auto; width: 100%; }
-
-.sec-label {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--blue-glow); margin-bottom: 14px;
-}
-.sec-label::before { content: ''; width: 20px; height: 2px; background: var(--blue); border-radius: 2px; }
-
-.sec-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 800; font-size: clamp(26px, 3.2vw, 44px);
-  color: var(--white); line-height: 1.15; letter-spacing: -0.02em;
-  margin-bottom: 14px;
-}
-.sec-title .hl {
-  background: var(--glow-text);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.sec-sub { font-size: 16px; color: var(--text); max-width: 560px; line-height: 1.8; }
-
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-
-/* ============================================================
-   MÉTODO AI-FIRST
-   ============================================================ */
-.metodo-sec { background: var(--bg2); border-top: 1px solid var(--border); }
-
-.metodo-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 64px; align-items: start; margin-top: 52px;
-}
-.metodo-diff-col { display: flex; flex-direction: column; justify-content: center; }
-
-.metodo-text p { font-size: 15px; color: var(--text); line-height: 1.85; margin-bottom: 18px; }
-.metodo-text p strong { color: var(--white); font-weight: 600; }
-
-.aifirst-diff {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px;
-}
-.diff-card {
-  padding: 20px; border-radius: var(--radius);
-  border: 1px solid var(--border);
-}
-.diff-card.bad { background: rgba(239,68,68,0.04); border-color: rgba(239,68,68,0.15); }
-.diff-card.good { background: rgba(59,130,246,0.06); border-color: var(--border2); }
-.diff-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
-.diff-card.bad .diff-label { color: #f87171; }
-.diff-card.good .diff-label { color: var(--blue-glow); }
-.diff-item { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 6px; padding-left: 14px; position: relative; }
-.diff-item::before { position: absolute; left: 0; }
-.diff-card.bad .diff-item::before { content: '✗'; color: #f87171; }
-.diff-card.good .diff-item::before { content: '✓'; color: var(--blue-glow); }
-
-/* Squad */
-.squad-wrap { display: flex; flex-direction: column; gap: 16px; }
-
-.squad-title {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--blue-glow); margin-bottom: 6px;
-}
-
-/* ============================================================
-   DIAGRAMA HTML/CSS RESPONSIVO — FLUXO AI-FIRST
-   ============================================================ */
-
-/* Desktop: linha horizontal */
-.fluxo-diagram {
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 24px;
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  gap: 0;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 20px 16px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.fluxo-node {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 16px 12px;
-  border-radius: 12px;
+  gap: 12px;
+}
+.hero-tag::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--green);
+}
+.hero-name {
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: var(--white);
+}
+.hero-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  letter-spacing: 0.05em;
+}
+.hero-phrase {
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+.hero-phrase span {
+  color: var(--green);
+  position: relative;
+}
+.hero-sub {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 48px;
+  max-width: 420px;
+}
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+/* COUNTERS */
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.stat-item {}
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1;
+}
+.stat-num span { color: var(--green); }
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+/* HERO RIGHT — FOTO */
+.hero-right {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.photo-frame {
+  position: relative;
+  width: 380px;
+}
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--green), transparent 60%, var(--blue));
+  opacity: 0.4;
+  clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
+}
+.photo-frame img {
+  width: 100%;
+  display: block;
+  clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
+  filter: grayscale(15%) contrast(1.05);
+}
+.photo-badge {
+  position: absolute;
+  bottom: -16px;
+  left: -24px;
+  background: var(--bg3);
   border: 1px solid var(--border);
-  background: var(--bg);
-  min-width: 130px;
-  flex: 1;
-  transition: all 0.25s;
+  padding: 12px 20px;
 }
-.fluxo-node:hover { transform: translateY(-3px); }
-
-.node-head  { border-color: rgba(59,130,246,0.35);  background: rgba(59,130,246,0.05); }
-.node-model { border-color: rgba(139,92,246,0.35);  background: rgba(139,92,246,0.05); }
-.node-orch  { border-color: rgba(34,211,238,0.35);  background: rgba(34,211,238,0.05); }
-.node-agents{ border-color: rgba(245,158,11,0.35);  background: rgba(245,158,11,0.05); }
-.node-output{ border-color: rgba(16,185,129,0.35);  background: rgba(16,185,129,0.05); }
-
-.fn-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+.photo-badge .badge-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--green);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
-
-.fn-body { display: flex; flex-direction: column; gap: 4px; text-align: center; width: 100%; }
-.fn-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-.fn-title { font-size: 13px; font-weight: 700; color: var(--white); line-height: 1.3; }
-.fn-sub   { font-size: 11px; color: var(--muted); line-height: 1.4; }
-.fn-tag {
-  display: inline-block; margin-top: 4px;
-  padding: 3px 8px; border-radius: 100px;
-  border: 1px solid; font-size: 10px; font-weight: 600;
-  background: rgba(0,0,0,0.3);
+.photo-badge .badge-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 3px;
 }
-.fn-items { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
-.fn-item  { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text); text-align: left; }
-.fi-dot   { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
-.agents-chips { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 4px; }
-.agent-chip {
-  padding: 2px 8px; border-radius: 100px;
-  border: 1px solid color-mix(in srgb, var(--ac) 40%, transparent);
-  background: color-mix(in srgb, var(--ac) 10%, transparent);
-  color: var(--ac); font-size: 10px; font-weight: 600;
-}
-
-/* Setas horizontais */
-.fluxo-arrow {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; padding: 0 6px; flex-shrink: 0; min-width: 44px;
-}
-.fluxo-arrow svg { width: 40px; height: 24px; }
-.fluxo-arrow span { font-size: 9px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
-
-/* ============================================================
-   CAMADA DE SUPERVISÃO
-   ============================================================ */
-.supervisao-layer {
-  background: rgba(34,211,238,0.04);
-  border: 1px solid rgba(34,211,238,0.2);
-  border-radius: 12px;
-  padding: 16px 20px;
+/* ─── MANIFESTO ─── */
+#manifesto {
+  padding: 80px 48px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 }
-.supervisao-layer::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, #3b82f6, #22d3ee, #10b981);
+#manifesto::before {
+  content: '"';
+  position: absolute;
+  top: -40px;
+  left: 40px;
+  font-size: 300px;
+  color: rgba(0,229,160,0.03);
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  font-family: 'Syne', sans-serif;
 }
-.sv-header {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #67e8f9; margin-bottom: 14px;
+.manifesto-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
 }
-.sv-items { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-.sv-item  { display: flex; align-items: flex-start; gap: 10px; }
-.sv-dot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
-            box-shadow: 0 0 8px currentColor; }
-.sv-name  { font-size: 12px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
-.sv-desc  { font-size: 11px; color: var(--muted); line-height: 1.5; }
-
-/* Mobile: coluna vertical */
+.manifesto-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 32px;
+}
+.manifesto-text {
+  font-size: clamp(20px, 2.5vw, 30px);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--white);
+}
+.manifesto-text em {
+  color: var(--green);
+  font-style: normal;
+}
+.manifesto-text strong {
+  color: var(--amber);
+  font-weight: 700;
+}
+/* RESPONSIVE NAV */
 @media (max-width: 768px) {
-  .fluxo-diagram {
-    flex-direction: column;
-    padding: 16px;
-    overflow-x: visible;
-  }
-  .fluxo-node {
-    flex-direction: row;
-    align-items: flex-start;
-    min-width: unset;
-    text-align: left;
-  }
-  .fn-body { text-align: left; }
-  .fn-items { align-items: flex-start; }
-  .agents-chips { justify-content: flex-start; }
-  .fluxo-arrow {
-    flex-direction: row;
-    min-width: unset;
-    padding: 4px 0;
-    justify-content: flex-start;
-    gap: 8px;
-  }
-  .fluxo-arrow svg {
-    width: 24px; height: 40px;
-    transform: rotate(90deg);
-  }
-  .sv-items { grid-template-columns: 1fr; }
-}
-
-/* ============================================================
-   TRAJETÓRIA
-   ============================================================ */
-.trajetoria-sec { background: var(--bg); border-top: 1px solid var(--border); }
-
-.timeline { margin-top: 52px; display: flex; flex-direction: column; gap: 0; position: relative; }
-.timeline::before {
-  content: ''; position: absolute;
-  left: 20px; top: 0; bottom: 0; width: 1px;
-  background: linear-gradient(to bottom, var(--blue), transparent);
-}
-
-.tl-item { display: grid; grid-template-columns: 60px 1fr; gap: 24px; padding-bottom: 40px; }
-.tl-item:last-child { padding-bottom: 0; }
-
-.tl-dot-wrap { display: flex; flex-direction: column; align-items: center; }
-.tl-dot {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(59,130,246,0.12); border: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
-}
-
-.tl-content {}
-.tl-period { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-glow); margin-bottom: 6px; }
-.tl-company { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
-.tl-role { font-size: 14px; color: var(--blue-glow); font-weight: 600; margin-bottom: 12px; }
-.tl-desc { font-size: 14px; color: var(--text); line-height: 1.75; }
-.tl-desc strong { color: var(--white); font-weight: 600; }
-
-.tl-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
-.tl-tag {
-  padding: 4px 10px; border-radius: 6px;
-  background: var(--surface); border: 1px solid var(--border);
-  font-size: 11px; color: var(--text); font-weight: 500;
-}
-
-.formacao-card {
-  padding: 28px 32px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  display: flex; align-items: center; gap: 20px;
-  transition: all 0.25s;
-}
-.formacao-card:hover { background: var(--surface2); border-color: var(--border2); }
-.formacao-card.destaque {
-  background: rgba(59,130,246,0.06);
-  border: 2px solid var(--blue);
-  box-shadow: 0 0 32px rgba(59,130,246,0.12), inset 0 1px 0 rgba(96,165,250,0.1);
-  position: relative; overflow: hidden;
-}
-.formacao-card.destaque::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--blue), var(--cyan));
-}
-.formacao-icon { font-size: 32px; flex-shrink: 0; }
-.formacao-info {}
-.formacao-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-glow); margin-bottom: 6px; }
-.formacao-label.destaque-label { color: var(--cyan); }
-.formacao-title { font-size: 18px; font-weight: 700; color: var(--white); }
-.formacao-title.destaque-title { font-size: 20px; }
-.formacao-sub { font-size: 13px; color: var(--text); margin-top: 4px; }
-.formacao-badge {
-  display: inline-block; margin-top: 8px;
-  padding: 3px 10px; border-radius: 100px;
-  background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3);
-  font-size: 11px; font-weight: 700; color: var(--cyan);
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-
-/* ============================================================
-   ARTIGOS / PENSAMENTO
-   ============================================================ */
-.artigos-sec { background: var(--bg2); border-top: 1px solid var(--border); }
-
-.artigos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 52px; }
-
-.artigo-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 32px 28px;
-  text-decoration: none; transition: all 0.3s;
-  display: flex; flex-direction: column;
-}
-.artigo-card:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-4px); box-shadow: var(--shadow-blue); }
-
-.artigo-cat {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 100px;
-  background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
-  font-size: 10px; font-weight: 700; color: var(--blue-glow);
-  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px;
-}
-
-.artigo-title { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); line-height: 1.3; margin-bottom: 12px; }
-.artigo-desc { font-size: 13px; color: var(--text); line-height: 1.7; flex: 1; }
-
-.artigo-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px; }
-.artigo-tag { padding: 3px 8px; border-radius: 4px; background: var(--bg); border: 1px solid var(--border); font-size: 10px; color: var(--muted); font-weight: 500; }
-
-.artigo-link {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 20px; font-size: 13px; font-weight: 700;
-  color: var(--blue-glow); transition: gap 0.2s;
-}
-.artigo-card:hover .artigo-link { gap: 10px; }
-
-/* ============================================================
-   CASES
-   ============================================================ */
-.cases-sec { background: var(--bg); border-top: 1px solid var(--border); }
-
-.cases-list { margin-top: 52px; display: flex; flex-direction: column; gap: 12px; }
-
-.case-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); overflow: hidden;
-  transition: all 0.3s; cursor: pointer;
-}
-.case-card:hover, .case-card.active { border-color: var(--border2); box-shadow: var(--shadow-blue); }
-
-.case-header {
-  padding: 28px 32px;
-  display: grid; grid-template-columns: 1fr auto;
-  gap: 28px; align-items: center;
-}
-
-.case-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 100px;
-  background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
-  font-size: 10px; font-weight: 700; color: var(--blue-glow);
-  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
-}
-.case-tag.ongoing {
-  background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.2);
-  color: var(--cyan);
-}
-
-.case-name { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 8px; line-height: 1.25; }
-.case-desc { font-size: 13px; color: var(--muted); max-width: 560px; line-height: 1.7; }
-
-.case-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
-.chip { padding: 4px 10px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); font-size: 11px; color: var(--text); font-weight: 500; }
-
-.case-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-
-.case-kpis { display: flex; gap: 20px; }
-.kpi-box { text-align: right; }
-.kpi-box-val {
-  font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 800;
-  line-height: 1; margin-bottom: 4px;
-  background: var(--glow-text);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.kpi-box-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
-
-.badge-soon {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 12px; border-radius: 100px;
-  background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.2);
-  font-size: 11px; font-weight: 600; color: var(--cyan);
-  text-transform: uppercase; letter-spacing: 0.1em;
-}
-
-.case-toggle {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: var(--surface2); border: 1px solid var(--border);
-  color: var(--text); font-size: 18px;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.25s; flex-shrink: 0;
-}
-.case-card.active .case-toggle { background: rgba(59,130,246,0.15); border-color: var(--border2); color: var(--blue-glow); transform: rotate(45deg); }
-
-.case-body { display: none; padding: 0 32px 28px; border-top: 1px solid var(--border); }
-.case-body.open { display: block; padding-top: 24px; }
-
-.case-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.case-col h5 { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue-glow); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-.case-col p, .case-col li { font-size: 13px; color: var(--text); line-height: 1.75; }
-.case-col ul { list-style: none; }
-.case-col li { padding-left: 14px; position: relative; margin-bottom: 6px; }
-.case-col li::before { content: '→'; position: absolute; left: 0; color: var(--blue); font-size: 11px; }
-
-.case-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--blue-glow); text-decoration: none; }
-.case-link:hover { color: var(--cyan); }
-
-/* ============================================================
-   SERVIÇOS
-   ============================================================ */
-.servicos-sec { background: var(--bg2); border-top: 1px solid var(--border); }
-
-.servicos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 52px; }
-
-.servico-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 28px 24px;
-  transition: all 0.25s;
-}
-.servico-card:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-3px); box-shadow: var(--shadow-blue); }
-
-.servico-num { font-family: 'Space Grotesk', sans-serif; font-size: 48px; font-weight: 900; color: rgba(59,130,246,0.06); line-height: 1; margin-bottom: 16px; }
-.servico-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
-.servico-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
-
-/* ============================================================
-   STACK
-   ============================================================ */
-.stack-sec { background: var(--bg); border-top: 1px solid var(--border); }
-
-.stack-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 52px; }
-
-.stack-group {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 24px 28px;
-  transition: all 0.25s;
-}
-.stack-group:hover { background: var(--surface2); border-color: var(--border2); }
-
-.sg-title { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue-glow); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.sg-title::before { content: ''; width: 14px; height: 2px; background: var(--blue); border-radius: 2px; }
-
-.sg-items { display: flex; flex-wrap: wrap; gap: 8px; }
-.sg-item { padding: 5px 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); font-size: 12px; color: var(--text); font-weight: 500; transition: all 0.2s; }
-.sg-item:hover { border-color: var(--border2); color: var(--white); }
-
-/* ============================================================
-   CONTATO
-   ============================================================ */
-.contato-sec { background: var(--bg2); border-top: 1px solid var(--border); }
-
-.contato-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 52px; }
-
-.contato-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 36px 32px;
-  transition: all 0.3s;
-}
-.contato-card:hover { border-color: var(--border2); box-shadow: var(--shadow-blue); }
-.contato-card.primary { border-color: var(--border2); background: rgba(59,130,246,0.05); }
-
-.contato-card-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue-glow); margin-bottom: 12px; }
-.contato-card-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
-.contato-card-desc { font-size: 14px; color: var(--text); line-height: 1.75; margin-bottom: 28px; }
-
-.contato-channels { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-.contato-channel {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px; color: var(--text);
-}
-.contato-channel svg { width: 16px; height: 16px; fill: var(--blue-glow); flex-shrink: 0; }
-.contato-channel a { color: var(--white); text-decoration: none; font-weight: 500; }
-.contato-channel a:hover { color: var(--blue-glow); }
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-footer {
-  padding: 24px 48px;
-  border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--bg);
-}
-.footer-logo img { height: 26px; opacity: 0.6; transition: opacity 0.2s; }
-.footer-logo img:hover { opacity: 1; }
-.footer-info { font-size: 12px; color: var(--muted); }
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-@media (max-width: 1100px) {
-  .hero { grid-template-columns: 1fr; padding: 100px 32px 72px; }
-  .hero-photo-wrap { order: -1; }
-  .hero-photo-frame { width: 300px; }
-  .hero-kpis { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  .kpi-item { border-right: none; padding-right: 0; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-  .kpi-item:nth-child(2n) { border-bottom: 1px solid var(--border); }
-  .kpi-item:nth-last-child(-n+2) { border-bottom: none; }
-  .metodo-grid { grid-template-columns: 1fr; }
-  .metodo-diff-col { width: 100%; }
-  .artigos-grid { grid-template-columns: 1fr 1fr; }
-  .servicos-grid { grid-template-columns: 1fr 1fr; }
-  .stack-grid { grid-template-columns: 1fr; }
-  .contato-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 768px) {
-  nav { padding: 0 20px; }
-  .nav-links, .nav-right { display: none; }
-  .nav-toggle { display: flex; }
-  section { padding: 72px 20px; }
-  .hero { padding: 96px 20px 64px; gap: 40px; }
-  .hero-kpis { grid-template-columns: 1fr 1fr; }
-  .artigos-grid { grid-template-columns: 1fr; }
-  .cases-grid { grid-template-columns: 1fr; }
-  .servicos-grid { grid-template-columns: 1fr; }
-  .aifirst-diff { grid-template-columns: 1fr; }
-  .case-header { grid-template-columns: 1fr; }
-  .case-kpis { justify-content: flex-start; }
-  .case-cols { grid-template-columns: 1fr; }
-  footer { flex-direction: column; gap: 10px; text-align: center; }
-  .hero-photo-frame { width: 260px; }
-  .hero-photo-badge { left: -8px; bottom: -8px; }
-  .hero-photo-tag { right: -8px; top: -8px; }
-}
-
-@media (max-width: 480px) {
-  .hero-actions { flex-direction: column; }
-  .hero-actions .btn-primary, .hero-actions .btn-secondary { justify-content: center; }
-  .hero-kpis { grid-template-columns: 1fr; }
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  #hero { grid-template-columns: 1fr; padding: 90px 20px 40px; gap: 40px; }
+  .hero-left { padding-right: 0; }
+  .hero-right { justify-content: flex-start; }
+  .photo-frame { width: 280px; }
+  .hero-stats { gap: 24px; flex-wrap: wrap; }
+  #manifesto { padding: 60px 20px; }
+  .manifesto-text { font-size: 18px; }
 }
 </style>
 </head>
 <body>
 
-<!-- MOBILE NAV -->
-<div class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-  <a href="#metodo" onclick="closeMobileNav()">Método</a>
-  <a href="#trajetoria" onclick="closeMobileNav()">Trajetória</a>
-  <a href="#artigos" onclick="closeMobileNav()">Pensamento</a>
-  <a href="#cases" onclick="closeMobileNav()">Cases</a>
-  <a href="#servicos" onclick="closeMobileNav()">Serviços</a>
-  <a href="#contato" onclick="closeMobileNav()">Contato</a>
-  <a href="https://wa.me/5511995772800" target="_blank" style="color:var(--cyan);margin-top:16px;font-size:15px;">WhatsApp ↗</a>
-</div>
-
 <!-- NAV -->
-<nav id="mainNav">
-  <a href="#" class="nav-logo">
-    <img src="logo-dark.png" alt="DataMind AI-First">
+<nav>
+  <a class="nav-logo" href="#hero">
+    <img src="./assets/datamind_logo.png" alt="DataMind">
   </a>
   <ul class="nav-links">
-    <li><a href="#metodo">Método</a></li>
-    <li><a href="#trajetoria">Trajetória</a></li>
-    <li><a href="#artigos">Pensamento</a></li>
-    <li><a href="#cases">Cases</a></li>
-    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#metodologia">Metodologia</a></li>
+    <li><a href="#projetos">Projetos</a></li>
+    <li><a href="#experiencia">Experiência</a></li>
+    <li><a href="#conteudo">Conteúdo</a></li>
     <li><a href="#contato">Contato</a></li>
   </ul>
-  <div class="nav-right">
-    <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-sm btn-sm-ghost">LinkedIn ↗</a>
-    <a href="https://wa.me/5511995772800" target="_blank" class="btn-sm btn-sm-fill">Falar comigo</a>
-  </div>
-  <div class="nav-toggle" onclick="openMobileNav()">
-    <span></span><span></span><span></span>
+  <div class="nav-cta">
+    <a href="https://github.com/marcosdiegot" target="_blank" class="btn-ghost">GitHub</a>
+    <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-primary">LinkedIn ↗</a>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid-bg"></div>
-
-  <div class="hero-text">
-    <div class="hero-eyebrow">Head of Data · DataMind AI-First</div>
-    <div class="hero-name">Marcos Diego Ribeiro</div>
-    <h1 class="hero-title">
-      Dados que<br>
-      <span class="accent">transformam</span><br>
-      operações.
-    </h1>
-    <p class="hero-anchor">
-      "Construo o time e a arquitetura de dados que a empresa ainda não sabe que precisa."
-    </p>
-    <p class="hero-sub">
-      <strong>10+ anos</strong> estruturando ambientes analíticos em setores de alta pressão — seguros, iGaming e real estate. Fundador da DataMind AI-First Consulting. Filosofia <strong>AI-First</strong> aplicada a resultados mensuráveis.
-    </p>
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-glow"></div>
+  <div class="hero-left reveal">
+    <div class="hero-tag">Founder &amp; Head of Data</div>
+    <h1 class="hero-name">Marcos Diego<br>Ribeiro</h1>
+    <p class="hero-title mono">datamind · osasco, sp · ai-first</p>
+    <p class="hero-phrase">"<span>Governança primeiro</span>,<br>inteligência depois."</p>
+    <p class="hero-sub">10+ anos conectando dados, governança e inteligência artificial em seguros, saúde e varejo. Construo a fundação que faz a IA funcionar de verdade.</p>
     <div class="hero-actions">
-      <a href="#cases" class="btn-primary">Ver cases →</a>
-      <a href="#contato" class="btn-secondary">Falar comigo</a>
+      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-primary">LinkedIn ↗</a>
+      <a href="https://github.com/marcosdiegot" target="_blank" class="btn-ghost">GitHub ↗</a>
+      <a href="#contato" class="btn-ghost">Contato</a>
     </div>
-    <div class="hero-kpis">
-      <div class="kpi-item">
-        <div class="kpi-val">10+</div>
-        <div class="kpi-label">Anos em dados</div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">10<span>+</span></div>
+        <div class="stat-label">Anos de experiência</div>
       </div>
-      <div class="kpi-item">
-        <div class="kpi-val">R$1,5M</div>
-        <div class="kpi-label">Impacto/mês</div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Setores-alvo</div>
       </div>
-      <div class="kpi-item">
-        <div class="kpi-val">3</div>
-        <div class="kpi-label">Setores regulados</div>
-      </div>
-      <div class="kpi-item">
-        <div class="kpi-val">MBA</div>
-        <div class="kpi-label">FIA · Analytics & IA</div>
+      <div class="stat-item">
+        <div class="stat-num">5<span>x</span></div>
+        <div class="stat-label">Squad IA ativo</div>
       </div>
     </div>
   </div>
-
-  <div class="hero-photo-wrap">
-    <div class="hero-photo-frame">
-      <img src="foto-diego.jpeg" alt="Marcos Diego Ribeiro — Head of Data">
-    </div>
-  </div>
-</section>
-
-<!-- MÉTODO AI-FIRST -->
-<section id="metodo" class="metodo-sec reveal">
-  <div class="container">
-    <div class="sec-label">Método</div>
-    <h2 class="sec-title">AI-First não é usar IA.<br><span class="hl">É arquitetura de orquestração.</span></h2>
-
-    <!-- LINHA 1: texto + comparação em 2 colunas -->
-    <div class="metodo-grid">
-      <div class="metodo-text">
-        <p>
-          Existe uma diferença fundamental entre profissionais que <strong>usam IA</strong> e profissionais que <strong>orquestram IA</strong>. O primeiro abre uma janela, digita uma pergunta e copia a resposta. O segundo — eu — é o <strong>Head que define o fluxo</strong>: um orquestrador recebe o comando, distribui para agentes especializados via API, e a entrega já está pronta quando o pipeline termina.
-        </p>
-        <p>
-          <strong>Zero looping de entregas infinitas.</strong> O resultado é estipulado antes do primeiro comando. Os insights, a narrativa e a decisão final são 100% meus — a máquina executa, eu dirijo. Redução de até <strong>90% no tempo</strong> e <strong>89% no custo</strong> por ciclo de entrega.
-        </p>
-        <p>
-          Filosofia: <em>"Evidência antes de público. Velocidade com rigor. O builder-first mindset."</em>
-        </p>
-      </div>
-
-      <div class="metodo-diff-col">
-        <div class="aifirst-diff">
-          <div class="diff-card bad">
-            <div class="diff-label">AI-Eventually</div>
-            <div class="diff-item">Abre chat e copia resposta</div>
-            <div class="diff-item">Ferramentas isoladas</div>
-            <div class="diff-item">Sem fluxo definido</div>
-            <div class="diff-item">Looping infinito de revisões</div>
-          </div>
-          <div class="diff-card good">
-            <div class="diff-label">AI-First</div>
-            <div class="diff-item">Head define o fluxo</div>
-            <div class="diff-item">Orquestrador roteia via API</div>
-            <div class="diff-item">Agentes com função definida</div>
-            <div class="diff-item">Entrega automatizada no 1º comando</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- LINHA 2: diagrama + supervisão em largura total -->
-    <div class="squad-wrap" style="margin-top:40px;">
-        <div class="squad-title">Fluxo de orquestração — visão geral</div>
-
-        <!-- DIAGRAMA HTML/CSS RESPONSIVO -->
-        <div class="fluxo-diagram">
-
-          <!-- NÍVEL 0: DIEGO -->
-          <div class="fluxo-node node-head">
-            <div class="fn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-            <div class="fn-body">
-              <div class="fn-label" style="color:#60a5fa">NÍVEL 0 · ESTRATÉGIA</div>
-              <div class="fn-title">Marcos Diego</div>
-              <div class="fn-sub">Head of Data · DataMind AI-First</div>
-              <div class="fn-tag" style="border-color:#3b82f6;color:#60a5fa">1 comando inicial</div>
-            </div>
-          </div>
-
-          <div class="fluxo-arrow arrow-blue"><svg viewBox="0 0 40 24" fill="none"><path d="M2 12 H36 M28 4 L38 12 L28 20" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>define</span></div>
-
-          <!-- NÍVEL 1: MODELAGEM -->
-          <div class="fluxo-node node-model">
-            <div class="fn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-            <div class="fn-body">
-              <div class="fn-label" style="color:#a78bfa">NÍVEL 1 · MODELAGEM</div>
-              <div class="fn-title">Design do Sistema</div>
-              <div class="fn-items">
-                <div class="fn-item"><span class="fi-dot" style="background:#8b5cf6"></span>Criação do modelo</div>
-                <div class="fn-item"><span class="fi-dot" style="background:#8b5cf6"></span>Formação da equipe</div>
-                <div class="fn-item"><span class="fi-dot" style="background:#8b5cf6"></span>Processos automatizados</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="fluxo-arrow arrow-purple"><svg viewBox="0 0 40 24" fill="none"><path d="M2 12 H36 M28 4 L38 12 L28 20" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>ativa</span></div>
-
-          <!-- NÍVEL 2: ORQUESTRADOR -->
-          <div class="fluxo-node node-orch">
-            <div class="fn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></div>
-            <div class="fn-body">
-              <div class="fn-label" style="color:#67e8f9">NÍVEL 2 · ORQUESTRAÇÃO</div>
-              <div class="fn-title">Orquestrador</div>
-              <div class="fn-sub">n8n · Make · Manus</div>
-              <div class="fn-tag" style="border-color:#22d3ee;color:#67e8f9">Roteamento via API</div>
-            </div>
-          </div>
-
-          <div class="fluxo-arrow arrow-cyan"><svg viewBox="0 0 40 24" fill="none"><path d="M2 12 H36 M28 4 L38 12 L28 20" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>distribui</span></div>
-
-          <!-- NÍVEL 3: AGENTES -->
-          <div class="fluxo-node node-agents">
-            <div class="fn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-            <div class="fn-body">
-              <div class="fn-label" style="color:#fbbf24">NÍVEL 3 · AGENTES IA</div>
-              <div class="fn-title">Agentes Especializados</div>
-              <div class="agents-chips">
-                <span class="agent-chip" style="--ac:#d97706">Claude</span>
-                <span class="agent-chip" style="--ac:#10a37f">GPT-4o</span>
-                <span class="agent-chip" style="--ac:#4285f4">Gemini</span>
-                <span class="agent-chip" style="--ac:#1da1f2">Grok</span>
-                <span class="agent-chip" style="--ac:#6366f1">Perplexity</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="fluxo-arrow arrow-green"><svg viewBox="0 0 40 24" fill="none"><path d="M2 12 H36 M28 4 L38 12 L28 20" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>entrega</span></div>
-
-          <!-- NÍVEL 4: ENTREGA -->
-          <div class="fluxo-node node-output">
-            <div class="fn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <div class="fn-body">
-              <div class="fn-label" style="color:#34d399">NÍVEL 4 · OUTPUT</div>
-              <div class="fn-title">Entrega Automatizada</div>
-              <div class="fn-sub">Zero looping · 1 comando = resultado</div>
-              <div class="fn-tag" style="border-color:#10b981;color:#34d399">Resultado já estipulado</div>
-            </div>
-          </div>
-
-        </div><!-- /fluxo-diagram -->
-
-        <!-- CAMADA DE SUPERVISÃO -->
-        <div class="supervisao-layer">
-          <div class="sv-header">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-            <span>Supervisão Contínua · Todo o fluxo monitorado via API em tempo real</span>
-          </div>
-          <div class="sv-items">
-            <div class="sv-item">
-              <div class="sv-dot" style="background:#3b82f6"></div>
-              <div>
-                <div class="sv-name">APIs Documentadas</div>
-                <div class="sv-desc">Cada chamada registrada com payload, resposta e latência</div>
-              </div>
-            </div>
-            <div class="sv-item">
-              <div class="sv-dot" style="background:#f59e0b"></div>
-              <div>
-                <div class="sv-name">Dashboards de Gatilhos Operacionais</div>
-                <div class="sv-desc">Alertas automáticos por threshold · visão em tempo real do pipeline</div>
-              </div>
-            </div>
-            <div class="sv-item">
-              <div class="sv-dot" style="background:#ef4444"></div>
-              <div>
-                <div class="sv-name">Log de Erros em Tempo Real</div>
-                <div class="sv-desc">Plataformas de observabilidade · cada falha documentada e rastreada</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <!-- BOTÃO MÉTODO COMPLETO -->
-      <div style="text-align:center;margin-top:32px;">
-        <a href="metodo.html" style="display:inline-flex;align-items:center;gap:10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);color:#22d3ee;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:600;text-decoration:none;transition:background .2s,transform .2s;" onmouseover="this.style.background='rgba(34,211,238,.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(34,211,238,.08)';this.style.transform='translateY(0)'">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Ver o método operacional completo — 6 etapas detalhadas
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-    </div><!-- /squad-wrap -->
-  </div>
-</section>
-
-<!-- TRAJETÓRIA -->
-<section id="trajetoria" class="trajetoria-sec reveal">
-  <div class="container">
-    <div class="sec-label">Trajetória</div>
-    <h2 class="sec-title">Uma década construindo<br><span class="hl">infraestrutura de decisão.</span></h2>
-
-    <div class="timeline">
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap">
-          <div class="tl-dot">🚀</div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-period">Fev 2025 — Presente</div>
-          <div class="tl-company">DataMind AI-First Consulting</div>
-          <div class="tl-role">Fundador · Head of Data</div>
-          <div class="tl-desc">
-            Consultoria de dados e IA aplicada. Projetos ativos em <strong>iGaming</strong> e <strong>real estate logístico</strong>. Desenvolvimento do método AI-First: orquestração de LLMs via API, pipelines autônomos e entrega de insights com rigor analítico.
-          </div>
-          <div class="tl-tags">
-            <span class="tl-tag">AI-First</span>
-            <span class="tl-tag">iGaming</span>
-            <span class="tl-tag">Real Estate</span>
-            <span class="tl-tag">LLM Orchestration</span>
-            <span class="tl-tag">n8n</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap">
-          <div class="tl-dot">📊</div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-period">2019 — 2025 · 6 anos</div>
-          <div class="tl-company">Too Seguros</div>
-          <div class="tl-role">Especialista de Business Analytics</div>
-          <div class="tl-desc">
-            Construiu o ecossistema de BI do zero. <strong>12+ fontes integradas</strong>, <strong>20+ dashboards executivos</strong>, <strong>50+ profissionais capacitados</strong>. Estrutura sustentada por 6 anos como referência interna de maturidade analítica — sem refatoração.
-          </div>
-          <div class="tl-tags">
-            <span class="tl-tag">Power BI</span>
-            <span class="tl-tag">SQL</span>
-            <span class="tl-tag">Governance</span>
-            <span class="tl-tag">LGPD</span>
-            <span class="tl-tag">Seguros</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap">
-          <div class="tl-dot">🏭</div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-period">2017 — 2018</div>
-          <div class="tl-company">Yamaha Motor do Brasil</div>
-          <div class="tl-role">Analista de BI Sênior</div>
-          <div class="tl-desc">Integração de dados financeiros, operacionais e comerciais para visão estratégica consolidada entre áreas. Automação de relatórios e processos analíticos, liberando capacidade para análises de maior valor agregado.</div>
-          <div class="tl-tags">
-            <span class="tl-tag">BI</span>
-            <span class="tl-tag">Manufatura</span>
-            <span class="tl-tag">Automação</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap">
-          <div class="tl-dot">🏦</div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-period">2012 — 2017 · 5 anos</div>
-          <div class="tl-company">Mapfre Assistência</div>
-          <div class="tl-role">Analista de BI → Analista de Controladoria</div>
-          <div class="tl-desc">Desenvolvimento de relatórios gerenciais, KPIs e visualização de dados para gestão executiva e Controladoria. Acompanhamento de indicadores financeiros e análise de saúde do negócio para tomada de decisão.</div>
-          <div class="tl-tags">
-            <span class="tl-tag">BI</span>
-            <span class="tl-tag">Controladoria</span>
-            <span class="tl-tag">Financeiro</span>
-            <span class="tl-tag">Seguros</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div style="margin-top:48px;display:flex;flex-direction:column;gap:12px;">
-
-      <div class="formacao-card destaque">
-        <div class="formacao-icon">🎓</div>
-        <div class="formacao-info">
-          <div class="formacao-label destaque-label">Formação Principal</div>
-          <div class="formacao-title destaque-title">MBA em Analytics e Inteligência Artificial</div>
-          <div class="formacao-sub">FIA Business School · 2021 – 2023</div>
-          <div class="formacao-badge">Especialização em IA &amp; Dados</div>
-        </div>
-      </div>
-
-      <div class="formacao-card">
-        <div class="formacao-icon">🎓</div>
-        <div class="formacao-info">
-          <div class="formacao-label">MBA Executivo</div>
-          <div class="formacao-title">MBA Executivo · FGV</div>
-          <div class="formacao-sub">Em andamento · Gestão executiva e estratégia de negócios</div>
-        </div>
-      </div>
-
-      <div class="formacao-card" style="background:var(--surface);border-color:var(--border);">
-        <div class="formacao-icon">📚</div>
-        <div class="formacao-info">
-          <div class="formacao-label">Graduação</div>
-          <div class="formacao-title">Bacharelado em Administração · Centro Universitário FIEO</div>
-          <div class="formacao-sub">2009 – 2013</div>
-        </div>
-      </div>
-
-    </div>
+  <div class="hero-right reveal" style="transition-delay:0.2s">
+    <div class="photo-frame">
+      <img src="./assets/diego_photo.jpeg" alt="Marcos Diego Ribeiro">
+      <div class="photo-badge">
+        <div class="badge-label">AI-First</div>
+        <div class="badge-val">DataMind</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ARTIGOS / PENSAMENTO -->
-<section id="artigos" class="artigos-sec reveal">
-  <div class="container">
-    <div class="sec-label">Pensamento</div>
-    <h2 class="sec-title">Onde compartilho<br><span class="hl">o que aprendo operando.</span></h2>
-    <p class="sec-sub">Não são posts de hype. São estudos com dados reais, frameworks testados e leitura estratégica para quem toma decisões.</p>
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="manifesto-inner reveal">
+    <div class="manifesto-label">// manifesto</div>
+    <p class="manifesto-text">
+      A maioria das empresas quer <em>IA</em>.<br>
+      Poucas têm os <strong>dados</strong> para isso.<br><br>
+      Eu construo a fundação que faz a inteligência artificial funcionar —<br>
+      <em>governança, qualidade, estrutura</em>.<br>
+      Depois a inteligência.
+    </p>
+  </div>
+</section>
 
-    <div class="artigos-grid">
-
-      <a href="artigo-custo-ia.html" class="artigo-card">
-        <div class="artigo-cat">Estudo Econômico · IA Aplicada</div>
-        <div class="artigo-title">IA É Barata. Você Que Paga Mal.</div>
-        <div class="artigo-desc">Calculei o custo real de usar IA em 3 cenários: agência tradicional, planos Pro e pipeline com API. O break-even acontece em 3 peças/mês. A maioria paga 5x mais do que deveria.</div>
-        <div class="artigo-tags">
-          <span class="artigo-tag">ROI</span>
-          <span class="artigo-tag">Custo</span>
-          <span class="artigo-tag">Pipeline</span>
-        </div>
-        <div class="artigo-link">Ler artigo →</div>
-      </a>
-
-      <a href="artigo-intelligence-orchestration.html" class="artigo-card">
-        <div class="artigo-cat">Framework Estratégico · 2025–2026</div>
-        <div class="artigo-title">Intelligence Orchestration: O Novo Superpoder</div>
-        <div class="artigo-desc">A diferença entre usar IA e orquestrar IA. Um processo que levava 20 horas e custava R$2.400 passou a levar 2 horas e custar R$250. Redução de 89% no custo e 90% no tempo.</div>
-        <div class="artigo-tags">
-          <span class="artigo-tag">Orquestração</span>
-          <span class="artigo-tag">Agentes</span>
-          <span class="artigo-tag">ROI</span>
-        </div>
-        <div class="artigo-link">Ler artigo →</div>
-      </a>
-
-      <a href="artigo-modern-data-team.html" class="artigo-card">
-        <div class="artigo-cat">Framework de Equipe · Auditoria Técnica</div>
-        <div class="artigo-title">Modern Data Team 2026: A Estrutura que o Mercado Ainda Não Viu</div>
-        <div class="artigo-desc">Os 7 papéis fundamentais de um time de dados AI-native em 2026. Com score de auditoria técnica: 8.2/10. A distinção entre ML Engineer e AI Engineer que o mercado ainda confunde.</div>
-        <div class="artigo-tags">
-          <span class="artigo-tag">Equipe</span>
-          <span class="artigo-tag">Arquitetura</span>
-          <span class="artigo-tag">2026</span>
-        </div>
-        <div class="artigo-link">Ler artigo →</div>
-      </a>
-
+<!-- ─── SOBRE ─── -->
+<section id="sobre" style="padding: 100px 48px; max-width: 1200px; margin: 0 auto;">
+  <div class="reveal">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// sobre</div>
+    <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:48px;letter-spacing:-0.02em;">Head of Data.<br><span style="color:var(--muted);font-weight:400;">Não um consultor de slides.</span></h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;" class="reveal">
+    <div>
+      <p style="font-size:16px;line-height:1.8;color:#b0b5cc;margin-bottom:24px;">
+        Com mais de 10 anos de experiência em BI, Analytics e IA aplicada, atuo no nível estratégico e técnico de dados — tanto como consultor independente quanto como executivo Head of Data em empresas.
+      </p>
+      <p style="font-size:16px;line-height:1.8;color:#b0b5cc;margin-bottom:24px;">
+        Fundei a <strong style="color:var(--white);">DataMind</strong>, consultoria AI-First focada em seguros, saúde e varejo, com a tese de que governança de dados não é opcional — é pré-requisito para qualquer iniciativa de IA que funcione de verdade.
+      </p>
+      <p style="font-size:16px;line-height:1.8;color:#b0b5cc;">
+        Atualmente cursando MBA Executivo na <strong style="color:var(--white);">FGV</strong> (2026–2027), aprofundando visão de negócio e liderança organizacional.
+      </p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--green);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Especialidade</div>
+        <div style="font-size:14px;color:var(--white);">Governança de dados · Arquitetura analítica · IA aplicada em produção</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--blue);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Setores</div>
+        <div style="font-size:14px;color:var(--white);">Seguros · Saúde · Varejo</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--amber);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Formação</div>
+        <div style="font-size:14px;color:var(--white);">FGV Executive MBA · em curso 2026–2027</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px 24px;border-left:2px solid var(--red);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Disponível para</div>
+        <div style="font-size:14px;color:var(--white);">Consultoria · Posições CLT Head of Data</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- CASES -->
-<section id="cases" class="cases-sec reveal">
-  <div class="container">
-    <div class="sec-label">Cases</div>
-    <h2 class="sec-title">Responsabilidade sistêmica<br><span class="hl">com resultados mensuráveis.</span></h2>
+<!-- ─── STACK TÉCNICO ─── -->
+<section id="stack" style="padding:80px 48px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// stack técnico</div>
+      <h2 style="font-size:clamp(24px,2.5vw,36px);font-weight:800;margin-bottom:48px;">Ferramentas que uso.<br><span style="color:var(--muted);font-weight:400;">Na prática, não no slide.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;" class="reveal">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">Dados &amp; Modelagem</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Power BI</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">BigQuery</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">dbt Core</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">SQL · Python</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Dimensional Modeling</span>
+        </div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">Cloud &amp; Infra</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Microsoft Fabric</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Azure Data Factory</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Azure Synapse</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Google Cloud</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Docker</span>
+        </div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">IA &amp; Automação</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Claude Code</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">n8n self-hosted</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">MCP Plugins</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">OpenRouter</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Make · Zapier</span>
+        </div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">Governança</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">LGPD</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">RBAC · DLP</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">NIST AI Framework</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Data Mesh</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);">Data Quality</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <div class="cases-list">
+<!-- ─── METODOLOGIA / RADAR IA ─── -->
+<section id="metodologia" style="padding:100px 48px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// metodologia</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:16px;">Radar IA.<br><span style="color:var(--muted);font-weight:400;">AI-First como filosofia operacional.</span></h2>
+      <p style="font-size:15px;color:var(--muted);max-width:600px;line-height:1.7;margin-bottom:60px;">Não uso IA como ferramenta pontual. Opero com um squad estruturado onde cada modelo tem função definida — e eu sou o orquestrador que valida, decide e entrega.</p>
+    </div>
+    <!-- SQUAD GRID -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:48px;" class="reveal">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;position:relative;">
+        <div style="width:40px;height:40px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">🔍</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px;">Perplexity</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Pesquisa</div>
+        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Inteligência de mercado e dados em tempo real</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;">
+        <div style="width:40px;height:40px;background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">📡</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);font-weight:700;margin-bottom:6px;">Grok</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Social Intel</div>
+        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Leitura de tendências e narrativas de mercado</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;">
+        <div style="width:40px;height:40px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">⚡</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);font-weight:700;margin-bottom:6px;">GPT-4o</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Síntese</div>
+        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Consolidação e estruturação de conteúdo</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;text-align:center;">
+        <div style="width:40px;height:40px;background:rgba(255,61,90,0.1);border:1px solid rgba(255,61,90,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">🎨</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);font-weight:700;margin-bottom:6px;">Gemini</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Visual</div>
+        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Execução visual e geração de imagens</div>
+      </div>
+      <div style="background:var(--bg3);border:2px solid rgba(0,229,160,0.3);padding:24px;text-align:center;position:relative;">
+        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--green);color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;">Orquestrador</div>
+        <div style="width:40px;height:40px;background:rgba(0,229,160,0.15);border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;">🧠</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px;">Claude</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Validador</div>
+        <div style="font-size:11px;color:#7a7f9a;margin-top:10px;line-height:1.5;">Orquestração, validação e entrega final</div>
+      </div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);padding:24px;border-left:2px solid var(--green);" class="reveal">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);">// nota operacional</p>
+      <p style="font-size:14px;color:var(--muted);margin-top:8px;line-height:1.7;">Squad ativo. Cada ferramenta tem uma função. Nenhuma substitui o raciocínio do operador. O resultado final passa sempre pelo julgamento humano — eu sou o ponto de convergência de tudo.</p>
+    </div>
+    <div style="margin-top:32px;text-align:center;" class="reveal">
+      <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" class="btn-primary" style="display:inline-block;padding:14px 32px;font-size:12px;">Ver Radar IA completo ↗</a>
+    </div>
+  </div>
+</section>
 
-      <!-- Case 01 -->
-      <div class="case-card" onclick="toggleCase(this)">
-        <div class="case-header">
+<!-- ─── SETORES ─── -->
+<section id="setores" style="padding:80px 48px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// setores-alvo</div>
+      <h2 style="font-size:clamp(24px,2.5vw,36px);font-weight:800;margin-bottom:48px;">Onde atuo.<br><span style="color:var(--muted);font-weight:400;">E qual problema resolvo em cada um.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="reveal">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);"></div>
+        <div style="font-size:32px;margin-bottom:20px;">🏥</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--green);">Seguros</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Dados fragmentados entre sistemas legados impedem análise de risco, compliance e automação de sinistros em tempo real.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.1);padding:10px 14px;">Entrega: plataforma analítica unificada com governança LGPD e RLS por perfil</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);"></div>
+        <div style="font-size:32px;margin-bottom:20px;">💊</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--blue);">Saúde</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Alta regulação e dados sensíveis exigem governança robusta antes de qualquer uso de IA — especialmente com LGP e dados de pacientes.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.1);padding:10px 14px;">Entrega: data foundation com RBAC, DLP e trilha auditável por regulação</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);"></div>
+        <div style="font-size:32px;margin-bottom:20px;">🛒</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--amber);">Varejo</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Volume alto de dados transacionais sem modelagem adequada gera análises lentas, dashboards inconsistentes e decisões por intuição.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);background:rgba(255,184,48,0.05);border:1px solid rgba(255,184,48,0.1);padding:10px 14px;">Entrega: dimensional model + Power BI com camada semântica e KPIs confiáveis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROJETOS ─── -->
+<section id="projetos" style="padding:100px 48px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// portfólio</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:48px;">Entregas reais.<br><span style="color:var(--muted);font-weight:400;">Não conceitos em slide.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;" class="reveal">
+      <!-- Projeto 1 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(0,229,160,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
           <div>
-            <div class="case-tag">iGaming · Lakehouse · Self-BI</div>
-            <div class="case-name">Operadora de Entretenimento Digital — Lakehouse do Zero</div>
-            <div class="case-desc">15+ fontes desconexas, zero camada analítica confiável, decisões sem dados. Reconstrução completa da infraestrutura analítica em 12 meses.</div>
-            <div class="case-chips">
-              <span class="chip">BigQuery</span>
-              <span class="chip">dbt</span>
-              <span class="chip">Python</span>
-              <span class="chip">Airflow</span>
-              <span class="chip">Power BI</span>
-            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">01 · Produto</div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--white);">DataMind AI Radar</h3>
           </div>
-          <div class="case-right">
-            <div class="case-kpis">
-              <div class="kpi-box">
-                <div class="kpi-box-val">R$1,5M</div>
-                <div class="kpi-box-label">Economia/mês</div>
-              </div>
-              <div class="kpi-box">
-                <div class="kpi-box-val">12m</div>
-                <div class="kpi-box-label">Da fragmentação ao BI</div>
-              </div>
-            </div>
-            <div class="case-toggle">+</div>
-          </div>
+          <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;font-size:20px;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">↗</a>
         </div>
-        <div class="case-body">
-          <div class="case-cols">
-            <div class="case-col">
-              <h5>Problema</h5>
-              <p>15+ fontes de dados desconexas sem integração. Zero camada analítica confiável. Decisões executivas tomadas sem dados ou com dados conflitantes entre áreas. Alta pressão operacional do setor de iGaming.</p>
-            </div>
-            <div class="case-col">
-              <h5>Solução</h5>
-              <ul>
-                <li>Lakehouse do zero: BigQuery + dbt + Airflow</li>
-                <li>Camadas Bronze, Silver e Gold</li>
-                <li>Governança e catálogo de dados</li>
-                <li>20+ dashboards executivos por perfil</li>
-                <li>Self-BI implementado para times operacionais</li>
-              </ul>
-            </div>
-            <div class="case-col">
-              <h5>Resultado</h5>
-              <ul>
-                <li>R$1,5M de economia operacional por mês</li>
-                <li>Produção completa em 12 meses</li>
-                <li>Single source of truth estabelecido</li>
-                <li>Decisões executivas baseadas em dados confiáveis</li>
-              </ul>
-              <a href="case-01-datamind.html" class="case-link">Ver case completo →</a>
-            </div>
-          </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Dashboard de inteligência sobre ferramentas de IA — 6 abas cobrindo Feed, Market, Squad, Emergentes, Timeline e Governança. Atualizado manualmente via GitHub API com squad de IA ativo.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">HTML/JS</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,0.2);padding:4px 10px;">GitHub API</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">AI Squad</span>
         </div>
       </div>
-
-      <!-- Case 02 -->
-      <div class="case-card" onclick="toggleCase(this)">
-        <div class="case-header">
+      <!-- Projeto 2 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(79,142,247,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
           <div>
-            <div class="case-tag ongoing">Em andamento · Real Estate · IoT</div>
-            <div class="case-name">Hines Brasil — Hub Logístico Cajamar</div>
-            <div class="case-desc">Um dos maiores gestores de ativos imobiliários do mundo. Hub logístico de alto valor em Cajamar. Proposta de IoT em real time, modelos preditivos de manutenção e ocupação.</div>
-            <div class="case-chips">
-              <span class="chip">AI-First</span>
-              <span class="chip">IoT</span>
-              <span class="chip">Predictive</span>
-              <span class="chip">Real Estate Tech</span>
-            </div>
-          </div>
-          <div class="case-right">
-            <div class="case-kpis">
-              <div class="kpi-box">
-                <div class="kpi-box-val">R$45k</div>
-                <div class="kpi-box-label">Piloto estruturado</div>
-              </div>
-            </div>
-            <div class="case-toggle">+</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">02 · Seguros</div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--white);">Unioncorp — Plataforma de Dados</h3>
           </div>
         </div>
-        <div class="case-body">
-          <div class="case-cols">
-            <div class="case-col">
-              <h5>Contexto</h5>
-              <p>Hines Brasil — um dos maiores gestores de ativos imobiliários do mundo. Hub logístico de alto valor em Cajamar, SP. Necessidade de inteligência operacional em tempo real para tomada de decisão VP-level.</p>
-            </div>
-            <div class="case-col">
-              <h5>Proposta</h5>
-              <ul>
-                <li>IoT em real time para monitoramento do hub</li>
-                <li>Modelos preditivos de manutenção</li>
-                <li>Previsão de ocupação e demanda</li>
-                <li>Dashboard executivo VP-level</li>
-                <li>Pitch de 13 slides padrão McKinsey/BCG</li>
-              </ul>
-            </div>
-            <div class="case-col">
-              <h5>Método</h5>
-              <ul>
-                <li>Pitch desenvolvido com squad AI-First</li>
-                <li>Padrão McKinsey/BCG de apresentação</li>
-                <li>Piloto estruturado de R$45k</li>
-                <li>Documentação em elaboração</li>
-              </ul>
-            </div>
-          </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Proposta e arquitetura completa para seguradora de fiança locatícia. Stack Microsoft Fabric F2 + Azure Data Factory + dbt Core + Power BI com RLS. 5 fases, 16 semanas.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,0.2);padding:4px 10px;">Microsoft Fabric</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">dbt Core</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">Power BI</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);border:1px solid rgba(255,61,90,0.2);padding:4px 10px;">Seguros</span>
         </div>
       </div>
-
-      <!-- Case 03 -->
-      <div class="case-card" onclick="toggleCase(this)">
-        <div class="case-header">
+      <!-- Projeto 3 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,184,48,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
           <div>
-            <div class="case-tag">Seguros · BI · Governança · 6 anos</div>
-            <div class="case-name">Too Seguros — Ecossistema de BI do Zero</div>
-            <div class="case-desc">Empresa sem cultura analítica, dados em silos. Construção do hub analítico completo que se tornou referência interna por 6 anos sem refatoração.</div>
-            <div class="case-chips">
-              <span class="chip">Power BI</span>
-              <span class="chip">SQL</span>
-              <span class="chip">Governance</span>
-              <span class="chip">LGPD</span>
-            </div>
-          </div>
-          <div class="case-right">
-            <div class="case-kpis">
-              <div class="kpi-box">
-                <div class="kpi-box-val">50+</div>
-                <div class="kpi-box-label">Profissionais capacitados</div>
-              </div>
-              <div class="kpi-box">
-                <div class="kpi-box-val">20+</div>
-                <div class="kpi-box-label">Dashboards executivos</div>
-              </div>
-            </div>
-            <div class="case-toggle">+</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">03 · Indústria</div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--white);">Hines Brasil — AI-First Operacional</h3>
           </div>
         </div>
-        <div class="case-body">
-          <div class="case-cols">
-            <div class="case-col">
-              <h5>Problema</h5>
-              <p>Empresa sem cultura analítica estabelecida. Dados fragmentados em silos departamentais. Ausência de métricas confiáveis para decisão executiva. Setor de seguros com alta regulação e necessidade de compliance.</p>
-            </div>
-            <div class="case-col">
-              <h5>Solução</h5>
-              <ul>
-                <li>Hub analítico com 12+ fontes integradas</li>
-                <li>20+ dashboards executivos por área</li>
-                <li>Capacitação de 50+ profissionais</li>
-                <li>Governança de dados e LGPD</li>
-                <li>Cultura analítica estabelecida</li>
-              </ul>
-            </div>
-            <div class="case-col">
-              <h5>Resultado</h5>
-              <ul>
-                <li>Referência interna de maturidade analítica</li>
-                <li>6 anos sem necessidade de refatoração</li>
-                <li>Estrutura sustentável e escalável</li>
-                <li>Decisões executivas baseadas em dados</li>
-              </ul>
-            </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Deck executivo de transformação operacional AI-First para hub logístico em Cajamar. Estrutura de investimento em 3 fases com ROI mapeado por iniciativa.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">Estratégia</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);border:1px solid rgba(79,142,247,0.2);padding:4px 10px;">AI-First</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">Logística</span>
+        </div>
+      </div>
+      <!-- Projeto 4 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:36px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,61,90,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">04 · Framework</div>
+            <h3 style="font-size:20px;font-weight:700;color:var(--white);">IDP-26 — Modern Data Team</h3>
           </div>
         </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- SERVIÇOS -->
-<section id="servicos" class="servicos-sec reveal">
-  <div class="container">
-    <div class="sec-label">Serviços DataMind</div>
-    <h2 class="sec-title">O que entrego<br><span class="hl">para sua operação.</span></h2>
-
-    <div class="servicos-grid">
-
-      <div class="servico-card">
-        <div class="servico-num">01</div>
-        <div class="servico-title">Arquitetura de Dados & Lakehouse</div>
-        <div class="servico-desc">Design e implementação de arquitetura de dados moderna. Data lake em camadas (Bronze, Silver, Gold), integração de fontes heterogêneas e fundação para analytics escalável.</div>
-      </div>
-
-      <div class="servico-card">
-        <div class="servico-num">02</div>
-        <div class="servico-title">Analytics Engineering & BI Executivo</div>
-        <div class="servico-desc">Modelagem analítica com dbt, camada semântica e dashboards executivos por perfil. Do CEO à operação — cada stakeholder vê o que precisa para decidir.</div>
-      </div>
-
-      <div class="servico-card">
-        <div class="servico-num">03</div>
-        <div class="servico-title">IA Aplicada a Operações</div>
-        <div class="servico-desc">Implementação de agentes de IA em workflows críticos. Orquestração de LLMs via API, pipelines automatizados com n8n e eliminação de processos manuais recorrentes.</div>
-      </div>
-
-      <div class="servico-card">
-        <div class="servico-num">04</div>
-        <div class="servico-title">Diagnóstico de Maturidade de Dados</div>
-        <div class="servico-desc">Auditoria técnica completa do ambiente analítico. Score por dimensão, roadmap de evolução e priorização de investimentos com base em impacto real no negócio.</div>
-      </div>
-
-      <div class="servico-card">
-        <div class="servico-num">05</div>
-        <div class="servico-title">Data Governance & LGPD</div>
-        <div class="servico-desc">Catálogo de dados, políticas de qualidade, documentação para agentes de IA e conformidade com LGPD. Governança que habilita autonomia analítica com segurança.</div>
-      </div>
-
-      <div class="servico-card">
-        <div class="servico-num">06</div>
-        <div class="servico-title">Fractional Head of Data</div>
-        <div class="servico-desc">Liderança estratégica de dados em modelo PJ. Assumo a responsabilidade sistêmica — da arquitetura à decisão executiva — sem o custo de uma contratação CLT sênior.</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- STACK -->
-<section id="stack" class="stack-sec reveal">
-  <div class="container">
-    <div class="sec-label">Stack Tecnológica</div>
-    <h2 class="sec-title">Ferramentas que<br><span class="hl">opero com profundidade.</span></h2>
-
-    <div class="stack-grid">
-      <div class="stack-group">
-        <div class="sg-title">Dados & Cloud</div>
-        <div class="sg-items">
-          <span class="sg-item">Google BigQuery</span>
-          <span class="sg-item">Databricks</span>
-          <span class="sg-item">Snowflake</span>
-          <span class="sg-item">Apache Spark</span>
-          <span class="sg-item">dbt Core / Cloud</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="sg-title">Analytics & BI</div>
-        <div class="sg-items">
-          <span class="sg-item">Power BI</span>
-          <span class="sg-item">Looker Studio</span>
-          <span class="sg-item">Metabase</span>
-          <span class="sg-item">Hex Notebooks</span>
-          <span class="sg-item">Python · Pandas · Plotly</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="sg-title">IA & Automação</div>
-        <div class="sg-items">
-          <span class="sg-item">Claude · GPT-4o · Gemini</span>
-          <span class="sg-item">LangChain · RAG</span>
-          <span class="sg-item">n8n · Orquestração API</span>
-          <span class="sg-item">Scikit-learn · XGBoost</span>
-          <span class="sg-item">Vertex AI</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="sg-title">Orquestração & Infra</div>
-        <div class="sg-items">
-          <span class="sg-item">Airflow · Cloud Composer</span>
-          <span class="sg-item">GitHub Actions · CI/CD</span>
-          <span class="sg-item">Docker</span>
-          <span class="sg-item">GCP · AWS</span>
-          <span class="sg-item">Terraform</span>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Framework proprietário com Radar Universal de 10 eixos, 8 perfis estruturais e sistema de scoring ponderado para diagnóstico e estruturação de times de dados.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);border:1px solid rgba(255,61,90,0.2);padding:4px 10px;">Framework</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;">Diagnóstico</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,184,48,0.2);padding:4px 10px;">Metodologia</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTATO -->
-<section id="contato" class="contato-sec reveal">
-  <div class="container">
-    <div class="sec-label">Contato</div>
-    <h2 class="sec-title">A conversa<br><span class="hl">começa aqui.</span></h2>
-    <p class="sec-sub">Seja para um projeto pontual, uma parceria estratégica ou uma posição de liderança — estou disponível para a conversa certa.</p>
-
-    <div class="contato-grid">
-
-      <div class="contato-card primary">
-        <div class="contato-card-label">Para empresas</div>
-        <div class="contato-card-title">Precisa de um Head of Data?</div>
-        <div class="contato-card-desc">
-          Se você precisa de alguém que assume a responsabilidade sistêmica dos dados — da arquitetura à decisão executiva — sem o custo e a burocracia de uma contratação CLT sênior, o modelo Fractional Head of Data é para você.
+<!-- ─── EXPERIÊNCIA ─── -->
+<section id="experiencia" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// experiência</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:60px;">Trajetória.<br><span style="color:var(--muted);font-weight:400;">10 anos de dados na prática.</span></h2>
+    </div>
+    <div style="position:relative;" class="reveal">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--border);"></div>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <!-- Item 1 -->
+        <div style="padding-left:40px;padding-bottom:48px;position:relative;">
+          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--green);border-radius:50%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">2023 — atual</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Founder &amp; Head of Data</h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">DataMind · Osasco, SP</div>
+          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Consultoria AI-First especializada em seguros, saúde e varejo. Metodologia própria de governança-primeiro, operação com squad de IA, entrega de projetos de dados com stack Microsoft Fabric, dbt e Power BI.</p>
         </div>
-        <a href="https://wa.me/5511995772800" target="_blank" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Falar no WhatsApp
-        </a>
-        <div class="contato-channels">
-          <div class="contato-channel">
-            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-            <a href="mailto:marcosdiegot@gmail.com">marcosdiegot@gmail.com</a>
-          </div>
+        <!-- Item 2 -->
+        <div style="padding-left:40px;padding-bottom:48px;position:relative;">
+          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--blue);border-radius:50%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Anterior</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Analytics &amp; BI Lead</h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">MAPFRE · Seguros</div>
+          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Liderança de times de análise e business intelligence no setor de seguros. Modelagem dimensional, Power BI, governança de dados em ambiente regulado.</p>
         </div>
-      </div>
-
-      <div class="contato-card">
-        <div class="contato-card-label">Para recrutadores</div>
-        <div class="contato-card-title">Oportunidades de liderança</div>
-        <div class="contato-card-desc">
-          Aberto a conversas sobre posições de Head of Data, Director of Analytics ou liderança estratégica em dados e IA. Setores de interesse: tecnologia, iGaming, financeiro e operações de alto volume.
+        <!-- Item 3 -->
+        <div style="padding-left:40px;padding-bottom:48px;position:relative;">
+          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--amber);border-radius:50%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Anterior</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Head of BI</h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">Too Seguros · Seguros</div>
+          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Estruturação da área de Business Intelligence. Implementação de stack analítica, treinamento de equipes e cultura de decisão baseada em dados.</p>
         </div>
-        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-secondary">Ver perfil no LinkedIn ↗</a>
-        <div class="contato-channels" style="margin-top: 20px;">
-          <div class="contato-channel">
-            <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-            <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank">linkedin.com/in/marcos-diego-ribeiro-b89a8352</a>
-          </div>
-          <div class="contato-channel">
-            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            <a href="https://wa.me/5511995772800" target="_blank">+55 11 99577-2800</a>
-          </div>
+        <!-- Item 4 -->
+        <div style="padding-left:40px;position:relative;">
+          <div style="position:absolute;left:-5px;top:4px;width:10px;height:10px;background:var(--muted);border-radius:50%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Anterior</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;">Analista de BI</h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;">Yamaha Motor · Automotivo</div>
+          <p style="font-size:13px;color:#7a7f9a;line-height:1.7;max-width:600px;">Análise de performance comercial, dashboards de vendas e distribuição. Início da especialização em modelagem dimensional e SQL avançado.</p>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">
-    <img src="logo-dark.png" alt="DataMind AI-First">
+<!-- ─── CONTEÚDO LINKEDIN ─── -->
+<section id="conteudo" style="padding:100px 48px;border-top:1px solid var(--border);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// conteúdo</div>
+      <h2 style="font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:16px;">Perspectiva &amp; Publicações.</h2>
+      <p style="font-size:15px;color:var(--muted);margin-bottom:48px;">O que publico no LinkedIn sobre dados, IA e governança.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="reveal">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:28px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(0,229,160,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:16px;">Abr 2026</div>
+        <p style="font-size:14px;color:var(--white);line-height:1.7;margin-bottom:20px;">"Governança de dados não é burocracia. É o que separa a IA que funciona da IA de vitrine. Antes de qualquer modelo, os dados precisam estar corretos."</p>
+        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.1em;">LinkedIn ↗</a>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:28px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(79,142,247,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:16px;">Mar 2026</div>
+        <p style="font-size:14px;color:var(--white);line-height:1.7;margin-bottom:20px;">"AI-First não é sobre usar mais ferramentas de IA. É sobre redesenhar como você trabalha — com cada modelo em seu papel certo, e o humano como orquestrador de tudo."</p>
+        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.1em;">LinkedIn ↗</a>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:28px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,184,48,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:16px;">Fev 2026</div>
+        <p style="font-size:14px;color:var(--white);line-height:1.7;margin-bottom:20px;">"Meu squad de IA: Perplexity pesquisa, Grok lê o mercado, GPT sintetiza, Gemini executa visual, Claude orquestra e valida. Isso não é stack — é método de trabalho."</p>
+        <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.1em;">LinkedIn ↗</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px;" class="reveal">
+      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-ghost" style="display:inline-block;padding:14px 32px;font-size:12px;">Ver todos os posts ↗</a>
+    </div>
   </div>
-  <div class="footer-info">© 2025 Marcos Diego Ribeiro · DataMind AI-First Consulting · Osasco, SP</div>
+</section>
+
+<!-- ─── CONTATO ─── -->
+<section id="contato" style="padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);">
+  <div style="max-width:800px;margin:0 auto;text-align:center;" class="reveal">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:16px;">// contato</div>
+    <h2 style="font-size:clamp(28px,3vw,48px);font-weight:800;margin-bottom:24px;line-height:1.1;">Tem um projeto<br>que precisa de <span style="color:var(--green);">dados de verdade</span>?</h2>
+    <p style="font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:48px;max-width:520px;margin-left:auto;margin-right:auto;">Aberto para projetos de consultoria em seguros, saúde e varejo — e para posições CLT Head of Data em empresas que querem fazer IA funcionar.</p>
+    <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <a href="https://www.linkedin.com/in/marcos-diego-ribeiro-b89a8352" target="_blank" class="btn-primary" style="padding:16px 36px;font-size:13px;">LinkedIn ↗</a>
+      <a href="https://github.com/marcosdiegot" target="_blank" class="btn-ghost" style="padding:16px 36px;font-size:13px;">GitHub ↗</a>
+    </div>
+    <div style="margin-top:48px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">
+      Osasco, SP · Disponível para projetos remotos e presenciais em SP
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer style="padding:32px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <img src="./assets/datamind_logo.png" alt="DataMind" style="height:24px;width:auto;filter:brightness(0.7);">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">AI-First Data Consultancy</span>
+  </div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">
+    Governança primeiro, inteligência depois.
+  </div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">
+    © 2026 Marcos Diego Ribeiro
+  </div>
 </footer>
 
+<!-- ─── JS: SCROLL REVEAL ─── -->
 <script>
-const nav = document.getElementById('mainNav');
-window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-function openMobileNav() { document.getElementById('mobileNav').classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); document.body.style.overflow = ''; }
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-function toggleCase(card) {
-  const body = card.querySelector('.case-body');
-  const isActive = card.classList.contains('active');
-  document.querySelectorAll('.case-card').forEach(c => { c.classList.remove('active'); c.querySelector('.case-body').classList.remove('open'); });
-  if (!isActive) { card.classList.add('active'); body.classList.add('open'); }
-}
+// Nav active state
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  if (window.scrollY > 60) {
+    nav.style.borderBottomColor = 'rgba(0,229,160,0.1)';
+  } else {
+    nav.style.borderBottomColor = 'rgba(255,255,255,0.06)';
+  }
+});
 
-const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+// Mobile nav toggle
+const navLinks = document.querySelector('.nav-links');
 </script>
+
+<!-- MOBILE STYLES -->
+<style>
+@media (max-width: 900px) {
+  #stack > div > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
+  #metodologia > div > div[style*="repeat(5"] { grid-template-columns: repeat(2,1fr) !important; }
+  #setores > div > div { grid-template-columns: 1fr !important; }
+  #projetos > div > div { grid-template-columns: 1fr !important; }
+  #conteudo > div > div[style*="repeat(3"] { grid-template-columns: 1fr !important; }
+  footer { flex-direction: column; align-items: flex-start; padding: 24px 20px; }
+  #sobre > div:last-child, #sobre > div { padding: 0 20px !important; }
+}
+@media (max-width: 768px) {
+  #sobre, #stack, #metodologia, #setores, #projetos, #experiencia, #conteudo, #contato {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  #sobre > div:nth-child(2) { grid-template-columns: 1fr !important; gap: 24px !important; }
+  #stack > div > div:last-child { grid-template-columns: 1fr 1fr !important; }
+}
+</style>
 </body>
 </html>
