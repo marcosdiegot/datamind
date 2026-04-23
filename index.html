@@ -259,7 +259,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
       
 <script>
 (function loadStackIA() {
-  fetch('https://marcosdiegot.github.io/datamind/radar.html')
+  fetch('https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html')
     .then(function(r){ return r.text(); })
     .then(function(radarHtml) {
       var idx = radarHtml.indexOf('const SQUAD = [');
@@ -292,7 +292,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
 
 <script>
 (function loadStackGov() {
-  fetch('https://marcosdiegot.github.io/datamind/radar.html')
+  fetch('https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html')
     .then(function(r){ return r.text(); })
     .then(function(radarHtml) {
       var idx = radarHtml.indexOf('const GOV = [');
@@ -315,7 +315,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
 </script>
     </div>
     <div style="margin-top:20px;padding:16px 20px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);" class="reveal">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">// Para o inventário completo e atualizado de ferramentas de IA monitoradas &rarr; <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;">Radar IA DataMind ↗</a></p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">// Para o inventário completo e atualizado de ferramentas de IA monitoradas &rarr; <a href="https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html" target="_blank" style="color:var(--green);text-decoration:none;">Radar IA DataMind ↗</a></p>
     </div>
   </div>
 </section>
@@ -331,20 +331,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
     <!-- Squad dinâmico: lido do radar.html em tempo real -->
     <div id="squad-loading" style="text-align:center;padding:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">Carregando squad do Radar IA...</div>
     <div id="squad-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:40px;"></div>
-    <div id="squad-error" style="display:none;background:var(--bg3);border:1px solid rgba(255,61,90,.2);padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);">Não foi possível carregar o squad. <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);">Ver Radar diretamente ↗</a></div>
+    <div id="squad-error" style="display:none;background:var(--bg3);border:1px solid rgba(255,61,90,.2);padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);">Não foi possível carregar o squad. <a href="https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html" target="_blank" style="color:var(--green);">Ver Radar diretamente ↗</a></div>
     <div id="squad-meta" style="display:none;background:var(--bg2);border:1px solid var(--border);padding:16px 20px;border-left:2px solid var(--green);margin-bottom:28px;" class="reveal">
       <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);margin-bottom:6px;">// nota operacional</p>
       <p style="font-size:14px;color:var(--muted);line-height:1.7;">Squad ativo. Cada ferramenta tem uma função. Nenhuma substitui o raciocínio do operador. O resultado precisa ir para produção — não para um deck de apresentação.</p>
     </div>
     <div style="text-align:center;" class="reveal">
-      <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" class="btn-primary" style="padding:14px 32px;font-size:12px;">Ver Radar IA completo — todas as ferramentas ↗</a>
+      <a href="https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html" target="_blank" class="btn-primary" style="padding:14px 32px;font-size:12px;">Ver Radar IA completo — todas as ferramentas ↗</a>
     </div>
   </div>
 </section>
 
 <script>
 (function loadSquad() {
-  fetch('https://marcosdiegot.github.io/datamind/radar.html')
+  fetch('https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html')
     .then(function(r){ return r.text(); })
     .then(function(html) {
       // Extrair array SQUAD do radar
@@ -413,7 +413,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
         <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">01 · Produto Público</div>
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
           <h3 style="font-size:19px;font-weight:700;">DataMind AI Radar</h3>
-          <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;font-size:18px;opacity:.7;transition:opacity .2s;flex-shrink:0;margin-left:12px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">↗</a>
+          <a href="https://raw.githubusercontent.com/marcosdiegot/datamind/main/radar.html" target="_blank" style="color:var(--green);text-decoration:none;font-size:18px;opacity:.7;transition:opacity .2s;flex-shrink:0;margin-left:12px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">↗</a>
         </div>
         <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;">Dashboard de inteligência sobre o ecossistema de IA — 6 abas cobrindo Feed, Market, Squad, Emergentes, Timeline e Governança. Atualizado via GitHub API com squad multi-LLM. Inventário vivo de ferramentas categorizadas por função, maturidade e relevância para dados.</p>
         <div style="display:flex;flex-wrap:wrap;gap:7px;">
