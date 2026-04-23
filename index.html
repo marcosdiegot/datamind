@@ -285,16 +285,34 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:f
 
 <div style="background:var(--bg3);border:1px solid var(--border);padding:24px;">
         <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">Governança &amp; Compliance</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">LGPD</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">RBAC · DLP</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">DAMA-DMBOK v2</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">TOGAF ADM</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">NIST AI Framework</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Data Quality</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Data Mesh</span>
+        <div id="stack-gov-badges" style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">Carregando...</span>
         </div>
       </div>
+
+<script>
+(function loadStackGov() {
+  fetch('https://marcosdiegot.github.io/datamind/radar.html')
+    .then(function(r){ return r.text(); })
+    .then(function(radarHtml) {
+      var idx = radarHtml.indexOf('const GOV = [');
+      if (idx === -1) return;
+      var block = radarHtml.slice(idx, idx + 15000);
+      var re = /,nome:'([^']+)',badge:'[^']+',badgeLabel:'([^']+)'/g;
+      var items = [];
+      var m;
+      while ((m = re.exec(block)) !== null) {
+        items.push(m[1]);
+      }
+      if (!items.length) return;
+      var el = document.getElementById('stack-gov-badges');
+      el.innerHTML = items.map(function(n) {
+        return '<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#b0b5cc;background:rgba(255,255,255,.04);padding:4px 10px;">' + n + '</span>';
+      }).join('');
+    })
+    .catch(function(){ });
+})();
+</script>
     </div>
     <div style="margin-top:20px;padding:16px 20px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);" class="reveal">
       <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">// Para o inventário completo e atualizado de ferramentas de IA monitoradas &rarr; <a href="https://marcosdiegot.github.io/datamind/radar.html" target="_blank" style="color:var(--green);text-decoration:none;">Radar IA DataMind ↗</a></p>
