@@ -165,7 +165,8 @@ let DIM,DRE;
 let E_mes,E_emp,E_ramo,E_pdir,E_dcom;
 let G_mes,G_uf,G_gra,G_emp,G_pdir,G_sdir;
 let empGru,ramoGru,ufRev;
-const S={period:'last12',emps:new Set(),ufs:new Set(),gras:new Set(),meses:new Set(),graView:'grupamento',dreEmps:[]};
+const S={period:'last12',emps:new Set(),ufs:new Set(),gras:new Set(),ramos:new Set(),meses:new Set(),graView:'grupamento',dreEmps:[]};
+const ramoOn=()=>S.ramos.size>0;
 
 const miV=v=>Math.round(v/1e3).toLocaleString('pt-BR');
 const short=(s,n)=>s&&s.length>n?s.slice(0,n-1)+'…':s;
@@ -215,7 +216,8 @@ function aggCom(groupDim){ // 'emp'|'grupamento'|'mes'|'ramo'
     if(!mesBase.has(E_mes[i]))continue;
     const ei=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
     if(groupDim!=='emp'&&S.emps.size&&!S.emps.has(ei))continue;
-    if(groupDim!=='gra'&&groupDim!=='ramo'&&S.gras.size&&!S.gras.has(gi))continue;
+    if(groupDim!=='grupamento'&&groupDim!=='ramo'&&S.gras.size&&!S.gras.has(gi))continue;
+    if(groupDim!=='ramo'&&S.ramos.size&&!S.ramos.has(ri))continue;
     const key=groupDim==='emp'?ei:groupDim==='grupamento'?gi:groupDim==='ramo'?ri:E_mes[i];
     let e=map.get(key);if(!e){e={pdir:0,dcom:0};map.set(key,e);}
     e.pdir+=E_pdir[i];e.dcom+=E_dcom[i];
@@ -245,72 +247,101 @@ function buildTable(card,{title,toggle,dimLabel,rows,maxP,showShare,showSin,show
 }
 
 function renderEmp(){
-  const geo=aggGeo('emp'),com=aggCom('emp');
-  const tot=[...geo.values()].reduce((s,v)=>s+v.pdir,0)||1;
-  let rows=[...geo.entries()].map(([k,v])=>({key:k,label:DIM.empresa.nome[k],pdir:v.pdir,
-    share:v.pdir/tot*100,sin:v.pdir>0?v.sdir/v.pdir*100:0,com:(com.get(k)&&com.get(k).pdir>0)?com.get(k).dcom/com.get(k).pdir*100:0}));
+  const com=aggCom('emp');let rows,note='';
+  if(ramoOn()){
+    const tot=[...com.values()].reduce((s,v)=>s+v.pdir,0)||1;
+    rows=[...com.entries()].map(([k,v])=>({key:k,label:DIM.empresa.nome[k],pdir:v.pdir,
+      share:v.pdir/tot*100,sin:0,com:v.pdir>0?v.dcom/v.pdir*100:0}));
+  }else{
+    const geo=aggGeo('emp');const tot=[...geo.values()].reduce((s,v)=>s+v.pdir,0)||1;
+    rows=[...geo.entries()].map(([k,v])=>({key:k,label:DIM.empresa.nome[k],pdir:v.pdir,
+      share:v.pdir/tot*100,sin:v.pdir>0?v.sdir/v.pdir*100:0,com:(com.get(k)&&com.get(k).pdir>0)?com.get(k).dcom/com.get(k).pdir*100:0}));
+  }
   rows.sort((a,b)=>b.pdir-a.pdir);rows=rows.slice(0,30);
   buildTable(document.getElementById('card-emp'),{title:'Seguradoras',dimLabel:'Seguradora',rows,maxP:rows[0]?.pdir||1,
-    showShare:true,showSin:true,showCom:true,selSet:S.emps,
+    showShare:true,showSin:!ramoOn(),showCom:true,selSet:S.emps,
     onClick:k=>{k=+k;if(S.emps.has(k))S.emps.delete(k);else S.emps.add(k);renderAll();}});
 }
 function renderUF(){
+  const card=document.getElementById('card-uf');
+  if(ramoOn()){
+    card.innerHTML=`<div class="tc-h"><span class="ct">Por UF</span></div>
+      <div style="padding:1.4rem .6rem;text-align:center;color:var(--t3);font-size:.7rem;line-height:1.6">
+      A quebra por UF não existe por ramo individual na base SUSEP — o SES_UF2 só vai até grupamento.<br>
+      Remova o filtro de ramo para ver a distribuição geográfica.</div>`;
+    return;
+  }
   const num=aggGeo('uf'),den=aggGeo('uf',{ignoreEmp:true});
   const showShare=S.emps.size>0;
   let rows=[...num.entries()].map(([k,v])=>({key:k,label:DIM.uf[k],pdir:v.pdir,
     share:showShare&&den.get(k)&&den.get(k).pdir>0?v.pdir/den.get(k).pdir*100:null,
     sin:v.pdir>0?v.sdir/v.pdir*100:0,com:0}));
   rows.sort((a,b)=>b.pdir-a.pdir);
-  buildTable(document.getElementById('card-uf'),{title:'Por UF',dimLabel:'UF',rows,maxP:rows[0]?.pdir||1,
+  buildTable(card,{title:'Por UF',dimLabel:'UF',rows,maxP:rows[0]?.pdir||1,
     showShare,showSin:true,showCom:false,selSet:new Set([...S.ufs].map(u=>ufRev[u])),
-    onClick:k=>{const uf=DIM.uf[+k];if(S.ufs.has(uf))S.ufs.delete(uf);else S.ufs.add(uf);renderAll();}});
+    onClick:k=>{const uf=DIM.uf[+k];S.ramos.clear();if(S.ufs.has(uf))S.ufs.delete(uf);else S.ufs.add(uf);renderAll();}});
 }
 function renderGra(){
   const isRamo=S.graView==='ramo';
   const toggle=`<div class="tg"><button class="btg ${!isRamo?'on':''}" data-tg="grupamento">Grupamento</button><button class="btg ${isRamo?'on':''}" data-tg="ramo">Ramo</button></div>`;
   const showShare=S.emps.size>0;let rows,maxP;
-  if(!isRamo){
+  if(isRamo){
+    const com=aggCom('ramo');const tot=[...com.values()].reduce((s,v)=>s+v.pdir,0)||1;
+    rows=[...com.entries()].map(([k,v])=>({key:k,label:DIM.ramo.nome[k],pdir:v.pdir,
+      share:v.pdir/tot*100,sin:0,com:v.pdir>0?v.dcom/v.pdir*100:0}));
+  }else if(ramoOn()){
+    const com=aggCom('grupamento');const tot=[...com.values()].reduce((s,v)=>s+v.pdir,0)||1;
+    rows=[...com.entries()].map(([k,v])=>({key:k,label:DIM.grupamento.nome[k],pdir:v.pdir,
+      share:showShare?v.pdir/tot*100:null,sin:0,com:v.pdir>0?v.dcom/v.pdir*100:0}));
+  }else{
     const num=aggGeo('gra'),den=aggGeo('gra',{ignoreEmp:true}),com=aggCom('grupamento');
     rows=[...num.entries()].map(([k,v])=>({key:k,label:DIM.grupamento.nome[k],pdir:v.pdir,
       share:showShare&&den.get(k)&&den.get(k).pdir>0?v.pdir/den.get(k).pdir*100:null,
       sin:v.pdir>0?v.sdir/v.pdir*100:0,com:(com.get(k)&&com.get(k).pdir>0)?com.get(k).dcom/com.get(k).pdir*100:0}));
-  }else{
-    const com=aggCom('ramo');const tot=[...com.values()].reduce((s,v)=>s+v.pdir,0)||1;
-    rows=[...com.entries()].map(([k,v])=>({key:k,label:DIM.ramo.nome[k],pdir:v.pdir,
-      share:v.pdir/tot*100,sin:0,com:v.pdir>0?v.dcom/v.pdir*100:0}));
   }
-  rows.sort((a,b)=>b.pdir-a.pdir);rows=rows.slice(0,30);maxP=rows[0]?.pdir||1;
+  rows.sort((a,b)=>b.pdir-a.pdir);rows=rows.slice(0,40);maxP=rows[0]?.pdir||1;
   buildTable(document.getElementById('card-gra'),{title:'Grupo de Ramos',dimLabel:isRamo?'Ramo':'Grupamento',toggle,rows,maxP,
-    showShare:isRamo?true:showShare,showSin:!isRamo,showCom:true,selSet:isRamo?new Set():S.gras,
-    onClick:k=>{if(isRamo){const gi=ramoGru[+k];if(gi>=0){if(S.gras.has(gi))S.gras.delete(gi);else S.gras.add(gi);}}else{k=+k;if(S.gras.has(k))S.gras.delete(k);else S.gras.add(k);}renderAll();},
+    showShare:isRamo?true:showShare,showSin:!isRamo&&!ramoOn(),showCom:true,selSet:isRamo?S.ramos:S.gras,
+    onClick:k=>{k=+k;if(isRamo){S.ufs.clear();if(S.ramos.has(k))S.ramos.delete(k);else S.ramos.add(k);}else{if(S.gras.has(k))S.gras.delete(k);else S.gras.add(k);}renderAll();},
     onToggle:v=>{S.graView=v;renderAll();}});
 }
 function renderMes(){
-  const num=aggGeo('mes',{skipMes:true}),den=aggGeo('mes',{skipMes:true,ignoreEmp:true}),com=aggCom('mes');
-  const showShare=S.emps.size>0;
-  let rows=[...num.entries()].map(([k,v])=>({key:k,label:fmtM(DIM.meses[k]),pdir:v.pdir,
-    share:showShare&&den.get(k)&&den.get(k).pdir>0?v.pdir/den.get(k).pdir*100:null,
-    sin:v.pdir>0?v.sdir/v.pdir*100:0,com:(com.get(k)&&com.get(k).pdir>0)?com.get(k).dcom/com.get(k).pdir*100:0}));
+  const showShare=S.emps.size>0;let rows;
+  const com=aggCom('mes');
+  if(ramoOn()){
+    const totByAll=aggCom('mes'); // já filtrado por ramo
+    rows=[...com.entries()].map(([k,v])=>({key:k,label:fmtM(DIM.meses[k]),pdir:v.pdir,
+      share:null,sin:0,com:v.pdir>0?v.dcom/v.pdir*100:0}));
+  }else{
+    const num=aggGeo('mes',{skipMes:true}),den=aggGeo('mes',{skipMes:true,ignoreEmp:true});
+    rows=[...num.entries()].map(([k,v])=>({key:k,label:fmtM(DIM.meses[k]),pdir:v.pdir,
+      share:showShare&&den.get(k)&&den.get(k).pdir>0?v.pdir/den.get(k).pdir*100:null,
+      sin:v.pdir>0?v.sdir/v.pdir*100:0,com:(com.get(k)&&com.get(k).pdir>0)?com.get(k).dcom/com.get(k).pdir*100:0}));
+  }
   rows.sort((a,b)=>DIM.meses[b.key]-DIM.meses[a.key]);
   const maxP=Math.max(...rows.map(r=>r.pdir),1);
   buildTable(document.getElementById('card-mes'),{title:'Por Ano/Mês',dimLabel:'Mês',rows,maxP,
-    showShare,showSin:true,showCom:true,selSet:S.meses,
+    showShare,showSin:!ramoOn(),showCom:true,selSet:S.meses,
     onClick:k=>{k=+k;if(S.meses.has(k))S.meses.delete(k);else S.meses.add(k);renderAll();}});
 }
 function renderKPIs(){
-  const geo=aggGeo('emp');let pdir=0,sdir=0;geo.forEach(e=>{pdir+=e.pdir;sdir+=e.sdir;});
   const com=aggCom('emp');let cpd=0,cdc=0;com.forEach(e=>{cpd+=e.pdir;cdc+=e.dcom;});
+  let pdir,sdir,nseg;
+  if(ramoOn()){pdir=cpd;sdir=null;nseg=com.size;}
+  else{const geo=aggGeo('emp');pdir=0;sdir=0;geo.forEach(e=>{pdir+=e.pdir;sdir+=e.sdir;});nseg=geo.size;}
   document.getElementById('k-prem').textContent=miV(pdir);
-  // YoY (geo, 12m)
-  const sv=S.meses;S.meses=new Set();
-  const cur=aggGeo('emp'),savedP=S.period;
-  let cp=0;cur.forEach(e=>cp+=e.pdir);
-  S.period='prev12';const prev=aggGeo('emp');let pp=0;prev.forEach(e=>pp+=e.pdir);S.period=savedP;S.meses=sv;
+  // YoY (12m)
+  const sv=S.meses;S.meses=new Set();const savedP=S.period;
+  let cp=0,pp=0;
+  if(ramoOn()){const c=aggCom('emp');c.forEach(e=>cp+=e.pdir);S.period='prev12';const p=aggCom('emp');p.forEach(e=>pp+=e.pdir);}
+  else{const c=aggGeo('emp');c.forEach(e=>cp+=e.pdir);S.period='prev12';const p=aggGeo('emp');p.forEach(e=>pp+=e.pdir);}
+  S.period=savedP;S.meses=sv;
   document.getElementById('k-prem-y').innerHTML=pp?`<span class="${cp>=pp?'up':'dn'}">${cp>=pp?'▲':'▼'} ${Math.abs((cp-pp)/pp*100).toFixed(1)}% YoY</span>`:'';
-  document.getElementById('k-sin').textContent=(pdir?sdir/pdir*100:0).toFixed(1);
+  document.getElementById('k-sin').textContent=sdir==null?'—':(pdir?sdir/pdir*100:0).toFixed(1);
   document.getElementById('k-com').textContent=(cpd?cdc/cpd*100:0).toFixed(1);
-  document.getElementById('k-n').textContent=geo.size;
-  let hhi=0;geo.forEach(e=>{const s=e.pdir/(pdir||1);hhi+=s*s;});hhi=Math.round(hhi*10000);
+  document.getElementById('k-n').textContent=nseg;
+  let hhi=0;if(!ramoOn()){const g=aggGeo('emp');g.forEach(e=>{const s=e.pdir/(pdir||1);hhi+=s*s;});}else{com.forEach(e=>{const s=e.pdir/(pdir||1);hhi+=s*s;});}
+  hhi=Math.round(hhi*10000);
   document.getElementById('k-hhi').textContent=hhi.toLocaleString('pt-BR');
   const bl=hhi<1500?'ok':hhi<2500?'md':'hi',bn=hhi<1500?'Competitivo':hhi<2500?'Moderado':'Concentrado';
   document.getElementById('k-hhi-b').innerHTML=`<span class="badge ${bl}">${bn}</span>`;
@@ -322,6 +353,7 @@ function renderPills(){
   S.emps.forEach(e=>{any=true;add(short(DIM.empresa.nome[e],16),'',()=>{S.emps.delete(e);renderAll();});});
   S.ufs.forEach(u=>{any=true;add('UF: '+u,'uf',()=>{S.ufs.delete(u);renderAll();});});
   S.gras.forEach(g=>{any=true;add(short(DIM.grupamento.nome[g],14),'gra',()=>{S.gras.delete(g);renderAll();});});
+  S.ramos.forEach(r=>{any=true;add('Ramo: '+short(DIM.ramo.nome[r],16),'gra',()=>{S.ramos.delete(r);renderAll();});});
   S.meses.forEach(m=>{any=true;add(fmtM(DIM.meses[m]),'mes',()=>{S.meses.delete(m);renderAll();});});
   if(!any)el.innerHTML='<span class="pfl">Nenhum filtro ativo · clique em qualquer linha das tabelas para filtrar tudo</span>';
 }
@@ -372,7 +404,7 @@ function renderAll(){renderKPIs();renderEmp();renderUF();renderGra();renderMes()
 
 function setup(){
   document.querySelectorAll('.bp[data-p]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.bp[data-p]').forEach(x=>x.classList.remove('on'));b.classList.add('on');S.period=b.dataset.p;renderAll();}));
-  document.getElementById('bcl').addEventListener('click',()=>{S.emps.clear();S.ufs.clear();S.gras.clear();S.meses.clear();document.querySelectorAll('.bp[data-p]').forEach(x=>x.classList.remove('on'));document.querySelector('[data-p="last12"]').classList.add('on');S.period='last12';document.getElementById('qsrch').value='';renderAll();});
+  document.getElementById('bcl').addEventListener('click',()=>{S.emps.clear();S.ufs.clear();S.gras.clear();S.ramos.clear();S.meses.clear();document.querySelectorAll('.bp[data-p]').forEach(x=>x.classList.remove('on'));document.querySelector('[data-p="last12"]').classList.add('on');S.period='last12';document.getElementById('qsrch').value='';renderAll();});
   const qs=document.getElementById('qsrch');let t1;
   qs.addEventListener('input',()=>{clearTimeout(t1);t1=setTimeout(()=>{const q=qs.value.trim().toLowerCase();if(!q){return;}const idx=DIM.empresa.nome.findIndex(n=>n.toLowerCase().includes(q));if(idx>=0){S.emps.add(idx);qs.value='';renderAll();}},350);});
   const ds=document.getElementById('dre-srch');let t2;
