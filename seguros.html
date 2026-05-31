@@ -118,6 +118,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .ins-kv b{font-family:var(--fm);font-size:.82rem;color:var(--ic,var(--v));display:block}
 .ins-kv span{font-size:.5rem;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
 .ins-p{font-size:.68rem;color:#aeb6d4;line-height:1.5}
+.ins-row{display:flex;align-items:center;gap:.5rem;margin:.22rem 0;font-size:.65rem;color:#c2cae6}
+.ins-row .nm2{flex:0 0 44%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ins-row .bar2{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden}
+.ins-row .bar2 i{display:block;height:100%}
+.ins-row b{flex:0 0 auto;font-family:var(--fm);font-size:.63rem;color:#dfe4f5}
 @media(min-width:760px){.ins-grid{grid-template-columns:1fr 1fr}}
 .foot a{color:var(--v);text-decoration:none}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--t3);border-radius:2px}
@@ -419,56 +424,149 @@ function renderDRE(){
     pf+=`</div>`;h+=pf;});
   h+=`</div>`;body.innerHTML=h;
 }
+let _mkt=null;
+function marketTotals(){
+  if(_mkt)return _mkt;
+  const n=DIM.meses.length;let pL=0,pP=0,sL=0;
+  for(let i=0;i<G_mes.length;i++){const m=G_mes[i];if(m>=n-12){pL+=G_pdir[i];sL+=G_sdir[i];}else if(m>=n-24)pP+=G_pdir[i];}
+  _mkt={pL,pP,sL};return _mkt;
+}
 function renderInsights(){
   const el=document.getElementById('insights');if(!el)return;
   const n=DIM.meses.length;
-  const inL=m=>m>=n-12, inP=m=>m>=n-24&&m<n-12;
-  const gFind=s=>DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes(s));
-  const rFind=s=>DIM.ramo.nome.findIndex(x=>x.toLowerCase().includes(s));
-  const giInd=gFind('individual'),giAuto=gFind('autom'),giPat=gFind('patrimonial'),giRF=gFind('financeiro');
-  const riFL=rFind('locat');
-  let mL=0,mP=0,sL=0;const gL={},gP={},gS={},empL={};
-  for(let i=0;i<G_mes.length;i++){const m=G_mes[i],g=ramoGru[G_ramo[i]],pd=G_pdir[i],sd=G_sdir[i];
-    if(inL(m)){mL+=pd;sL+=sd;gL[g]=(gL[g]||0)+pd;gS[g]=(gS[g]||0)+sd;empL[G_emp[i]]=(empL[G_emp[i]]||0)+pd;}
-    else if(inP(m)){mP+=pd;gP[g]=(gP[g]||0)+pd;}}
-  let flL=0,flP=0,flS=0;
-  for(let i=0;i<G_mes.length;i++){if(G_ramo[i]!==riFL)continue;const m=G_mes[i];if(inL(m)){flL+=G_pdir[i];flS+=G_sdir[i];}else if(inP(m))flP+=G_pdir[i];}
-  let prem=0,resFin=0,resPat=0,oper=0,luc=0;
-  for(const k in DRE.empresas){const a=DRE.empresas[k];prem+=a[DRE.premio_idx]||0;resFin+=a[6]||0;resPat+=a[7]||0;oper+=a[8]||0;luc+=a[DRE.lucro_idx]||0;}
-  let hhi=0;const emps=Object.values(empL).sort((a,b)=>b-a);
-  const cr5=emps.slice(0,5).reduce((s,v)=>s+v,0)/(mL||1)*100;
-  for(const v of emps)hhi+=(v/(mL||1))**2;hhi=Math.round(hhi*10000);
   const yoy=(a,b)=>b?(a-b)/b*100:0;
   const P=x=>(x>=0?'+':'')+x.toFixed(1)+'%', BI=x=>(x/1e6).toFixed(1), N1=x=>x.toFixed(1);
-  const mktYoY=yoy(mL,mP),indYoY=yoy(gL[giInd]||0,gP[giInd]||0),autoYoY=yoy(gL[giAuto]||0,gP[giAuto]||0),
-        patYoY=yoy(gL[giPat]||0,gP[giPat]||0),rfYoY=yoy(gL[giRF]||0,gP[giRF]||0),flYoY=yoy(flL,flP);
-  const globalSin=sL/(mL||1)*100, autoSin=(gS[giAuto]||0)/(gL[giAuto]||1)*100, flSin=flS/(flL||1)*100;
-  const finPct=luc?resFin/luc*100:0, subs=oper-resFin-resPat;
   const kv=(v,l)=>`<div class="ins-kv"><b>${v}</b><span>${l}</span></div>`;
-  const cards=[
-    {ic:'var(--v)',tag:'Tendência',h:'O mercado não encolheu — o VGBL encolheu',
-     m:kv(P(mktYoY),'Mercado')+kv(P(indYoY),'Pessoas Indiv.')+kv(P(autoYoY),'Automóvel'),
-     p:'A queda do prêmio total vem de Pessoas Individual, essencialmente VGBL — acumulação, não risco. O seguro de risco (auto, patrimonial, habitacional) cresceu no período. Confundir poupança com seguro distorce a leitura.'},
-    {ic:'var(--r)',tag:'Risco',h:`Sinistralidade global de ${N1(globalSin)}% não diz nada`,
-     m:kv(N1(globalSin)+'%','Global')+kv(N1(autoSin)+'%','Automóvel'),
-     p:'Metade do prêmio é vida e previdência, com sinistro perto de zero. A média do mercado mistura acumulação com risco e esconde o sinistro real — auto passa de 60%, transportes e marítimos acima de 50%.'},
-    {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',
-     m:kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(finPct)+'%','Result. financeiro / lucro')+kv('R$ '+BI(subs)+' bi','Subscrição'),
-     p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
-    {ic:'var(--b)',tag:'Concentração',h:'Dois mercados sob o mesmo rótulo',
-     m:kv(hhi.toLocaleString('pt-BR'),'Índice HHI')+kv(N1(cr5)+'%','5 maiores'),
-     p:'O topo são bancos vendendo previdência (Bradesco, Brasilprev, Caixa). O seguro de risco é liderado por Porto, Tokio Marine e Allianz. Bancassurance de acumulação e seguradora de risco são jogos distintos.'},
-    {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',
-     m:kv(P(rfYoY),'Riscos Financ.')+kv(P(flYoY),'Fiança Locatícia')+kv(P(patYoY),'Patrimonial'),
-     p:`Fiança locatícia (R$ ${BI(flL)} bi, sinistro ${N1(flSin)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
-    {ic:'var(--g)',tag:'Governança',h:'O número certo, sem tratamento, mente',
-     m:'',
-     p:'Retornos sobre patrimônio de 300%+ são capitalização fina, não lucro extraordinário. Sinistralidade de previdência perto de zero é a natureza do produto, não eficiência. Dá para ter o dado completo e errar a conclusão. Governança primeiro, inteligência depois.'},
-  ];
-  el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">Análise automática sobre a base — recalcula com os dados. Independente dos filtros acima.</div>`
-    +`<div class="ins-grid">`+cards.map(c=>`<div class="ins" style="--ic:${c.ic}"><div class="ins-tag">${c.tag}</div><div class="ins-h">${c.h}</div>${c.m?`<div class="ins-m">${c.m}</div>`:''}<div class="ins-p">${c.p}</div></div>`).join('')+`</div>`;
+  const card=c=>`<div class="ins" style="--ic:${c.ic}"><div class="ins-tag">${c.tag}</div><div class="ins-h">${c.h}</div>${c.m?`<div class="ins-m">${c.m}</div>`:''}${c.list||''}${c.p?`<div class="ins-p">${c.p}</div>`:''}</div>`;
+  const wrap=(sub,cards)=>{el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">${sub}</div><div class="ins-grid">`+cards.map(card).join('')+`</div>`;};
+
+  const filtered=S.emps.size||S.ufs.size||S.gras.size||S.ramos.size;
+
+  // ============ PANORAMA GERAL (sem cliques) ============
+  if(!filtered){
+    const inL=m=>m>=n-12, inP=m=>m>=n-24&&m<n-12;
+    const gFind=s=>DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes(s));
+    const rFind=s=>DIM.ramo.nome.findIndex(x=>x.toLowerCase().includes(s));
+    const giInd=gFind('individual'),giAuto=gFind('autom'),giPat=gFind('patrimonial'),giRF=gFind('financeiro'),riFL=rFind('locat');
+    let mL=0,mP=0,sL=0;const gL={},gP={},gS={},empL={};
+    for(let i=0;i<G_mes.length;i++){const m=G_mes[i],g=ramoGru[G_ramo[i]],pd=G_pdir[i],sd=G_sdir[i];
+      if(inL(m)){mL+=pd;sL+=sd;gL[g]=(gL[g]||0)+pd;gS[g]=(gS[g]||0)+sd;empL[G_emp[i]]=(empL[G_emp[i]]||0)+pd;}
+      else if(inP(m)){mP+=pd;gP[g]=(gP[g]||0)+pd;}}
+    let flL=0,flP=0,flS=0;
+    for(let i=0;i<G_mes.length;i++){if(G_ramo[i]!==riFL)continue;const m=G_mes[i];if(inL(m)){flL+=G_pdir[i];flS+=G_sdir[i];}else if(inP(m))flP+=G_pdir[i];}
+    let resFin=0,resPat=0,oper=0,luc=0;
+    for(const k in DRE.empresas){const a=DRE.empresas[k];resFin+=a[6]||0;resPat+=a[7]||0;oper+=a[8]||0;luc+=a[DRE.lucro_idx]||0;}
+    let hhi=0;const emps=Object.values(empL).sort((a,b)=>b-a);
+    const cr5=emps.slice(0,5).reduce((s,v)=>s+v,0)/(mL||1)*100;
+    for(const v of emps)hhi+=(v/(mL||1))**2;hhi=Math.round(hhi*10000);
+    const finPct=luc?resFin/luc*100:0, subs=oper-resFin-resPat;
+    const cards=[
+      {ic:'var(--v)',tag:'Tendência',h:'O mercado não encolheu — o VGBL encolheu',
+       m:kv(P(yoy(mL,mP)),'Mercado')+kv(P(yoy(gL[giInd]||0,gP[giInd]||0)),'Pessoas Indiv.')+kv(P(yoy(gL[giAuto]||0,gP[giAuto]||0)),'Automóvel'),
+       p:'A queda do prêmio total vem de Pessoas Individual, essencialmente VGBL — acumulação, não risco. O seguro de risco (auto, patrimonial, habitacional) cresceu no período. Confundir poupança com seguro distorce a leitura.'},
+      {ic:'var(--r)',tag:'Risco',h:`Sinistralidade global de ${N1(sL/(mL||1)*100)}% não diz nada`,
+       m:kv(N1(sL/(mL||1)*100)+'%','Global')+kv(N1((gS[giAuto]||0)/(gL[giAuto]||1)*100)+'%','Automóvel'),
+       p:'Metade do prêmio é vida e previdência, com sinistro perto de zero. A média do mercado mistura acumulação com risco e esconde o sinistro real — auto passa de 60%, transportes e marítimos acima de 50%.'},
+      {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',
+       m:kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(finPct)+'%','Financeiro / lucro')+kv('R$ '+BI(subs)+' bi','Subscrição'),
+       p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
+      {ic:'var(--b)',tag:'Concentração',h:'Dois mercados sob o mesmo rótulo',
+       m:kv(hhi.toLocaleString('pt-BR'),'Índice HHI')+kv(N1(cr5)+'%','5 maiores'),
+       p:'O topo são bancos vendendo previdência (Bradesco, Brasilprev, Caixa). O seguro de risco é liderado por Porto, Tokio Marine e Allianz. Bancassurance de acumulação e seguradora de risco são jogos distintos.'},
+      {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',
+       m:kv(P(yoy(gL[giRF]||0,gP[giRF]||0)),'Riscos Financ.')+kv(P(yoy(flL,flP)),'Fiança Locatícia')+kv(P(yoy(gL[giPat]||0,gP[giPat]||0)),'Patrimonial'),
+       p:`Fiança locatícia (R$ ${BI(flL)} bi, sinistro ${N1(flS/(flL||1)*100)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
+      {ic:'var(--g)',tag:'Governança',h:'O número certo, sem tratamento, mente',
+       p:'Retornos sobre patrimônio de 300%+ são capitalização fina, não lucro extraordinário. Sinistralidade de previdência perto de zero é a natureza do produto, não eficiência. Dá para ter o dado completo e errar a conclusão. Governança primeiro, inteligência depois.'},
+    ];
+    wrap('Análise automática sobre a base — recalcula com os dados. Independente dos filtros. Clique em qualquer seguradora, grupo, ramo ou UF para a análise do recorte.',cards);
+    return;
+  }
+
+  // ============ ANÁLISE DO RECORTE (com cliques) ============
+  const inL=m=>m>=n-12, inP=m=>m>=n-24&&m<n-12;
+  const ufiSel=S.ufs.size?new Set([...S.ufs].map(u=>ufRev[u]).filter(x=>x!=null)):null;
+  const passDim=(emp,uf,gi,ri)=>(!S.emps.size||S.emps.has(emp))&&(!ufiSel||ufiSel.has(uf))&&(!S.gras.size||S.gras.has(gi))&&(!S.ramos.size||S.ramos.has(ri));
+  let pL=0,pP=0,sL=0;const byEmp=new Map(),byGra=new Map(),byUf=new Map();
+  for(let i=0;i<G_mes.length;i++){const m=G_mes[i];if(!inL(m)&&!inP(m))continue;
+    const emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
+    if(!passDim(emp,uf,gi,ri))continue;
+    if(inL(m)){pL+=pd;sL+=sd;byEmp.set(emp,(byEmp.get(emp)||0)+pd);byGra.set(gi,(byGra.get(gi)||0)+pd);byUf.set(uf,(byUf.get(uf)||0)+pd);}
+    else pP+=pd;}
+  // comissão (fato_empresa, sem UF — indisponível se filtro de UF ativo)
+  let cP=0,cD=0,comOK=!S.ufs.size;
+  if(comOK)for(let i=0;i<E_mes.length;i++){const m=E_mes[i];if(!inL(m))continue;const emp=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
+    if(S.emps.size&&!S.emps.has(emp))continue;if(S.gras.size&&!S.gras.has(gi))continue;if(S.ramos.size&&!S.ramos.has(ri))continue;
+    cP+=E_pdir[i];cD+=E_dcom[i];}
+  const mkt=marketTotals();
+  const share=pL/(mkt.pL||1)*100, sin=sL/(pL||1)*100, growth=yoy(pL,pP), com=cP?cD/cP*100:0;
+  const sinMkt=mkt.sL/(mkt.pL||1)*100;
+
+  // rótulo do recorte
+  const lab=[];
+  if(S.emps.size)lab.push([...S.emps].map(e=>DIM.empresa.nome[e]).join(' + '));
+  if(S.gras.size)lab.push([...S.gras].map(g=>DIM.grupamento.nome[g]).join(' + '));
+  if(S.ramos.size)lab.push([...S.ramos].map(r=>DIM.ramo.nome[r]).join(' + '));
+  if(S.ufs.size)lab.push([...S.ufs].join(' + '));
+  let label=lab.join(' · ');if(label.length>72)label=label.slice(0,70)+'…';
+
+  const cards=[];
+  // CARD 1 — Panorama do recorte
+  let m1=kv('R$ '+BI(pL)+' bi','Prêmio 12m')+kv(N1(share)+'%','Share do mercado')+kv(P(growth),'YoY')+kv(N1(sin)+'%','Sinistralidade');
+  if(comOK)m1+=kv(N1(com)+'%','Comissão');
+  const cmp=sin<sinMkt?'abaixo':'acima';
+  let p1=`Este recorte representa ${N1(share)}% do prêmio do mercado e ${growth>=0?'cresceu':'recuou'} ${P(Math.abs(growth)).replace('+','')} contra os 12 meses anteriores. `;
+  p1+=`Sinistralidade de ${N1(sin)}%, ${cmp} da média de mercado (${N1(sinMkt)}%).`;
+  cards.push({ic:'var(--b)',tag:'Recorte selecionado',h:label||'Seleção',m:m1,p:p1});
+
+  const rowsHtml=(arr,total,color,nameFn)=>arr.map(([k,v])=>`<div class="ins-row"><span class="nm2" title="${nameFn(k).replace(/"/g,'&quot;')}">${nameFn(k)}</span><div class="bar2"><i style="width:${(v/total*100).toFixed(0)}%;background:${color}"></i></div><b>${(v/total*100).toFixed(0)}%</b></div>`).join('');
+
+  // CARD 2 — Liderança (top seguradoras no recorte) — se houver mais de uma
+  if(byEmp.size>1){
+    const top=[...byEmp.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+    cards.push({ic:'var(--v)',tag:'Liderança',h:'Quem domina este recorte',
+      list:`<div style="margin:.1rem 0 .15rem">`+rowsHtml(top,pL,'var(--v)',k=>short(DIM.empresa.nome[k],26))+`</div>`,
+      p:`As 5 maiores concentram ${N1(top.reduce((s,x)=>s+x[1],0)/(pL||1)*100)}% do prêmio deste recorte, entre ${byEmp.size} seguradoras ativas.`});
+  }
+  // CARD 3 — Composição por segmento (se o recorte cruza mais de um grupo)
+  if(byGra.size>1){
+    const top=[...byGra.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6);
+    cards.push({ic:'var(--g)',tag:'Composição',h:'Carteira por grupo de ramos',
+      list:`<div style="margin:.1rem 0 .15rem">`+rowsHtml(top,pL,'var(--g)',k=>short(DIM.grupamento.nome[k],26))+`</div>`,
+      p:'Distribuição do prêmio do recorte entre os grupos de ramos — mostra onde o risco está concentrado.'});
+  }
+  // CARD 4 — Distribuição geográfica (se cruza mais de uma UF)
+  if(byUf.size>1){
+    const top=[...byUf.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6);
+    cards.push({ic:'var(--b)',tag:'Geografia',h:'Distribuição por estado',
+      list:`<div style="margin:.1rem 0 .15rem">`+rowsHtml(top,pL,'var(--b)',k=>DIM.uf[k])+`</div>`,
+      p:`O recorte está presente em ${byUf.size} estados. SP costuma concentrar a maior fatia — confira se este recorte foge do padrão.`});
+  }
+  // CARD 5 — Rentabilidade (só com seguradora selecionada — DRE é por empresa)
+  if(S.emps.size){
+    let prem=0,resFin=0,resPat=0,oper=0,luc=0,pl=0,ok=false;
+    S.emps.forEach(e=>{const a=DRE.empresas[e];if(a){ok=true;prem+=a[DRE.premio_idx]||0;resFin+=a[6]||0;resPat+=a[7]||0;oper+=a[8]||0;luc+=a[DRE.lucro_idx]||0;}pl+=DRE.pl[e]||0;});
+    if(ok){
+      const marg=prem?luc/prem*100:0, finPct=luc?resFin/luc*100:0, roe=pl?luc/pl*100:0, subs=oper-resFin-resPat;
+      let m5=kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(marg)+'%','Margem líquida')+(pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financeiro / lucro');
+      let p5=subs<0?'O resultado de subscrição é negativo: a operação de seguro dá prejuízo e o lucro vem inteiro do resultado financeiro e patrimonial (float aplicado na Selic).'
+             :(finPct>50?'Mais da metade do lucro vem do resultado financeiro, não da subscrição — dependência alta de juros.'
+             :'O resultado de subscrição sustenta parte relevante do lucro — perfil menos dependente de juros que a média do setor.');
+      cards.push({ic:'var(--g)',tag:'Rentabilidade',h:'Lucro: subscrição ou float?',m:m5,p:p5});
+    }
+  }
+  // CARD 6 — Leitura (interpretação dirigida)
+  let leitura;
+  if(sin<10)leitura='Perfil de acumulação (previdência / VGBL): sinistro baixo é a natureza do produto, não eficiência. A receita se comporta como captação, não como prêmio de risco — e tende a oscilar com o mercado financeiro.';
+  else if(sin>55)leitura=`Risco de alta severidade: sinistralidade de ${N1(sin)}%${comOK?` somada a ${N1(com)}% de comissão`:''} deixa a margem de subscrição apertada ou negativa. O resultado depende do float — aplicar a reserva, não da operação de seguro.`;
+  else leitura=`Risco com sinistralidade controlada (${N1(sin)}%)${comOK?`, comissão de ${N1(com)}%`:''}. Há espaço de margem de subscrição, desde que comissão e despesas administrativas não consumam o resultado.`;
+  if(growth>15)leitura+=' Segmento em forte expansão — fronteira de crescimento.';
+  else if(growth<-10)leitura+=' Recorte em retração relevante no período.';
+  cards.push({ic:'var(--r)',tag:'Leitura',h:'O que este recorte revela',p:leitura});
+
+  wrap(`Análise do recorte selecionado · últimos 12 meses vs. 12 anteriores${S.ufs.size?' · comissão indisponível com filtro de UF (base por UF não tem comissão)':''}`,cards);
 }
-function renderAll(){renderKPIs();renderEmp();renderUF();renderGra();renderMes();renderDRE();renderPills();}
+function renderAll(){renderKPIs();renderEmp();renderUF();renderGra();renderMes();renderDRE();renderPills();renderInsights();}
 
 // seletor mobile-friendly: digita -> filtra lista; seleciona SÓ ao tocar no item
 function setupPicker(inputId,dropId,names,set){
