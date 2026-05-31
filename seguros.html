@@ -626,14 +626,14 @@ function renderInsights(){
     // analytics da JANELA selecionada (respeita tempo + filtros de UF/segmento/ramo; ignora filtro de seguradora para permitir comparação)
     const nE=DIM.empresa.nome.length;
     const eL=new Float64Array(nE),eP=new Float64Array(nE),eS=new Float64Array(nE);
-    const eRamo=Array.from({length:nE},()=>({})),eGra=Array.from({length:nE},()=>({})),eUf=Array.from({length:nE},()=>({}));
+    const eRamo=Array.from({length:nE},()=>({})),eRamoP=Array.from({length:nE},()=>({})),eRamoS=Array.from({length:nE},()=>({})),eGra=Array.from({length:nE},()=>({})),eUf=Array.from({length:nE},()=>({}));
     const gL={},gS={},gP={};
     const passNoEmp=(uf,gi,ri)=>(!ufiSel||ufiSel.has(uf))&&(!S.gras.size||S.gras.has(gi))&&(!S.ramos.size||S.ramos.has(ri));
     for(let i=0;i<G_mes.length;i++){const m=G_mes[i],C=cur.has(m),Pp=pri.has(m);if(!C&&!Pp)continue;
       const e=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
       if(!passNoEmp(uf,gi,ri))continue;
-      if(C){eL[e]+=pd;eS[e]+=sd;eRamo[e][ri]=(eRamo[e][ri]||0)+pd;eGra[e][gi]=(eGra[e][gi]||0)+pd;eUf[e][uf]=(eUf[e][uf]||0)+pd;gL[gi]=(gL[gi]||0)+pd;gS[gi]=(gS[gi]||0)+sd;}
-      else{eP[e]+=pd;gP[gi]=(gP[gi]||0)+pd;}}
+      if(C){eL[e]+=pd;eS[e]+=sd;eRamo[e][ri]=(eRamo[e][ri]||0)+pd;eRamoS[e][ri]=(eRamoS[e][ri]||0)+sd;eGra[e][gi]=(eGra[e][gi]||0)+pd;eUf[e][uf]=(eUf[e][uf]||0)+pd;gL[gi]=(gL[gi]||0)+pd;gS[gi]=(gS[gi]||0)+sd;}
+      else{eP[e]+=pd;eRamoP[e][ri]=(eRamoP[e][ri]||0)+pd;gP[gi]=(gP[gi]||0)+pd;}}
     const comAvail=!S.ufs.size;const eCP=new Float64Array(nE),eCD=new Float64Array(nE),gCP={},gCD={};
     if(comAvail)for(let i=0;i<E_mes.length;i++){const m=E_mes[i];if(!cur.has(m))continue;const e=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
       if(S.gras.size&&!S.gras.has(gi))continue;if(S.ramos.size&&!S.ramos.has(ri))continue;eCP[e]+=E_pdir[i];eCD[e]+=E_dcom[i];gCP[gi]=(gCP[gi]||0)+E_pdir[i];gCD[gi]=(gCD[gi]||0)+E_dcom[i];}
@@ -648,14 +648,17 @@ function renderInsights(){
     if(E.length===1){const e=E[0],er=eRamo[e];
       const sc=[];for(let c=0;c<nE;c++){if(c===e||!eL[c])continue;let ov=0;for(const r in er){const b=eRamo[c][r];if(b)ov+=Math.min(er[r],b);}if(ov>0)sc.push({c,ov});}
       sc.sort((a,b)=>b.ov-a.ov);const top=sc.slice(0,5);
-      if(top.length){const eg=eP[e]?(eL[e]-eP[e])/eP[e]*100:0,es=eL[e]?eS[e]/eL[e]*100:0;
-        const rows=top.map(({c})=>{const cr=eRamo[c],sr=Object.keys(er).filter(r=>cr[r]).map(r=>({r:+r,mn:Math.min(er[r],cr[r])})).sort((a,b)=>b.mn-a.mn).slice(0,2).map(x=>short(DIM.ramo.nome[x.r],16)).join(', ');
-          const cg=eP[c]?(eL[c]-eP[c])/eP[c]*100:0,cs=eL[c]?eS[c]/eL[c]*100:0;
-          let tag,cls;if(cg>eg+3&&cs<=es+5){tag='ameaça';cls='neg';}else if(eg>cg+3||es<cs-5){tag='alvo';cls='pos';}else{tag='páreo';cls='';}
+      if(top.length){
+        const rows=top.map(({c})=>{const cr=eRamo[c],shared=Object.keys(er).filter(r=>cr[r]);
+          const sr=shared.map(r=>({r:+r,mn:Math.min(er[r],cr[r])})).sort((a,b)=>b.mn-a.mn).slice(0,2).map(x=>short(DIM.ramo.nome[x.r],16)).join(', ');
+          // desempenho restrito aos ramos compartilhados (a batalha real)
+          let en=0,ep=0,es2=0,cn=0,cp=0,cs2=0;shared.forEach(r=>{en+=er[r];ep+=eRamoP[e][r]||0;es2+=eRamoS[e][r]||0;cn+=cr[r];cp+=eRamoP[c][r]||0;cs2+=eRamoS[c][r]||0;});
+          const eg=ep?(en-ep)/ep*100:0,esn=en?es2/en*100:0,cg=cp?(cn-cp)/cp*100:0,csn=cn?cs2/cn*100:0;
+          let tag,cls;if(cg>eg+3&&csn<=esn+5){tag='ameaça';cls='neg';}else if(eg>cg+3||esn<csn-5){tag='alvo';cls='pos';}else{tag='páreo';cls='';}
           return `<tr><td class="nm3" title="${DIM.empresa.nome[c]}">${short(DIM.empresa.nome[c],20)}</td><td class="nm3" style="width:34%" title="${sr}">${sr}</td><td class="n ${cls}">${tag}</td></tr>`;});
         cards.push({ic:'var(--r)',tag:'Concorrentes diretos',h:'Quem disputa sua carteira — e em quais ramos',
           list:mtRows(rows,'<tr><th class="l">Seguradora</th><th class="l">Compete em</th><th>Direção</th></tr>'),
-          p:`Sobreposição real de carteira${winTxt}. <b>Ameaça</b> = cresce mais rápido com sinistralidade igual ou melhor (pode tomar seu espaço). <b>Alvo</b> = você cresce mais ou tem risco melhor (pode tomar o dele). <b>Páreo</b> = equilíbrio.`});}}
+          p:`Ordenado pela sobreposição real de carteira${winTxt}. A direção compara o desempenho <b>só nos ramos onde vocês competem</b>: <b>ameaça</b> = ele cresce mais rápido com sinistralidade igual ou melhor ali; <b>alvo</b> = você cresce mais ou tem risco melhor nessas linhas; <b>páreo</b> = equilíbrio.`});}}
     // BENCHMARK
     if(E.length===1){const e=E[0],dom=eDom[e];
       const peers=[];for(let pe=0;pe<nE;pe++)if(pe!==e&&eDom[pe]===dom&&eL[pe]>0)peers.push(pe);
