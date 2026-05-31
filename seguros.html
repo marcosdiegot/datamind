@@ -106,6 +106,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .pf-bar{height:100%;background:linear-gradient(90deg,var(--b),var(--v));border-radius:4px}
 .pf-pct{width:36px;text-align:right;font-family:var(--fm)}
 .foot{margin-top:.8rem;padding:.6rem .9rem;font-size:.57rem;color:var(--t3);border-top:1px solid var(--gb);display:flex;flex-wrap:wrap;gap:.5rem;justify-content:space-between}
+.insights{padding:.85rem .95rem}
+.ins-sub{font-size:.62rem;color:#8a96bc;margin:.15rem 0 .7rem}
+.ins-grid{display:grid;grid-template-columns:1fr;gap:.6rem}
+.ins{border:1px solid var(--gb);border-radius:12px;padding:.8rem .85rem;position:relative;overflow:hidden;background:rgba(255,255,255,.02)}
+.ins::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ic,var(--v))}
+.ins-tag{font-size:.53rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ic,var(--v));font-weight:700;margin-bottom:.28rem}
+.ins-h{font-size:.92rem;font-weight:700;color:var(--t1);line-height:1.25;margin-bottom:.45rem;letter-spacing:-.01em}
+.ins-m{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.45rem}
+.ins-kv{background:rgba(255,255,255,.035);border:1px solid var(--gb);border-radius:8px;padding:.28rem .5rem;line-height:1.1}
+.ins-kv b{font-family:var(--fm);font-size:.82rem;color:var(--ic,var(--v));display:block}
+.ins-kv span{font-size:.5rem;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
+.ins-p{font-size:.68rem;color:#aeb6d4;line-height:1.5}
+@media(min-width:760px){.ins-grid{grid-template-columns:1fr 1fr}}
 .foot a{color:var(--v);text-decoration:none}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--t3);border-radius:2px}
 @media(min-width:760px){html{font-size:15px}.app{padding:0 1.3rem 1.1rem}.sticky{margin:0 -1.3rem .7rem;padding:.6rem 1.3rem}
@@ -162,6 +175,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
     </div>
     <div id="dre-body"><div class="dre-empty">Adicione até 4 seguradoras para comparar DRE, ROE e composição de carteira lado a lado. Clique num mês na tabela "Por Ano/Mês" para ver o resultado daquele mês; sem mês selecionado, mostra o exercício fechado.</div></div>
   </div>
+
+  <div class="card insights" id="insights"></div>
 
   <footer class="foot">
     <span><b style="color:var(--t2)">Valores em R$ milhões.</b> Prêmio e Sinistralidade (Sinistros Diretos ÷ Prêmio Direto) por empresa, UF, ramo, grupamento e mês — fonte SES_UF2. Comissão = Desp. Comercial ÷ Prêmio (sem quebra por UF). DRE: exercício fechado, ou resultado do mês ao clicar num mês.</span>
@@ -404,6 +419,55 @@ function renderDRE(){
     pf+=`</div>`;h+=pf;});
   h+=`</div>`;body.innerHTML=h;
 }
+function renderInsights(){
+  const el=document.getElementById('insights');if(!el)return;
+  const n=DIM.meses.length;
+  const inL=m=>m>=n-12, inP=m=>m>=n-24&&m<n-12;
+  const gFind=s=>DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes(s));
+  const rFind=s=>DIM.ramo.nome.findIndex(x=>x.toLowerCase().includes(s));
+  const giInd=gFind('individual'),giAuto=gFind('autom'),giPat=gFind('patrimonial'),giRF=gFind('financeiro');
+  const riFL=rFind('locat');
+  let mL=0,mP=0,sL=0;const gL={},gP={},gS={},empL={};
+  for(let i=0;i<G_mes.length;i++){const m=G_mes[i],g=ramoGru[G_ramo[i]],pd=G_pdir[i],sd=G_sdir[i];
+    if(inL(m)){mL+=pd;sL+=sd;gL[g]=(gL[g]||0)+pd;gS[g]=(gS[g]||0)+sd;empL[G_emp[i]]=(empL[G_emp[i]]||0)+pd;}
+    else if(inP(m)){mP+=pd;gP[g]=(gP[g]||0)+pd;}}
+  let flL=0,flP=0,flS=0;
+  for(let i=0;i<G_mes.length;i++){if(G_ramo[i]!==riFL)continue;const m=G_mes[i];if(inL(m)){flL+=G_pdir[i];flS+=G_sdir[i];}else if(inP(m))flP+=G_pdir[i];}
+  let prem=0,resFin=0,resPat=0,oper=0,luc=0;
+  for(const k in DRE.empresas){const a=DRE.empresas[k];prem+=a[DRE.premio_idx]||0;resFin+=a[6]||0;resPat+=a[7]||0;oper+=a[8]||0;luc+=a[DRE.lucro_idx]||0;}
+  let hhi=0;const emps=Object.values(empL).sort((a,b)=>b-a);
+  const cr5=emps.slice(0,5).reduce((s,v)=>s+v,0)/(mL||1)*100;
+  for(const v of emps)hhi+=(v/(mL||1))**2;hhi=Math.round(hhi*10000);
+  const yoy=(a,b)=>b?(a-b)/b*100:0;
+  const P=x=>(x>=0?'+':'')+x.toFixed(1)+'%', BI=x=>(x/1e6).toFixed(1), N1=x=>x.toFixed(1);
+  const mktYoY=yoy(mL,mP),indYoY=yoy(gL[giInd]||0,gP[giInd]||0),autoYoY=yoy(gL[giAuto]||0,gP[giAuto]||0),
+        patYoY=yoy(gL[giPat]||0,gP[giPat]||0),rfYoY=yoy(gL[giRF]||0,gP[giRF]||0),flYoY=yoy(flL,flP);
+  const globalSin=sL/(mL||1)*100, autoSin=(gS[giAuto]||0)/(gL[giAuto]||1)*100, flSin=flS/(flL||1)*100;
+  const finPct=luc?resFin/luc*100:0, subs=oper-resFin-resPat;
+  const kv=(v,l)=>`<div class="ins-kv"><b>${v}</b><span>${l}</span></div>`;
+  const cards=[
+    {ic:'var(--v)',tag:'Tendência',h:'O mercado não encolheu — o VGBL encolheu',
+     m:kv(P(mktYoY),'Mercado')+kv(P(indYoY),'Pessoas Indiv.')+kv(P(autoYoY),'Automóvel'),
+     p:'A queda do prêmio total vem de Pessoas Individual, essencialmente VGBL — acumulação, não risco. O seguro de risco (auto, patrimonial, habitacional) cresceu no período. Confundir poupança com seguro distorce a leitura.'},
+    {ic:'var(--r)',tag:'Risco',h:`Sinistralidade global de ${N1(globalSin)}% não diz nada`,
+     m:kv(N1(globalSin)+'%','Global')+kv(N1(autoSin)+'%','Automóvel'),
+     p:'Metade do prêmio é vida e previdência, com sinistro perto de zero. A média do mercado mistura acumulação com risco e esconde o sinistro real — auto passa de 60%, transportes e marítimos acima de 50%.'},
+    {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',
+     m:kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(finPct)+'%','Result. financeiro / lucro')+kv('R$ '+BI(subs)+' bi','Subscrição'),
+     p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
+    {ic:'var(--b)',tag:'Concentração',h:'Dois mercados sob o mesmo rótulo',
+     m:kv(hhi.toLocaleString('pt-BR'),'Índice HHI')+kv(N1(cr5)+'%','5 maiores'),
+     p:'O topo são bancos vendendo previdência (Bradesco, Brasilprev, Caixa). O seguro de risco é liderado por Porto, Tokio Marine e Allianz. Bancassurance de acumulação e seguradora de risco são jogos distintos.'},
+    {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',
+     m:kv(P(rfYoY),'Riscos Financ.')+kv(P(flYoY),'Fiança Locatícia')+kv(P(patYoY),'Patrimonial'),
+     p:`Fiança locatícia (R$ ${BI(flL)} bi, sinistro ${N1(flSin)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
+    {ic:'var(--g)',tag:'Governança',h:'O número certo, sem tratamento, mente',
+     m:'',
+     p:'Retornos sobre patrimônio de 300%+ são capitalização fina, não lucro extraordinário. Sinistralidade de previdência perto de zero é a natureza do produto, não eficiência. Dá para ter o dado completo e errar a conclusão. Governança primeiro, inteligência depois.'},
+  ];
+  el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">Análise automática sobre a base — recalcula com os dados. Independente dos filtros acima.</div>`
+    +`<div class="ins-grid">`+cards.map(c=>`<div class="ins" style="--ic:${c.ic}"><div class="ins-tag">${c.tag}</div><div class="ins-h">${c.h}</div>${c.m?`<div class="ins-m">${c.m}</div>`:''}<div class="ins-p">${c.p}</div></div>`).join('')+`</div>`;
+}
 function renderAll(){renderKPIs();renderEmp();renderUF();renderGra();renderMes();renderDRE();renderPills();}
 
 // seletor mobile-friendly: digita -> filtra lista; seleciona SÓ ao tocar no item
@@ -436,7 +500,7 @@ function setup(){
 }
 async function initData(data){parse(data);setup();
   document.getElementById('app').style.display='block';document.getElementById('loader').classList.add('out');
-  setTimeout(()=>{const l=document.getElementById('loader');if(l)l.remove();},500);renderAll();}
+  setTimeout(()=>{const l=document.getElementById('loader');if(l)l.remove();},500);renderAll();renderInsights();}
 async function init(){
   if(window.SUSEP_DATA){await initData(window.SUSEP_DATA);return;}
   try{const r=await fetch('./data.json');if(!r.ok)throw 0;const ct=r.headers.get('content-type')||'';if(ct.includes('html'))throw 0;await initData(await r.json());}
