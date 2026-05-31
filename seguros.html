@@ -654,11 +654,14 @@ function renderInsights(){
           // desempenho restrito aos ramos compartilhados (a batalha real)
           let en=0,ep=0,es2=0,cn=0,cp=0,cs2=0;shared.forEach(r=>{en+=er[r];ep+=eRamoP[e][r]||0;es2+=eRamoS[e][r]||0;cn+=cr[r];cp+=eRamoP[c][r]||0;cs2+=eRamoS[c][r]||0;});
           const eg=ep?(en-ep)/ep*100:0,esn=en?es2/en*100:0,cg=cp?(cn-cp)/cp*100:0,csn=cn?cs2/cn*100:0;
-          let tag,cls;if(cg>eg+3&&csn<=esn+5){tag='ameaça';cls='neg';}else if(eg>cg+3||esn<csn-5){tag='alvo';cls='pos';}else{tag='páreo';cls='';}
-          return `<tr><td class="nm3" title="${DIM.empresa.nome[c]}">${short(DIM.empresa.nome[c],20)}</td><td class="nm3" style="width:34%" title="${sr}">${sr}</td><td class="n ${cls}">${tag}</td></tr>`;});
+          const bigger=cn>en, theyGain=(cg>eg+3&&csn<=esn+5), youGain=(eg>cg+3||esn<csn-5);
+          const mom=theyGain?'e avançando sobre você':youGain?'e você ganha terreno':'em ritmo parecido';
+          const tag=bigger?'alvo':'ameaça',cls=bigger?'pos':'neg';
+          const tip=(bigger?'maior que você nessas linhas':'menor que você nessas linhas')+' '+mom;
+          return `<tr><td class="nm3" title="${DIM.empresa.nome[c]}">${short(DIM.empresa.nome[c],20)}</td><td class="nm3" style="width:30%" title="${sr}">${sr}</td><td class="n ${cls}" title="${tip}">${bigger?'maior':'menor'} · ${tag}</td></tr>`;});
         cards.push({ic:'var(--r)',tag:'Concorrentes diretos',h:'Quem disputa sua carteira — e em quais ramos',
-          list:mtRows(rows,'<tr><th class="l">Seguradora</th><th class="l">Compete em</th><th>Direção</th></tr>'),
-          p:`Ordenado pela sobreposição real de carteira${winTxt}. A direção compara o desempenho <b>só nos ramos onde vocês competem</b>: <b>ameaça</b> = ele cresce mais rápido com sinistralidade igual ou melhor ali; <b>alvo</b> = você cresce mais ou tem risco melhor nessas linhas; <b>páreo</b> = equilíbrio.`});}}
+          list:mtRows(rows,'<tr><th class="l">Seguradora</th><th class="l">Compete em</th><th>Porte · direção</th></tr>'),
+          p:`Ordenado pela sobreposição real de carteira${winTxt}, comparado <b>só nos ramos onde vocês competem</b>. A direção segue o porte nessas linhas: <b style="color:var(--v)">alvo</b> = concorrente <b>maior</b> que você ali — está acima, é quem você mira para escalar; <b style="color:var(--r)">ameaça</b> = concorrente <b>menor</b>, desafiante que pode tomar seu espaço. Por isso um líder como a Porto não tem ninguém como alvo: não há quem esteja acima dele nessas carteiras. O ritmo de cada um (quem ganha terreno) aparece ao tocar na célula.`});}}
     // BENCHMARK
     if(E.length===1){const e=E[0],dom=eDom[e];
       const peers=[];for(let pe=0;pe<nE;pe++)if(pe!==e&&eDom[pe]===dom&&eL[pe]>0)peers.push(pe);
