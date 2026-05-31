@@ -516,7 +516,7 @@ function renderInsights(){
   const el=document.getElementById('insights');if(!el)return;
   const n=DIM.meses.length;
   const yoy=(a,b)=>b?(a-b)/b*100:0;
-  const P=x=>(x>=0?'+':'')+x.toFixed(1)+'%',BI=x=>(x/1e6).toFixed(1),N1=x=>x.toFixed(1),N0=x=>Math.round(x).toLocaleString('pt-BR');
+  const P=x=>(x>=0?'+':'')+x.toFixed(1)+'%',BI=x=>Math.round(x/1e3).toLocaleString('pt-BR'),N1=x=>x.toFixed(1),N0=x=>Math.round(x).toLocaleString('pt-BR');
   const kv=(v,l)=>`<div class="ins-kv"><b>${v}</b><span>${l}</span></div>`;
   const card=c=>`<div class="ins" style="--ic:${c.ic}"><div class="ins-tag">${c.tag}</div>${c.verdict||''}<div class="ins-h">${c.h}</div>${c.m?`<div class="ins-m">${c.m}</div>`:''}${c.list||''}${c.p?`<div class="ins-p">${c.p}</div>`:''}</div>`;
   const wrap=(sub,cards)=>{el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">${sub}</div><div class="ins-grid">`+cards.filter(Boolean).map(card).join('')+`</div>`;};
@@ -560,13 +560,13 @@ function renderInsights(){
       {ic:'var(--v)',tag:'Tendência',h:'O mercado não encolheu — o VGBL encolheu',m:kv(P(yoy(mL,mP)),'Mercado')+kv(P(yoy(gL[giInd]||0,gP[giInd]||0)),'Pessoas Indiv.')+kv(P(yoy(gL[giAuto]||0,gP[giAuto]||0)),'Automóvel'),p:'A queda do prêmio total vem de Pessoas Individual, essencialmente VGBL — acumulação, não risco. O seguro de risco (auto, patrimonial, habitacional) cresceu no período. Confundir poupança com seguro distorce a leitura.'},
       {ic:'var(--r)',tag:'Risco',h:`Sinistralidade global de ${N1(sL/(mL||1)*100)}% não diz nada`,m:kv(N1(sL/(mL||1)*100)+'%','Global')+kv(N1((gS[giAuto]||0)/(gL[giAuto]||1)*100)+'%','Automóvel'),p:'Metade do prêmio é vida e previdência, com sinistro perto de zero. A média mistura acumulação com risco e esconde o sinistro real — auto passa de 60%, transportes e marítimos acima de 50%.'},
       emergCard(byR,mL,'Movimento de mercado'),
-      {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',m:kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(finPct)+'%','Financeiro / lucro')+kv('R$ '+BI(subs)+' bi','Subscrição'),p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
-      {ic:'var(--r)',tag:'Sensibilidade à Selic',h:'Quanto do lucro evapora se o juro cair',m:kv('R$ '+BI(luc)+' bi','Lucro atual')+kv(N1(finPct)+'%','Vem do financeiro'),list:mtRows([25,50,100].map(k=>{const nl=luc-resFin*k/100;return `<tr><td class="nm3">Result. financeiro −${k}%</td><td class="n ${nl<luc*0.6?'neg':'pos'}">R$ ${(nl/1e6).toFixed(1)} bi</td></tr>`;}),'<tr><th class="l">Cenário</th><th>Lucro resultante</th></tr>'),p:'O resultado financeiro acompanha a Selic — uma queda de juros o derruba quase na mesma proporção, e o lucro do setor com ele. Mede a exposição estrutural do mercado a juros (a queda de 100% é o teto teórico, não uma previsão).'},
+      {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',m:kv('R$ '+BI(luc)+' mi','Lucro líquido')+kv(N1(finPct)+'%','Financeiro / lucro')+kv('R$ '+BI(subs)+' mi','Subscrição'),p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
+      {ic:'var(--r)',tag:'Sensibilidade à Selic',h:'Quanto do lucro evapora se o juro cair',m:kv('R$ '+BI(luc)+' mi','Lucro atual')+kv(N1(finPct)+'%','Vem do financeiro'),list:mtRows([25,50,100].map(k=>{const nl=luc-resFin*k/100;return `<tr><td class="nm3">Result. financeiro −${k}%</td><td class="n ${nl<luc*0.6?'neg':'pos'}">R$ ${Math.round(nl/1e3).toLocaleString('pt-BR')} mi</td></tr>`;}),'<tr><th class="l">Cenário</th><th>Lucro resultante</th></tr>'),p:'O resultado financeiro acompanha a Selic — uma queda de juros o derruba quase na mesma proporção, e o lucro do setor com ele. Mede a exposição estrutural do mercado a juros (a queda de 100% é o teto teórico, não uma previsão).'},
       (()=>{const seg=Object.keys(gL).map(g=>({g:+g,p:gL[g],gr:gP[g]?(gL[g]-gP[g])/gP[g]*100:0,sin:gS[g]/(gL[g]||1)*100})).filter(x=>x.p>mL*0.01);
         seg.forEach(x=>x.mar=100-x.sin); const rows=seg.sort((a,b)=>b.gr-a.gr).slice(0,6).map(x=>{const tag=x.gr>5&&x.sin<45?'crescer':x.gr<0||x.sin>70?'evitar':'manter';const cls=tag==='crescer'?'pos':tag==='evitar'?'neg':'';return `<tr><td class="nm3" title="${DIM.grupamento.nome[x.g]}">${short(DIM.grupamento.nome[x.g],20)}</td><td class="n ${x.gr>=0?'pos':'neg'}">${(x.gr>=0?'+':'')+x.gr.toFixed(0)}%</td><td class="n ${x.sin>55?'neg':''}">${x.sin.toFixed(0)}%</td><td class="n ${cls}">${tag}</td></tr>`;});
         return {ic:'var(--v)',tag:'Onde alocar capital',h:'Crescimento × risco por segmento',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Cresc.</th><th>Sinist.</th><th>Veredito</th></tr>'),p:'<b>Crescer</b> = cresce e tem sinistralidade baixa. <b>Evitar</b> = encolhe ou tem risco alto. <b>Manter</b> = no meio. Visão de mercado; sua posição em cada um aparece ao clicar no grupo.'};})(),
       {ic:'var(--b)',tag:'Concentração',h:'Dois mercados sob o mesmo rótulo',m:kv(hhi.toLocaleString('pt-BR'),'Índice HHI')+kv(N1(cr5)+'%','5 maiores'),p:'O topo são bancos vendendo previdência (Bradesco, Brasilprev, Caixa). O risco é liderado por Porto, Tokio Marine e Allianz. Bancassurance de acumulação e seguradora de risco são jogos distintos.'},
-      {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',m:kv(P(yoy(gL[giRF]||0,gP[giRF]||0)),'Riscos Financ.')+kv(P(yoy(flL,flP)),'Fiança Locatícia')+kv(P(yoy(gL[giPat]||0,gP[giPat]||0)),'Patrimonial'),p:`Fiança locatícia (R$ ${BI(flL)} bi, sinistro ${N1(flS/(flL||1)*100)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
+      {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',m:kv(P(yoy(gL[giRF]||0,gP[giRF]||0)),'Riscos Financ.')+kv(P(yoy(flL,flP)),'Fiança Locatícia')+kv(P(yoy(gL[giPat]||0,gP[giPat]||0)),'Patrimonial'),p:`Fiança locatícia (R$ ${BI(flL)} mi, sinistro ${N1(flS/(flL||1)*100)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
       {ic:'var(--g)',tag:'Governança',h:'O número certo, sem tratamento, mente',p:'Retornos sobre patrimônio de 300%+ são capitalização fina, não lucro extraordinário. Sinistralidade de previdência perto de zero é a natureza do produto, não eficiência. Dá para ter o dado completo e errar a conclusão. Governança primeiro, inteligência depois.'},
     ]);
     return;
@@ -602,7 +602,7 @@ function renderInsights(){
   const cards=[];
 
   // ---- PANORAMA ----
-  let m1=kv('R$ '+BI(pL)+' bi','Prêmio')+kv(N1(share)+'%','Share mercado')+(growth!=null?kv(P(growth),seq?'vs. anterior':'YoY'):'')+(defWin?kv(P(mom),'Momento (tri.)'):'')+kv(N1(sin)+'%','Sinistralidade');
+  let m1=kv('R$ '+BI(pL)+' mi','Prêmio')+kv(N1(share)+'%','Share mercado')+(growth!=null?kv(P(growth),seq?'vs. anterior':'YoY'):'')+(defWin?kv(P(mom),'Momento (tri.)'):'')+kv(N1(sin)+'%','Sinistralidade');
   if(comOK)m1+=kv(N1(com)+'%','Comissão');
   let p1=`Representa ${N1(share)}% do prêmio do mercado${growth!=null?` e ${growth>=0?'cresceu':'recuou'} ${N1(Math.abs(growth))}% ${seq?'sobre o período imediatamente anterior':'sobre o mesmo período do ano anterior'}`:''}. `;
   if(defWin)p1+=`Momento recente: ${P(mom)} — ${mom>(growth||0)+3?'acelerando':mom<(growth||0)-3?'desacelerando':'estável'}. `;
@@ -613,11 +613,12 @@ function renderInsights(){
   {const serP=new Float64Array(n),serS=new Float64Array(n);
    for(let i=0;i<G_mes.length;i++){const m=G_mes[i],emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri];
      if(S.riskOnly&&gi===RISK_GI)continue;if(!passDim(emp,uf,gi,ri))continue;serP[m]+=G_pdir[i];serS[m]+=G_sdir[i];}
-   const pv=[...serP].map(x=>x/1e3),lr=[...serP].map((p,i)=>p?serS[i]/p*100:0);
-   const m0=''+DIM.meses[0],m1b=''+DIM.meses[n-1];
-   cards.push({ic:'var(--b)',tag:'Tendência · 24 meses',h:'Trajetória de prêmio e sinistralidade',
+   const win=S.period==='all24'?n:Math.min(12,n),st=n-win;
+   const pv=[],lr=[];for(let i=st;i<n;i++){pv.push(serP[i]/1e3);lr.push(serP[i]?serS[i]/serP[i]*100:0);}
+   const m0=''+DIM.meses[st],m1b=''+DIM.meses[n-1];
+   cards.push({ic:'var(--b)',tag:`Tendência · ${win} meses`,h:'Trajetória de prêmio e sinistralidade',
      list:`<div style="font-size:.55rem;color:#8a96bc;margin:.1rem 0 .05rem">Prêmio mensal (R$ mi) · ${m0.slice(4)}/${m0.slice(0,4)} → ${m1b.slice(4)}/${m1b.slice(0,4)}</div>${spark(pv,'#00E5A0',true)}<div style="font-size:.55rem;color:#8a96bc;margin:.4rem 0 .05rem">Sinistralidade mensal (%)</div>${spark(lr,'#FF3D5A',false)}`,
-     p:'Linha do tempo dos 24 meses do recorte — revela inflexões e sazonalidade que o número único esconde.'});}
+     p:`Linha do tempo dos ${win} meses do recorte — revela inflexões e sazonalidade que o número único esconde.${win<n?' Use "24m" no topo para a série completa.':''}`});}
 
   // ================= SEGURADORA =================
   if(isEmp){
@@ -674,7 +675,7 @@ function renderInsights(){
     // QUALIDADE DO LUCRO (DRE anual)
     {const agg=E.map(met).reduce((o,x)=>({prem:o.prem+x.prem,luc:o.luc+x.luc,fin:o.fin+x.fin,pl:o.pl+x.pl}),{prem:0,luc:0,fin:0,pl:0});
      const margem=agg.prem?agg.luc/agg.prem*100:0,roe=agg.pl?agg.luc/agg.pl*100:0,finPct=agg.luc?agg.fin/agg.luc*100:0;
-     let m4=E.length===1?kv(N1(me.cr)+'%','Índice combinado ~')+kv(N1(me.sn)+'%','Sinistro')+(comAvail?kv(N1(me.cm)+'%','Comissão'):'')+kv(N1(me.adm)+'%','Desp. adm.')+kv(N1(me.finPct)+'%','Financ./lucro'):kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(margem)+'%','Margem líq.')+(agg.pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financ./lucro');
+     let m4=E.length===1?kv(N1(me.cr)+'%','Índice combinado ~')+kv(N1(me.sn)+'%','Sinistro')+(comAvail?kv(N1(me.cm)+'%','Comissão'):'')+kv(N1(me.adm)+'%','Desp. adm.')+kv(N1(me.finPct)+'%','Financ./lucro'):kv('R$ '+BI(agg.luc)+' mi','Lucro')+kv(N1(margem)+'%','Margem líq.')+(agg.pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financ./lucro');
      let p4=E.length===1?(me.cr>100?`Índice combinado aproximado de ${N1(me.cr)}% (acima de 100%): a operação não cobre os próprios custos — o lucro vem do float. `:`Índice combinado aproximado de ${N1(me.cr)}% (abaixo de 100%): a subscrição se paga antes do resultado financeiro. `):'';
      p4+=finPct>50?'Mais da metade do lucro vem do resultado financeiro — dependência alta de juros.':finPct>0?'O resultado de subscrição sustenta parte relevante do lucro.':'';
      cards.push({ic:'var(--g)',tag:'Qualidade do lucro',h:'Subscrição que se paga, ou aluguel da Selic?',m:m4,p:(p4||'—')+' <span style="color:#7a83a6">(lucro/margem/ROE em base anual — DRE)</span>'});}
@@ -702,8 +703,8 @@ function renderInsights(){
     // SENSIBILIDADE À SELIC (empresa, DRE anual)
     {const agg=E.map(met).reduce((o,x)=>({luc:o.luc+x.luc,fin:o.fin+x.fin}),{luc:0,fin:0});
      if(agg.luc>0&&agg.fin>0)cards.push({ic:'var(--r)',tag:'Sensibilidade à Selic',h:'Quanto do seu lucro depende do juro',
-       m:kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(agg.fin/agg.luc*100)+'%','Vem do financeiro'),
-       list:mtRows([25,50,100].map(k=>{const nl=agg.luc-agg.fin*k/100;return `<tr><td class="nm3">Result. financeiro −${k}%</td><td class="n ${nl<agg.luc*0.6?'neg':'pos'}">R$ ${(nl/1e6).toFixed(2)} bi</td></tr>`;}),'<tr><th class="l">Cenário</th><th>Lucro resultante</th></tr>'),
+       m:kv('R$ '+BI(agg.luc)+' mi','Lucro')+kv(N1(agg.fin/agg.luc*100)+'%','Vem do financeiro'),
+       list:mtRows([25,50,100].map(k=>{const nl=agg.luc-agg.fin*k/100;return `<tr><td class="nm3">Result. financeiro −${k}%</td><td class="n ${nl<agg.luc*0.6?'neg':'pos'}">R$ ${Math.round(nl/1e3).toLocaleString('pt-BR')} mi</td></tr>`;}),'<tr><th class="l">Cenário</th><th>Lucro resultante</th></tr>'),
        p:'Exposição estrutural a juros: o resultado financeiro acompanha a Selic. Quanto maior a fatia, mais o lucro encolhe numa queda de juros (DRE anual).'});}
     // RECOMENDAÇÕES (síntese dirigida)
     if(E.length===1){const e=E[0];const recs=[];
