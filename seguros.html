@@ -483,18 +483,22 @@ function analytics(){
 const median=a=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
 const hhiOf=obj=>{let t=0;for(const k in obj)t+=obj[k];if(!t)return 0;let h=0;for(const k in obj)h+=(obj[k]/t)**2;return Math.round(h*1e4);};
 function windows(){
-  const n=DIM.meses.length;let cur;
-  if(S.meses.size)cur=new Set([...S.meses].filter(i=>i>=0&&i<n));
-  else if(S.period==='prev12'){cur=new Set();for(let i=n-24;i<n-12;i++)if(i>=0)cur.add(i);}
+  const n=DIM.meses.length;let cur,pri=new Set();
+  if(S.meses.size){
+    cur=new Set([...S.meses].filter(i=>i>=0&&i<n));
+    // comparação sequencial: k meses imediatamente anteriores ao mais antigo selecionado
+    const k=cur.size,minI=Math.min(...cur);
+    for(let j=1;j<=k;j++){const idx=minI-j;if(idx>=0)pri.add(idx);}
+  }
+  else if(S.period==='prev12'){cur=new Set();for(let i=n-24;i<n-12;i++)if(i>=0)cur.add(i);cur.forEach(i=>{if(i-12>=0)pri.add(i-12);});}
   else if(S.period==='all24'){cur=new Set();for(let i=0;i<n;i++)cur.add(i);}
-  else{cur=new Set();for(let i=n-12;i<n;i++)cur.add(i);}
-  const pri=new Set();cur.forEach(i=>{if(i-12>=0)pri.add(i-12);});
+  else{cur=new Set();for(let i=n-12;i<n;i++)cur.add(i);cur.forEach(i=>{if(i-12>=0)pri.add(i-12);});}
   const yoyOK=pri.size>0&&pri.size===cur.size;
-  return {cur,pri,yoyOK};
+  return {cur,pri,yoyOK,seq:S.meses.size>0};
 }
 function winLabel(){
   if(S.meses.size){const ms=[...S.meses].sort((a,b)=>a-b).map(i=>{const v=''+DIM.meses[i];return v.slice(4)+'/'+v.slice(0,4);});
-    return `${ms.length===1?ms[0]:ms[0]+'–'+ms[ms.length-1]} vs. mesmo período do ano anterior`;}
+    return `${ms.length===1?ms[0]:ms[0]+'–'+ms[ms.length-1]} vs. período imediatamente anterior (momento sequencial)`;}
   if(S.period==='prev12')return '12 meses anteriores';
   if(S.period==='all24')return '24 meses (sem comparativo anual)';
   return 'últimos 12 meses vs. 12 anteriores';
@@ -553,7 +557,7 @@ function renderInsights(){
   }
 
   // ============ RECORTE ============
-  const an=analytics(),{cur,pri,yoyOK}=windows();
+  const an=analytics(),{cur,pri,yoyOK,seq}=windows();
   const defWin=!S.meses.size&&S.period==='last12';
   const ufiSel=S.ufs.size?new Set([...S.ufs].map(u=>ufRev[u]).filter(x=>x!=null)):null;
   const passDim=(emp,uf,gi,ri)=>(!S.emps.size||S.emps.has(emp))&&(!ufiSel||ufiSel.has(uf))&&(!S.gras.size||S.gras.has(gi))&&(!S.ramos.size||S.ramos.has(ri));
@@ -581,9 +585,9 @@ function renderInsights(){
   const cards=[];
 
   // ---- PANORAMA ----
-  let m1=kv('R$ '+BI(pL)+' bi','Prêmio')+kv(N1(share)+'%','Share mercado')+(growth!=null?kv(P(growth),'YoY'):'')+(defWin?kv(P(mom),'Momento (tri.)'):'')+kv(N1(sin)+'%','Sinistralidade');
+  let m1=kv('R$ '+BI(pL)+' bi','Prêmio')+kv(N1(share)+'%','Share mercado')+(growth!=null?kv(P(growth),seq?'vs. anterior':'YoY'):'')+(defWin?kv(P(mom),'Momento (tri.)'):'')+kv(N1(sin)+'%','Sinistralidade');
   if(comOK)m1+=kv(N1(com)+'%','Comissão');
-  let p1=`Representa ${N1(share)}% do prêmio do mercado${growth!=null?` e ${growth>=0?'cresceu':'recuou'} ${N1(Math.abs(growth))}% sobre o mesmo período do ano anterior`:''}. `;
+  let p1=`Representa ${N1(share)}% do prêmio do mercado${growth!=null?` e ${growth>=0?'cresceu':'recuou'} ${N1(Math.abs(growth))}% ${seq?'sobre o período imediatamente anterior':'sobre o mesmo período do ano anterior'}`:''}. `;
   if(defWin)p1+=`Momento recente: ${P(mom)} — ${mom>(growth||0)+3?'acelerando':mom<(growth||0)-3?'desacelerando':'estável'}. `;
   p1+=`Sinistralidade ${N1(sin)}%, ${sin<sinMkt?'abaixo':'acima'} da média do mercado no período (${N1(sinMkt)}%).`;
   cards.push({ic:'var(--b)',tag:'Recorte selecionado',h:label||'Seleção',m:m1,p:p1});
