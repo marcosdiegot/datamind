@@ -153,6 +153,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
     <div class="srow">
       <span class="brand">DataMind</span>
       <span class="htit">Mercado Segurador · SUSEP</span>
+      <span id="asof" style="font-size:.56rem;color:#7a83a6;align-self:center"></span>
       <button class="bcl" id="bcl" style="margin-left:auto">✕ Limpar tudo</button>
     </div>
     <div class="srow" style="margin-top:.45rem">
@@ -160,6 +161,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
       <button class="bp on" data-p="last12">Últ. 12m</button>
       <button class="bp" data-p="prev12">12m ant.</button>
       <button class="bp" data-p="all24">24m</button>
+      <div class="fsep"></div>
+      <button class="bp" id="brisk" title="Excluir VGBL/acumulação (Pessoas Individual) para ver só o mercado de risco">Mercado: total</button>
       <div class="fsep"></div>
       <span class="picker"><input class="srch" id="q-emp" placeholder="+ Seguradora" autocomplete="off"/><div class="pdrop" id="d-emp"></div></span>
       <span class="picker"><input class="srch" id="q-gra" placeholder="+ Grupo de ramos" autocomplete="off"/><div class="pdrop" id="d-gra"></div></span>
@@ -198,7 +201,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
   <div class="card insights" id="insights"></div>
 
   <footer class="foot">
-    <span><b style="color:var(--t2)">Valores em R$ milhões.</b> Prêmio e Sinistralidade (Sinistros Diretos ÷ Prêmio Direto) por empresa, UF, ramo, grupamento e mês — fonte SES_UF2. Comissão = Desp. Comercial ÷ Prêmio (sem quebra por UF). DRE: exercício fechado, ou resultado do mês ao clicar num mês.</span>
+    <span><b style="color:var(--t2)">Metodologia.</b> Fonte: SUSEP/SES (<span id="foot-asof">—</span>), valores em R$ milhões. <b style="color:var(--t2)">Sinistralidade = Sinistros Diretos ÷ Prêmio Direto</b> — base bruta, <b style="color:var(--t2)">antes de resseguro</b> (a base SES não traz sinistro/prêmio retido); para linhas resseguradas (garantia, rural, grandes riscos) o risco líquido que atinge o resultado é menor. Comissão = Desp. Comercial ÷ Prêmio (sem quebra por UF). DRE, margem e ROE em base anual (exercício); ROE muito alto reflete capitalização fina, não retorno real. "Só risco" exclui VGBL/acumulação (Pessoas Individual). Não inclui reservas/IBNR nem capital/solvência (exigem FIP e quadros de provisões).</span>
     <a href="https://www.linkedin.com/in/marcos-diego-ribeiro" target="_blank">linkedin.com/in/marcos-diego-ribeiro</a>
   </footer>
 </div>
@@ -208,7 +211,8 @@ let DIM,DRE;
 let E_mes,E_emp,E_ramo,E_pdir,E_dcom;
 let G_mes,G_uf,G_ramo,G_emp,G_pdir,G_sdir;
 let empGru,ramoGru,ufRev;
-const S={period:'last12',emps:new Set(),ufs:new Set(),gras:new Set(),ramos:new Set(),meses:new Set(),graView:'grupamento'};
+const S={period:'last12',emps:new Set(),ufs:new Set(),gras:new Set(),ramos:new Set(),meses:new Set(),graView:'grupamento',riskOnly:false};
+let RISK_GI=-1;
 
 const miV=v=>Math.round(v/1e3).toLocaleString('pt-BR');
 const short=(s,n)=>s&&s.length>n?s.slice(0,n-1)+'…':s;
@@ -219,6 +223,7 @@ function parse(d){
   const ne=DIM.empresa.ids.length,nr=DIM.ramo.ids.length;
   empGru=new Int16Array(ne);DIM.empresa.grupo.forEach((g,i)=>empGru[i]=g);
   ramoGru=new Int16Array(nr);DIM.ramo.grupamento.forEach((g,i)=>ramoGru[i]=g);
+  RISK_GI=DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes('individual'));
   ufRev={};DIM.uf.forEach((u,i)=>ufRev[u]=i);
   const fe=d.fato_empresa.rows,n=fe.length;
   E_mes=new Int16Array(n);E_emp=new Int16Array(n);E_ramo=new Int16Array(n);E_pdir=new Float64Array(n);E_dcom=new Float64Array(n);
@@ -243,6 +248,7 @@ function aggGeo(groupDim,opt={}){
   for(let i=0;i<G_mes.length;i++){
     if(!mesBase.has(G_mes[i]))continue;
     const ri=G_ramo[i],gi=ramoGru[ri];
+    if(S.riskOnly&&gi===RISK_GI)continue;
     if(!ignoreEmp&&groupDim!=='emp'&&S.emps.size&&!S.emps.has(G_emp[i]))continue;
     if(groupDim!=='uf'&&ufi&&!ufi.has(G_uf[i]))continue;
     if(groupDim!=='gra'&&S.gras.size&&!S.gras.has(gi))continue;
@@ -259,6 +265,7 @@ function aggCom(groupDim){ // 'emp'|'grupamento'|'mes'|'ramo'
   for(let i=0;i<E_mes.length;i++){
     if(!mesBase.has(E_mes[i]))continue;
     const ei=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
+    if(S.riskOnly&&gi===RISK_GI)continue;
     if(groupDim!=='emp'&&S.emps.size&&!S.emps.has(ei))continue;
     if(groupDim!=='grupamento'&&groupDim!=='ramo'&&S.gras.size&&!S.gras.has(gi))continue;
     if(groupDim!=='ramo'&&S.ramos.size&&!S.ramos.has(ri))continue;
@@ -426,7 +433,7 @@ function renderDRE(){
   mar('% Desp. Administrativas',(ei,a)=>{const p=a[pi]||0;return p?Math.abs(a[idxAdmin]/p*100).toFixed(1)+'%':'—';});
   mar('Margem Operacional',(ei,a)=>{const p=a[pi]||0;return p?(a[idxOper]/p*100).toFixed(1)+'%':'—';});
   mar('% Lucro Líquido',(ei,a)=>{const p=a[pi]||0;return p?(a[li]/p*100).toFixed(1)+'%':'—';});
-  mar('ROE (Lucro/PL)',(ei,a)=>{const pl=DRE.pl[ei]||0;return pl?(a[li]/pl*100).toFixed(1)+'%':'—';});
+  mar('ROE (Lucro/PL)',(ei,a)=>{const pl=DRE.pl[ei]||0;if(!pl)return '—';const r=a[li]/pl*100;return r.toFixed(1)+'%'+(r>120?' <span title="ROE muito alto = capitalização fina (PL enxuto), não retorno real" style="color:var(--g)">⚠</span>':'');});
   h+=`</tbody></table><div class="pf-wrap">`;
   dreList.forEach(ei=>{
     const byG=new Map();let tot=0;
@@ -450,12 +457,12 @@ const IBGE_UF={
  RO:{pib:76456,pop:1581196},TO:{pib:64318,pop:1511460},SE:{pib:60817,pop:2210004},
  AP:{pib:28020,pop:733759},AC:{pib:26291,pop:830018},RR:{pib:25125,pop:636707}};
 
-let _mkt=null;
+let _mkt=null,_mktMode=null;
 function marketTotals(){
-  if(_mkt)return _mkt;
+  if(_mkt&&_mktMode===S.riskOnly)return _mkt;
   const n=DIM.meses.length;let pL=0,pP=0,sL=0;
-  for(let i=0;i<G_mes.length;i++){const m=G_mes[i];if(m>=n-12){pL+=G_pdir[i];sL+=G_sdir[i];}else if(m>=n-24)pP+=G_pdir[i];}
-  _mkt={pL,pP,sL};return _mkt;
+  for(let i=0;i<G_mes.length;i++){if(S.riskOnly&&ramoGru[G_ramo[i]]===RISK_GI)continue;const m=G_mes[i];if(m>=n-12){pL+=G_pdir[i];sL+=G_sdir[i];}else if(m>=n-24)pP+=G_pdir[i];}
+  _mkt={pL,pP,sL};_mktMode=S.riskOnly;return _mkt;
 }
 let _AN=null;
 function analytics(){
@@ -469,6 +476,7 @@ function analytics(){
   for(let i=0;i<G_mes.length;i++){
     const m=G_mes[i],L=inL(m),Pp=inP(m);if(!L&&!Pp)continue;
     const emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
+    if(S.riskOnly&&gi===RISK_GI)continue;
     if(L){empL[emp]+=pd;empS[emp]+=sd;empGra[emp][gi]=(empGra[emp][gi]||0)+pd;empRamo[emp][ri]=(empRamo[emp][ri]||0)+pd;
       graL[gi]+=pd;graS[gi]+=sd;ufL[uf]+=pd;ufEmp[uf][emp]=(ufEmp[uf][emp]||0)+pd;}
     else{empP[emp]+=pd;graP[gi]+=pd;}
@@ -513,6 +521,9 @@ function renderInsights(){
   const card=c=>`<div class="ins" style="--ic:${c.ic}"><div class="ins-tag">${c.tag}</div>${c.verdict||''}<div class="ins-h">${c.h}</div>${c.m?`<div class="ins-m">${c.m}</div>`:''}${c.list||''}${c.p?`<div class="ins-p">${c.p}</div>`:''}</div>`;
   const wrap=(sub,cards)=>{el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">${sub}</div><div class="ins-grid">`+cards.filter(Boolean).map(card).join('')+`</div>`;};
   const mtRows=(arr,cols)=>`<table class="ins-mt">${cols}${arr.join('')}</table>`;
+  const spark=(vals,color,fill)=>{if(!vals.length)return'';const mn=Math.min(...vals),mx=Math.max(...vals),rg=(mx-mn)||1,w=240,h=32;
+    const pts=vals.map((v,i)=>`${(i/(vals.length-1)*w).toFixed(1)},${(h-2-(v-mn)/rg*(h-4)).toFixed(1)}`).join(' ');
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:${h}px;display:block">${fill?`<polygon points="0,${h} ${pts} ${w},${h}" fill="${color}" opacity="0.13"/>`:''}<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5"/></svg>`;};
   const rowBar=(arr,total,color,nameFn)=>arr.map(([k,v])=>`<div class="ins-row"><span class="nm2" title="${String(nameFn(k)).replace(/"/g,'&quot;')}">${nameFn(k)}</span><div class="bar2"><i style="width:${(v/total*100).toFixed(0)}%;background:${color}"></i></div><b>${(v/total*100).toFixed(0)}%</b></div>`).join('');
   // card de ramos em alta/baixa a partir de um Map(ramo->{pL,pP})
   const emergCard=(map,totalP,tag)=>{
@@ -534,6 +545,7 @@ function renderInsights(){
     const giInd=gF('individual'),giAuto=gF('autom'),giPat=gF('patrimonial'),giRF=gF('financeiro'),riFL=rF('locat');
     let mL=0,mP=0,sL=0;const gL={},gP={},gS={},empL={},byR=new Map();
     for(let i=0;i<G_mes.length;i++){const m=G_mes[i],g=ramoGru[G_ramo[i]],ri=G_ramo[i],pd=G_pdir[i],sd=G_sdir[i];
+      if(S.riskOnly&&g===RISK_GI)continue;
       let e=byR.get(ri);if(!e){e={pL:0,pP:0};byR.set(ri,e);}
       if(inL(m)){mL+=pd;sL+=sd;gL[g]=(gL[g]||0)+pd;gS[g]=(gS[g]||0)+sd;empL[G_emp[i]]=(empL[G_emp[i]]||0)+pd;e.pL+=pd;}
       else if(inP(m)){mP+=pd;gP[g]=(gP[g]||0)+pd;e.pP+=pd;}}
@@ -549,6 +561,10 @@ function renderInsights(){
       {ic:'var(--r)',tag:'Risco',h:`Sinistralidade global de ${N1(sL/(mL||1)*100)}% não diz nada`,m:kv(N1(sL/(mL||1)*100)+'%','Global')+kv(N1((gS[giAuto]||0)/(gL[giAuto]||1)*100)+'%','Automóvel'),p:'Metade do prêmio é vida e previdência, com sinistro perto de zero. A média mistura acumulação com risco e esconde o sinistro real — auto passa de 60%, transportes e marítimos acima de 50%.'},
       emergCard(byR,mL,'Movimento de mercado'),
       {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',m:kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(finPct)+'%','Financeiro / lucro')+kv('R$ '+BI(subs)+' bi','Subscrição'),p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
+      {ic:'var(--r)',tag:'Sensibilidade à Selic',h:'Quanto do lucro evapora se o juro cair',m:kv('R$ '+BI(luc)+' bi','Lucro atual')+kv(N1(finPct)+'%','Vem do financeiro'),list:mtRows([25,50,100].map(k=>{const nl=luc-resFin*k/100;return `<tr><td class="nm3">Result. financeiro −${k}%</td><td class="n ${nl<luc*0.6?'neg':'pos'}">R$ ${(nl/1e6).toFixed(1)} bi</td></tr>`;}),'<tr><th class="l">Cenário</th><th>Lucro resultante</th></tr>'),p:'O resultado financeiro acompanha a Selic — uma queda de juros o derruba quase na mesma proporção, e o lucro do setor com ele. Mede a exposição estrutural do mercado a juros (a queda de 100% é o teto teórico, não uma previsão).'},
+      (()=>{const seg=Object.keys(gL).map(g=>({g:+g,p:gL[g],gr:gP[g]?(gL[g]-gP[g])/gP[g]*100:0,sin:gS[g]/(gL[g]||1)*100})).filter(x=>x.p>mL*0.01);
+        seg.forEach(x=>x.mar=100-x.sin); const rows=seg.sort((a,b)=>b.gr-a.gr).slice(0,6).map(x=>{const tag=x.gr>5&&x.sin<45?'crescer':x.gr<0||x.sin>70?'evitar':'manter';const cls=tag==='crescer'?'pos':tag==='evitar'?'neg':'';return `<tr><td class="nm3" title="${DIM.grupamento.nome[x.g]}">${short(DIM.grupamento.nome[x.g],20)}</td><td class="n ${x.gr>=0?'pos':'neg'}">${(x.gr>=0?'+':'')+x.gr.toFixed(0)}%</td><td class="n ${x.sin>55?'neg':''}">${x.sin.toFixed(0)}%</td><td class="n ${cls}">${tag}</td></tr>`;});
+        return {ic:'var(--v)',tag:'Onde alocar capital',h:'Crescimento × risco por segmento',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Cresc.</th><th>Sinist.</th><th>Veredito</th></tr>'),p:'<b>Crescer</b> = cresce e tem sinistralidade baixa. <b>Evitar</b> = encolhe ou tem risco alto. <b>Manter</b> = no meio. Visão de mercado; sua posição em cada um aparece ao clicar no grupo.'};})(),
       {ic:'var(--b)',tag:'Concentração',h:'Dois mercados sob o mesmo rótulo',m:kv(hhi.toLocaleString('pt-BR'),'Índice HHI')+kv(N1(cr5)+'%','5 maiores'),p:'O topo são bancos vendendo previdência (Bradesco, Brasilprev, Caixa). O risco é liderado por Porto, Tokio Marine e Allianz. Bancassurance de acumulação e seguradora de risco são jogos distintos.'},
       {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',m:kv(P(yoy(gL[giRF]||0,gP[giRF]||0)),'Riscos Financ.')+kv(P(yoy(flL,flP)),'Fiança Locatícia')+kv(P(yoy(gL[giPat]||0,gP[giPat]||0)),'Patrimonial'),p:`Fiança locatícia (R$ ${BI(flL)} bi, sinistro ${N1(flS/(flL||1)*100)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
       {ic:'var(--g)',tag:'Governança',h:'O número certo, sem tratamento, mente',p:'Retornos sobre patrimônio de 300%+ são capitalização fina, não lucro extraordinário. Sinistralidade de previdência perto de zero é a natureza do produto, não eficiência. Dá para ter o dado completo e errar a conclusão. Governança primeiro, inteligência depois.'},
@@ -566,6 +582,7 @@ function renderInsights(){
   const acc=(map,k,pd,sd,C)=>{let e=map.get(k);if(!e){e={pL:0,pP:0,sL:0};map.set(k,e);}if(C){e.pL+=pd;e.sL+=sd;}else e.pP+=pd;};
   for(let i=0;i<G_mes.length;i++){const m=G_mes[i],C=cur.has(m),Pp=pri.has(m);if(!C&&!Pp)continue;
     const emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
+    if(S.riskOnly&&gi===RISK_GI)continue;
     if(C){mCur+=pd;sMkt+=sd;}if(Pp)mPri+=pd;
     if(!passDim(emp,uf,gi,ri))continue;
     if(C){pL+=pd;sL+=sd;if(m>=n-3)m3+=pd;else if(m>=n-6)m6+=pd;}else if(Pp)pP+=pd;
@@ -591,6 +608,16 @@ function renderInsights(){
   if(defWin)p1+=`Momento recente: ${P(mom)} — ${mom>(growth||0)+3?'acelerando':mom<(growth||0)-3?'desacelerando':'estável'}. `;
   p1+=`Sinistralidade ${N1(sin)}%, ${sin<sinMkt?'abaixo':'acima'} da média do mercado no período (${N1(sinMkt)}%).`;
   cards.push({ic:'var(--b)',tag:'Recorte selecionado',h:label||'Seleção',m:m1,p:p1});
+
+  // ---- TENDÊNCIA 24 MESES (sparklines) ----
+  {const serP=new Float64Array(n),serS=new Float64Array(n);
+   for(let i=0;i<G_mes.length;i++){const m=G_mes[i],emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri];
+     if(S.riskOnly&&gi===RISK_GI)continue;if(!passDim(emp,uf,gi,ri))continue;serP[m]+=G_pdir[i];serS[m]+=G_sdir[i];}
+   const pv=[...serP].map(x=>x/1e3),lr=[...serP].map((p,i)=>p?serS[i]/p*100:0);
+   const m0=''+DIM.meses[0],m1b=''+DIM.meses[n-1];
+   cards.push({ic:'var(--b)',tag:'Tendência · 24 meses',h:'Trajetória de prêmio e sinistralidade',
+     list:`<div style="font-size:.55rem;color:#8a96bc;margin:.1rem 0 .05rem">Prêmio mensal (R$ mi) · ${m0.slice(4)}/${m0.slice(0,4)} → ${m1b.slice(4)}/${m1b.slice(0,4)}</div>${spark(pv,'#00E5A0',true)}<div style="font-size:.55rem;color:#8a96bc;margin:.4rem 0 .05rem">Sinistralidade mensal (%)</div>${spark(lr,'#FF3D5A',false)}`,
+     p:'Linha do tempo dos 24 meses do recorte — revela inflexões e sazonalidade que o número único esconde.'});}
 
   // ================= SEGURADORA =================
   if(isEmp){
@@ -672,6 +699,27 @@ function renderInsights(){
       cards.push({ic:'var(--b)',tag:'Trajetória de share',h:d>=0.1?'Ganhando terreno':d<=-0.1?'Cedendo terreno':'Share estável',
         m:kv(N1(shP)+'%','Share anterior')+kv(N1(shN)+'%','Share atual')+kv((d>=0?'+':'')+N1(d)+' pp','Variação'),
         p:d>=0.1?`Ganhou ${N1(d)} ponto(s) de share${winTxt}. Veja no card de qualidade do lucro se o crescimento vem com margem ou comprando risco.`:d<=-0.1?`Perdeu ${N1(Math.abs(d))} ponto(s) de share${winTxt}. Avalie se é escolha (sair de risco ruim) ou perda competitiva.`:'Mantém posição relativa estável.'});}
+    // SENSIBILIDADE À SELIC (empresa, DRE anual)
+    {const agg=E.map(met).reduce((o,x)=>({luc:o.luc+x.luc,fin:o.fin+x.fin}),{luc:0,fin:0});
+     if(agg.luc>0&&agg.fin>0)cards.push({ic:'var(--r)',tag:'Sensibilidade à Selic',h:'Quanto do seu lucro depende do juro',
+       m:kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(agg.fin/agg.luc*100)+'%','Vem do financeiro'),
+       list:mtRows([25,50,100].map(k=>{const nl=agg.luc-agg.fin*k/100;return `<tr><td class="nm3">Result. financeiro −${k}%</td><td class="n ${nl<agg.luc*0.6?'neg':'pos'}">R$ ${(nl/1e6).toFixed(2)} bi</td></tr>`;}),'<tr><th class="l">Cenário</th><th>Lucro resultante</th></tr>'),
+       p:'Exposição estrutural a juros: o resultado financeiro acompanha a Selic. Quanto maior a fatia, mais o lucro encolhe numa queda de juros (DRE anual).'});}
+    // RECOMENDAÇÕES (síntese dirigida)
+    if(E.length===1){const e=E[0];const recs=[];
+      const shN=pL/(mCur||1)*100,shP=pP/(mPri||1)*100,dsh=shN-shP;
+      if(me.cr>100)recs.push(['var(--r)','Reprecificar / revisar subscrição',`Índice combinado ~${N1(me.cr)}% acima de 100%: a operação não se paga, o lucro depende do float.`]);
+      if(me.sn>60)recs.push(['var(--r)','Atacar sinistralidade',`Sinistralidade de ${N1(me.sn)}%${winTxt} — seleção de risco, pricing ou gestão de sinistro.`]);
+      const dom=eDom[e],peers=[];for(let pe=0;pe<nE;pe++)if(pe!==e&&eDom[pe]===dom&&eL[pe]>0)peers.push(pe);
+      if(peers.length>=3){const ps={};let tot=0;peers.forEach(pe=>{for(const gi in eGra[pe]){ps[gi]=(ps[gi]||0)+eGra[pe][gi];tot+=eGra[pe][gi];}});for(const gi in ps)ps[gi]/=(tot||1);const myT=eL[e]||1;
+        const g=Object.keys(ps).map(gi=>({gi:+gi,gap:ps[gi]-(eGra[e][+gi]||0)/myT,sin:gL[gi]?gS[gi]/gL[gi]*100:0})).filter(x=>x.gap>0.03&&x.sin<55).sort((a,b)=>b.gap-a.gap)[0];
+        if(g)recs.push(['var(--v)','Crescer em '+short(DIM.grupamento.nome[g.gi],22),`Os pares alocam +${(g.gap*100).toFixed(0)}pp aqui com sinistralidade de ${N1(g.sin)}% — espaço com risco conhecido.`]);}
+      if(dsh<=-0.1)recs.push(['var(--g)','Defender share',`Cedeu ${N1(Math.abs(dsh))}pp${winTxt}; avalie se é saída de risco ruim ou perda competitiva.`]);
+      else if(dsh>=0.1&&me.cr<100)recs.push(['var(--v)','Acelerar com disciplina',`Ganhando share (+${N1(dsh)}pp) com índice combinado saudável — momento de escalar.`]);
+      if(me.finPct>55)recs.push(['var(--g)','Reduzir dependência de juro',`${N1(me.finPct)}% do lucro vem do resultado financeiro — vulnerável a queda da Selic.`]);
+      if(recs.length){cards.push({ic:'var(--v)',tag:'Recomendações',h:'O que eu faria com este recorte',
+        list:recs.slice(0,4).map(r=>`<div style="display:flex;gap:.45rem;margin:.3rem 0"><span style="flex:0 0 3px;background:${r[0]};border-radius:2px"></span><div><div style="font-size:.72rem;font-weight:700;color:var(--t1)">${r[1]}</div><div style="font-size:.62rem;color:#aeb6d4;line-height:1.4">${r[2]}</div></div></div>`).join(''),
+        p:''});}}
   }
 
   // ================= GRUPO / RAMO =================
@@ -770,10 +818,14 @@ function setup(){
   setupPicker('q-gra','d-gra',DIM.grupamento.nome,S.gras);
   setupPicker('q-ramo','d-ramo',DIM.ramo.nome,S.ramos);
   setupPicker('dre-srch','d-dre',DIM.empresa.nome,S.emps);
+  // carimbo de data (último mês da base)
+  {const lm=''+DIM.meses[DIM.meses.length-1],lbl='até '+lm.slice(4)+'/'+lm.slice(0,4);const a=document.getElementById('asof');if(a)a.textContent='dados '+lbl;const fa=document.getElementById('foot-asof');if(fa)fa.textContent=lbl;}
+  // toggle risco vs acumulação
+  {const br=document.getElementById('brisk');if(br)br.addEventListener('click',()=>{S.riskOnly=!S.riskOnly;br.classList.toggle('on',S.riskOnly);br.textContent=S.riskOnly?'Mercado: só risco':'Mercado: total';renderAll();});}
   // fecha dropdowns ao tocar fora
   document.addEventListener('click',e=>{if(!e.target.closest('.picker'))document.querySelectorAll('.pdrop.open').forEach(d=>d.classList.remove('open'));});
   document.querySelectorAll('.bp[data-p]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.bp[data-p]').forEach(x=>x.classList.remove('on'));b.classList.add('on');S.period=b.dataset.p;renderAll();}));
-  document.getElementById('bcl').addEventListener('click',()=>{S.emps.clear();S.ufs.clear();S.gras.clear();S.ramos.clear();S.meses.clear();S.graView='grupamento';document.querySelectorAll('.bp[data-p]').forEach(x=>x.classList.remove('on'));document.querySelector('[data-p="last12"]').classList.add('on');S.period='last12';['q-emp','q-gra','q-ramo','dre-srch'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});renderAll();});
+  document.getElementById('bcl').addEventListener('click',()=>{S.emps.clear();S.ufs.clear();S.gras.clear();S.ramos.clear();S.meses.clear();S.graView='grupamento';S.riskOnly=false;const br=document.getElementById('brisk');if(br){br.classList.remove('on');br.textContent='Mercado: total';}document.querySelectorAll('.bp[data-p]').forEach(x=>x.classList.remove('on'));document.querySelector('[data-p="last12"]').classList.add('on');S.period='last12';['q-emp','q-gra','q-ramo','dre-srch'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});renderAll();});
 }
 async function initData(data){parse(data);setup();
   document.getElementById('app').style.display='block';document.getElementById('loader').classList.add('out');
