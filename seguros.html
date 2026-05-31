@@ -460,33 +460,45 @@ function marketTotals(){
 let _AN=null;
 function analytics(){
   if(_AN)return _AN;
-  const n=DIM.meses.length, inL=m=>m>=n-12, inP=m=>m>=n-24&&m<n-12;
+  const n=DIM.meses.length,inL=m=>m>=n-12,inP=m=>m>=n-24&&m<n-12;
   const nE=DIM.empresa.nome.length,nG=DIM.grupamento.nome.length,nU=DIM.uf.length;
   const empL=new Float64Array(nE),empP=new Float64Array(nE),empS=new Float64Array(nE);
-  const empGra=Array.from({length:nE},()=>({}));
+  const empGra=Array.from({length:nE},()=>({})),empRamo=Array.from({length:nE},()=>({}));
   const graL=new Float64Array(nG),graP=new Float64Array(nG),graS=new Float64Array(nG);
-  const graEmp=Array.from({length:nG},()=>({})),graEmpP=Array.from({length:nG},()=>({}));
-  const ufL=new Float64Array(nU),ufP=new Float64Array(nU),ufS=new Float64Array(nU);
-  const ufGra=Array.from({length:nU},()=>({})),ufEmp=Array.from({length:nU},()=>({}));
-  const graUf=Array.from({length:nG},()=>({}));
+  const ufL=new Float64Array(nU),ufEmp=Array.from({length:nU},()=>({}));
   for(let i=0;i<G_mes.length;i++){
     const m=G_mes[i],L=inL(m),Pp=inP(m);if(!L&&!Pp)continue;
-    const emp=G_emp[i],uf=G_uf[i],gi=ramoGru[G_ramo[i]],pd=G_pdir[i],sd=G_sdir[i];
-    if(L){empL[emp]+=pd;empS[emp]+=sd;empGra[emp][gi]=(empGra[emp][gi]||0)+pd;
-      graL[gi]+=pd;graS[gi]+=sd;graEmp[gi][emp]=(graEmp[gi][emp]||0)+pd;
-      ufL[uf]+=pd;ufS[uf]+=sd;ufGra[uf][gi]=(ufGra[uf][gi]||0)+pd;ufEmp[uf][emp]=(ufEmp[uf][emp]||0)+pd;
-      const gu=graUf[gi];if(!gu[uf])gu[uf]={p:0,s:0};gu[uf].p+=pd;gu[uf].s+=sd;
-    }else{empP[emp]+=pd;graP[gi]+=pd;ufP[uf]+=pd;graEmpP[gi][emp]=(graEmpP[gi][emp]||0)+pd;}
+    const emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
+    if(L){empL[emp]+=pd;empS[emp]+=sd;empGra[emp][gi]=(empGra[emp][gi]||0)+pd;empRamo[emp][ri]=(empRamo[emp][ri]||0)+pd;
+      graL[gi]+=pd;graS[gi]+=sd;ufL[uf]+=pd;ufEmp[uf][emp]=(ufEmp[uf][emp]||0)+pd;}
+    else{empP[emp]+=pd;graP[gi]+=pd;}
   }
   const empDom=new Int16Array(nE).fill(-1);
   for(let e=0;e<nE;e++){let b=-1,bv=-1;for(const gi in empGra[e])if(empGra[e][gi]>bv){bv=empGra[e][gi];b=+gi;}empDom[e]=b;}
   const empCP=new Float64Array(nE),empCD=new Float64Array(nE),graCP=new Float64Array(nG),graCD=new Float64Array(nG);
   for(let i=0;i<E_mes.length;i++){if(!inL(E_mes[i]))continue;const e=E_emp[i],gi=ramoGru[E_ramo[i]];empCP[e]+=E_pdir[i];empCD[e]+=E_dcom[i];graCP[gi]+=E_pdir[i];graCD[gi]+=E_dcom[i];}
-  _AN={empL,empP,empS,empGra,empDom,empCP,empCD,graL,graP,graS,graEmp,graEmpP,graCP,graCD,ufL,ufP,ufS,ufGra,ufEmp,graUf};
+  _AN={empL,empP,empS,empGra,empRamo,empDom,empCP,empCD,graL,graP,graS,graCP,graCD,ufL,ufEmp};
   return _AN;
 }
 const median=a=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
 const hhiOf=obj=>{let t=0;for(const k in obj)t+=obj[k];if(!t)return 0;let h=0;for(const k in obj)h+=(obj[k]/t)**2;return Math.round(h*1e4);};
+function windows(){
+  const n=DIM.meses.length;let cur;
+  if(S.meses.size)cur=new Set([...S.meses].filter(i=>i>=0&&i<n));
+  else if(S.period==='prev12'){cur=new Set();for(let i=n-24;i<n-12;i++)if(i>=0)cur.add(i);}
+  else if(S.period==='all24'){cur=new Set();for(let i=0;i<n;i++)cur.add(i);}
+  else{cur=new Set();for(let i=n-12;i<n;i++)cur.add(i);}
+  const pri=new Set();cur.forEach(i=>{if(i-12>=0)pri.add(i-12);});
+  const yoyOK=pri.size>0&&pri.size===cur.size;
+  return {cur,pri,yoyOK};
+}
+function winLabel(){
+  if(S.meses.size){const ms=[...S.meses].sort((a,b)=>a-b).map(i=>{const v=''+DIM.meses[i];return v.slice(4)+'/'+v.slice(0,4);});
+    return `${ms.length===1?ms[0]:ms[0]+'–'+ms[ms.length-1]} vs. mesmo período do ano anterior`;}
+  if(S.period==='prev12')return '12 meses anteriores';
+  if(S.period==='all24')return '24 meses (sem comparativo anual)';
+  return 'últimos 12 meses vs. 12 anteriores';
+}
 
 function renderInsights(){
   const el=document.getElementById('insights');if(!el)return;
@@ -495,29 +507,43 @@ function renderInsights(){
   const P=x=>(x>=0?'+':'')+x.toFixed(1)+'%',BI=x=>(x/1e6).toFixed(1),N1=x=>x.toFixed(1),N0=x=>Math.round(x).toLocaleString('pt-BR');
   const kv=(v,l)=>`<div class="ins-kv"><b>${v}</b><span>${l}</span></div>`;
   const card=c=>`<div class="ins" style="--ic:${c.ic}"><div class="ins-tag">${c.tag}</div>${c.verdict||''}<div class="ins-h">${c.h}</div>${c.m?`<div class="ins-m">${c.m}</div>`:''}${c.list||''}${c.p?`<div class="ins-p">${c.p}</div>`:''}</div>`;
-  const wrap=(sub,cards)=>{el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">${sub}</div><div class="ins-grid">`+cards.map(card).join('')+`</div>`;};
-  const filtered=S.emps.size||S.ufs.size||S.gras.size||S.ramos.size;
+  const wrap=(sub,cards)=>{el.innerHTML=`<span class="ct">Leitura do Mercado</span><div class="ins-sub">${sub}</div><div class="ins-grid">`+cards.filter(Boolean).map(card).join('')+`</div>`;};
+  const mtRows=(arr,cols)=>`<table class="ins-mt">${cols}${arr.join('')}</table>`;
+  const rowBar=(arr,total,color,nameFn)=>arr.map(([k,v])=>`<div class="ins-row"><span class="nm2" title="${String(nameFn(k)).replace(/"/g,'&quot;')}">${nameFn(k)}</span><div class="bar2"><i style="width:${(v/total*100).toFixed(0)}%;background:${color}"></i></div><b>${(v/total*100).toFixed(0)}%</b></div>`).join('');
+  // card de ramos em alta/baixa a partir de um Map(ramo->{pL,pP})
+  const emergCard=(map,totalP,tag)=>{
+    const arr=[];map.forEach((v,r)=>{if(v.pL>totalP*0.008&&v.pP>0)arr.push({r,g:(v.pL-v.pP)/v.pP*100,p:v.pL});});
+    if(arr.length<3)return null;arr.sort((a,b)=>b.g-a.g);
+    const up=arr.slice(0,4).filter(x=>x.g>0),down=arr.slice(-4).reverse().filter(x=>x.g<0);
+    const r=[];up.forEach(x=>r.push(`<tr><td class="nm3" title="${DIM.ramo.nome[x.r]}">▲ ${short(DIM.ramo.nome[x.r],24)}</td><td class="n pos">${P(x.g)}</td></tr>`));
+    down.forEach(x=>r.push(`<tr><td class="nm3" title="${DIM.ramo.nome[x.r]}">▼ ${short(DIM.ramo.nome[x.r],24)}</td><td class="n neg">${P(x.g)}</td></tr>`));
+    return {ic:'var(--v)',tag:tag,h:'Ramos ganhando força e perdendo interesse',
+      list:mtRows(r,'<tr><th class="l">Ramo</th><th>Crescimento</th></tr>'),
+      p:'Verde sobe, vermelho cai (apenas ramos com tamanho relevante). Mostra para onde a demanda está migrando — e de onde está saindo.'};};
+
+  const filtered=S.emps.size||S.ufs.size||S.gras.size||S.ramos.size||S.meses.size;
 
   // ============ PANORAMA GERAL ============
   if(!filtered){
     const inL=m=>m>=n-12,inP=m=>m>=n-24&&m<n-12;
     const gF=s=>DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes(s)),rF=s=>DIM.ramo.nome.findIndex(x=>x.toLowerCase().includes(s));
     const giInd=gF('individual'),giAuto=gF('autom'),giPat=gF('patrimonial'),giRF=gF('financeiro'),riFL=rF('locat');
-    let mL=0,mP=0,sL=0;const gL={},gP={},gS={},empL={};
-    for(let i=0;i<G_mes.length;i++){const m=G_mes[i],g=ramoGru[G_ramo[i]],pd=G_pdir[i],sd=G_sdir[i];
-      if(inL(m)){mL+=pd;sL+=sd;gL[g]=(gL[g]||0)+pd;gS[g]=(gS[g]||0)+sd;empL[G_emp[i]]=(empL[G_emp[i]]||0)+pd;}
-      else if(inP(m)){mP+=pd;gP[g]=(gP[g]||0)+pd;}}
+    let mL=0,mP=0,sL=0;const gL={},gP={},gS={},empL={},byR=new Map();
+    for(let i=0;i<G_mes.length;i++){const m=G_mes[i],g=ramoGru[G_ramo[i]],ri=G_ramo[i],pd=G_pdir[i],sd=G_sdir[i];
+      let e=byR.get(ri);if(!e){e={pL:0,pP:0};byR.set(ri,e);}
+      if(inL(m)){mL+=pd;sL+=sd;gL[g]=(gL[g]||0)+pd;gS[g]=(gS[g]||0)+sd;empL[G_emp[i]]=(empL[G_emp[i]]||0)+pd;e.pL+=pd;}
+      else if(inP(m)){mP+=pd;gP[g]=(gP[g]||0)+pd;e.pP+=pd;}}
     let flL=0,flP=0,flS=0;
     for(let i=0;i<G_mes.length;i++){if(G_ramo[i]!==riFL)continue;const m=G_mes[i];if(inL(m)){flL+=G_pdir[i];flS+=G_sdir[i];}else if(inP(m))flP+=G_pdir[i];}
     let resFin=0,resPat=0,oper=0,luc=0;
     for(const k in DRE.empresas){const a=DRE.empresas[k];resFin+=a[6]||0;resPat+=a[7]||0;oper+=a[8]||0;luc+=a[DRE.lucro_idx]||0;}
     let hhi=0;const emps=Object.values(empL).sort((a,b)=>b-a);
-    const cr5=emps.slice(0,5).reduce((s,v)=>s+v,0)/(mL||1)*100;
-    for(const v of emps)hhi+=(v/(mL||1))**2;hhi=Math.round(hhi*1e4);
+    const cr5=emps.slice(0,5).reduce((s,v)=>s+v,0)/(mL||1)*100;for(const v of emps)hhi+=(v/(mL||1))**2;hhi=Math.round(hhi*1e4);
     const finPct=luc?resFin/luc*100:0,subs=oper-resFin-resPat;
-    wrap('Análise automática sobre a base — recalcula com os dados. Clique em qualquer seguradora, grupo, ramo ou UF para a análise aprofundada do recorte.',[
+    wrap('Análise automática sobre a base — recalcula com os dados. Clique em qualquer seguradora, grupo, ramo, UF ou mês para a análise aprofundada do recorte.',[
       {ic:'var(--v)',tag:'Tendência',h:'O mercado não encolheu — o VGBL encolheu',m:kv(P(yoy(mL,mP)),'Mercado')+kv(P(yoy(gL[giInd]||0,gP[giInd]||0)),'Pessoas Indiv.')+kv(P(yoy(gL[giAuto]||0,gP[giAuto]||0)),'Automóvel'),p:'A queda do prêmio total vem de Pessoas Individual, essencialmente VGBL — acumulação, não risco. O seguro de risco (auto, patrimonial, habitacional) cresceu no período. Confundir poupança com seguro distorce a leitura.'},
       {ic:'var(--r)',tag:'Risco',h:`Sinistralidade global de ${N1(sL/(mL||1)*100)}% não diz nada`,m:kv(N1(sL/(mL||1)*100)+'%','Global')+kv(N1((gS[giAuto]||0)/(gL[giAuto]||1)*100)+'%','Automóvel'),p:'Metade do prêmio é vida e previdência, com sinistro perto de zero. A média mistura acumulação com risco e esconde o sinistro real — auto passa de 60%, transportes e marítimos acima de 50%.'},
+      emergCard(byR,mL,'Movimento de mercado'),
       {ic:'var(--g)',tag:'Rentabilidade',h:'Mais da metade do lucro vem do juro, não da subscrição',m:kv('R$ '+BI(luc)+' bi','Lucro líquido')+kv(N1(finPct)+'%','Financeiro / lucro')+kv('R$ '+BI(subs)+' bi','Subscrição'),p:'O resultado financeiro somado ao patrimonial supera o resultado de subscrição. O setor é alavancado em Selic: ganha mais aplicando a reserva do que vendendo seguro.'},
       {ic:'var(--b)',tag:'Concentração',h:'Dois mercados sob o mesmo rótulo',m:kv(hhi.toLocaleString('pt-BR'),'Índice HHI')+kv(N1(cr5)+'%','5 maiores'),p:'O topo são bancos vendendo previdência (Bradesco, Brasilprev, Caixa). O risco é liderado por Porto, Tokio Marine e Allianz. Bancassurance de acumulação e seguradora de risco são jogos distintos.'},
       {ic:'var(--v)',tag:'Crescimento',h:'A fronteira está nas garantias, não no auto',m:kv(P(yoy(gL[giRF]||0,gP[giRF]||0)),'Riscos Financ.')+kv(P(yoy(flL,flP)),'Fiança Locatícia')+kv(P(yoy(gL[giPat]||0,gP[giPat]||0)),'Patrimonial'),p:`Fiança locatícia (R$ ${BI(flL)} bi, sinistro ${N1(flS/(flL||1)*100)}%) e patrimonial crescem rápido com sinistralidade controlada. O auto cresce, mas opera no vermelho da subscrição — vive do float.`},
@@ -527,21 +553,23 @@ function renderInsights(){
   }
 
   // ============ RECORTE ============
-  const inL=m=>m>=n-12,inP=m=>m>=n-24&&m<n-12;
-  const an=analytics(),mkt=marketTotals(),sinMkt=mkt.sL/(mkt.pL||1)*100;
+  const an=analytics(),{cur,pri,yoyOK}=windows();
+  const defWin=!S.meses.size&&S.period==='last12';
   const ufiSel=S.ufs.size?new Set([...S.ufs].map(u=>ufRev[u]).filter(x=>x!=null)):null;
   const passDim=(emp,uf,gi,ri)=>(!S.emps.size||S.emps.has(emp))&&(!ufiSel||ufiSel.has(uf))&&(!S.gras.size||S.gras.has(gi))&&(!S.ramos.size||S.ramos.has(ri));
-  let pL=0,pP=0,sL=0,m3=0,m6=0;const byEmp=new Map(),byGra=new Map(),byUf=new Map();
-  const acc=(map,k,pd,sd,L)=>{let e=map.get(k);if(!e){e={pL:0,pP:0,sL:0};map.set(k,e);}if(L){e.pL+=pd;e.sL+=sd;}else e.pP+=pd;};
-  for(let i=0;i<G_mes.length;i++){const m=G_mes[i],L=inL(m),Pp=inP(m);if(!L&&!Pp)continue;
+  let pL=0,pP=0,sL=0,mCur=0,mPri=0,sMkt=0,m3=0,m6=0;
+  const byEmp=new Map(),byGra=new Map(),byUf=new Map(),byRamo=new Map();
+  const acc=(map,k,pd,sd,C)=>{let e=map.get(k);if(!e){e={pL:0,pP:0,sL:0};map.set(k,e);}if(C){e.pL+=pd;e.sL+=sd;}else e.pP+=pd;};
+  for(let i=0;i<G_mes.length;i++){const m=G_mes[i],C=cur.has(m),Pp=pri.has(m);if(!C&&!Pp)continue;
     const emp=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
+    if(C){mCur+=pd;sMkt+=sd;}if(Pp)mPri+=pd;
     if(!passDim(emp,uf,gi,ri))continue;
-    if(L){pL+=pd;sL+=sd;if(m>=n-3)m3+=pd;else if(m>=n-6)m6+=pd;}else pP+=pd;
-    acc(byEmp,emp,pd,sd,L);acc(byGra,gi,pd,sd,L);acc(byUf,uf,pd,sd,L);}
+    if(C){pL+=pd;sL+=sd;if(m>=n-3)m3+=pd;else if(m>=n-6)m6+=pd;}else if(Pp)pP+=pd;
+    acc(byEmp,emp,pd,sd,C);acc(byGra,gi,pd,sd,C);acc(byUf,uf,pd,sd,C);acc(byRamo,ri,pd,sd,C);}
   let cP=0,cD=0,comOK=!S.ufs.size;
-  if(comOK)for(let i=0;i<E_mes.length;i++){const m=E_mes[i];if(!inL(m))continue;const emp=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
+  if(comOK)for(let i=0;i<E_mes.length;i++){const m=E_mes[i];if(!cur.has(m))continue;const emp=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
     if(S.emps.size&&!S.emps.has(emp))continue;if(S.gras.size&&!S.gras.has(gi))continue;if(S.ramos.size&&!S.ramos.has(ri))continue;cP+=E_pdir[i];cD+=E_dcom[i];}
-  const share=pL/(mkt.pL||1)*100,sin=sL/(pL||1)*100,growth=yoy(pL,pP),com=cP?cD/cP*100:0,mom=m6?(m3-m6)/m6*100:0;
+  const share=pL/(mCur||1)*100,sin=sL/(pL||1)*100,growth=yoyOK?yoy(pL,pP):null,com=cP?cD/cP*100:0,mom=m6?(m3-m6)/m6*100:0,sinMkt=sMkt/(mCur||1)*100;
 
   const lab=[];
   if(S.emps.size)lab.push([...S.emps].map(e=>DIM.empresa.nome[e]).join(' + '));
@@ -551,165 +579,151 @@ function renderInsights(){
   let label=lab.join(' · ');if(label.length>70)label=label.slice(0,68)+'…';
   const isEmp=S.emps.size>0,isSeg=S.gras.size>0||S.ramos.size>0,isUf=S.ufs.size>0;
   const cards=[];
-  const mtRows=(arr,cols)=>`<table class="ins-mt">${cols}${arr.join('')}</table>`;
-  const rowBar=(arr,total,color,nameFn)=>arr.map(([k,v])=>`<div class="ins-row"><span class="nm2" title="${String(nameFn(k)).replace(/"/g,'&quot;')}">${nameFn(k)}</span><div class="bar2"><i style="width:${(v/total*100).toFixed(0)}%;background:${color}"></i></div><b>${(v/total*100).toFixed(0)}%</b></div>`).join('');
 
-  // ---- CARD 1: PANORAMA ----
-  let m1=kv('R$ '+BI(pL)+' bi','Prêmio 12m')+kv(N1(share)+'%','Share mercado')+kv(P(growth),'YoY')+kv(P(mom),'Momento (tri.)')+kv(N1(sin)+'%','Sinistralidade');
+  // ---- PANORAMA ----
+  let m1=kv('R$ '+BI(pL)+' bi','Prêmio')+kv(N1(share)+'%','Share mercado')+(growth!=null?kv(P(growth),'YoY'):'')+(defWin?kv(P(mom),'Momento (tri.)'):'')+kv(N1(sin)+'%','Sinistralidade');
   if(comOK)m1+=kv(N1(com)+'%','Comissão');
-  let p1=`Representa ${N1(share)}% do prêmio do mercado e ${growth>=0?'cresceu':'recuou'} ${N1(Math.abs(growth))}% no ano. `;
-  p1+=`Momento recente (último trimestre vs. anterior): ${P(mom)} — ${mom>growth+3?'acelerando':mom<growth-3?'desacelerando':'estável'}. `;
-  p1+=`Sinistralidade ${N1(sin)}%, ${sin<sinMkt?'abaixo':'acima'} da média de mercado (${N1(sinMkt)}%).`;
+  let p1=`Representa ${N1(share)}% do prêmio do mercado${growth!=null?` e ${growth>=0?'cresceu':'recuou'} ${N1(Math.abs(growth))}% sobre o mesmo período do ano anterior`:''}. `;
+  if(defWin)p1+=`Momento recente: ${P(mom)} — ${mom>(growth||0)+3?'acelerando':mom<(growth||0)-3?'desacelerando':'estável'}. `;
+  p1+=`Sinistralidade ${N1(sin)}%, ${sin<sinMkt?'abaixo':'acima'} da média do mercado no período (${N1(sinMkt)}%).`;
   cards.push({ic:'var(--b)',tag:'Recorte selecionado',h:label||'Seleção',m:m1,p:p1});
 
   // ================= SEGURADORA =================
   if(isEmp){
     const E=[...S.emps];
-    // métricas por empresa
     const met=e=>{const p=an.empL[e],s=an.empS[e],sn=p?s/p*100:0,cm=an.empCP[e]?an.empCD[e]/an.empCP[e]*100:0,gr=an.empP[e]?(an.empL[e]-an.empP[e])/an.empP[e]*100:0;
       const a=DRE.empresas[e],prem=a?a[DRE.premio_idx]:0,luc=a?a[DRE.lucro_idx]:0,fin=a?a[6]:0,pl=DRE.pl[e]||0,adm=a&&prem?Math.abs(a[4])/prem*100:0;
       return {p,sn,cm,gr,prem,luc,fin,pl,adm,margem:prem?luc/prem*100:0,roe:pl?luc/pl*100:0,finPct:luc?fin/luc*100:0,cr:sn+cm+adm};};
     const me=met(E[0]);
-    // BENCHMARK (só com 1 seguradora, contra pares do segmento dominante)
-    if(E.length===1){
-      const dom=an.empDom[E[0]];
-      const peers=[];for(let pe=0;pe<an.empL.length;pe++)if(pe!==E[0]&&an.empDom[pe]===dom&&an.empL[pe]>mkt.pL*0.002)peers.push(pe);
-      if(peers.length>=3){
-        const pm=peers.map(met);
-        const medSin=median(pm.map(x=>x.sn)),medCom=median(pm.map(x=>x.cm)),medGr=median(pm.map(x=>x.gr)),medRoe=median(pm.filter(x=>x.pl).map(x=>x.roe)),medMar=median(pm.map(x=>x.margem));
-        const cmp=(lb,v,med,inv,suf='%')=>{const mx=Math.max(v,med,1)*1.25;const c=inv?(v<med?'var(--v)':'var(--r)'):(v>med?'var(--v)':'var(--r)');
-          return `<div class="ins-cmp"><span class="lb">${lb}</span><div class="track"><i style="left:0;width:${Math.max(2,Math.min(100,v/mx*100))}%;background:${c}"></i><div class="med" style="left:${Math.min(100,med/mx*100)}%"></div></div><b>${N1(v)}${suf}</b></div>`;};
-        const better=[me.sn<medSin,me.cm<medCom,me.gr>medGr,me.margem>medMar].filter(Boolean).length;
-        const vd=better>=3?['var(--v2)','var(--v)','Acima dos pares']:better<=1?['rgba(255,61,90,.16)','var(--r)','Atrás dos pares']:['rgba(255,184,48,.16)','var(--g)','Na média'];
-        cards.push({ic:'var(--b)',tag:`Benchmark · ${peers.length} pares em ${short(DIM.grupamento.nome[dom],20)}`,
-          verdict:`<span class="ins-verdict" style="background:${vd[0]};color:${vd[1]}">${vd[2]}</span>`,
-          h:'Como se compara aos concorrentes diretos',
-          list:cmp('Sinistralidade',me.sn,medSin,true)+cmp('Comissão',me.cm,medCom,true)+cmp('Crescimento',me.gr,medGr,false)+(me.pl?cmp('ROE',me.roe,medRoe,false):'')+`<div style="font-size:.5rem;color:#7a83a6;margin-top:.2rem">barra = a seguradora · traço = mediana dos pares · verde = melhor</div>`,
-          p:`Pares = ${peers.length} seguradoras com o mesmo segmento dominante. Verde indica vantagem competitiva; vermelho, desvantagem (em sinistralidade e comissão, menor é melhor).`});
-      }
-    }
-    // QUALIDADE DO LUCRO / ÍNDICE COMBINADO
+    // CONCORRENTES DIRETOS (sobreposição de ramos)
+    if(E.length===1){const e=E[0],er=an.empRamo[e];
+      const sc=[];for(let c=0;c<an.empL.length;c++){if(c===e||!an.empL[c])continue;let ov=0;for(const r in er){const b=an.empRamo[c][r];if(b)ov+=Math.min(er[r],b);}if(ov>0)sc.push({c,ov});}
+      sc.sort((a,b)=>b.ov-a.ov);const top=sc.slice(0,5);
+      if(top.length){const eg=an.empP[e]?(an.empL[e]-an.empP[e])/an.empP[e]*100:0,es=an.empL[e]?an.empS[e]/an.empL[e]*100:0;
+        const rows=top.map(({c})=>{const cr=an.empRamo[c],sr=Object.keys(er).filter(r=>cr[r]).map(r=>({r:+r,mn:Math.min(er[r],cr[r])})).sort((a,b)=>b.mn-a.mn).slice(0,2).map(x=>short(DIM.ramo.nome[x.r],16)).join(', ');
+          const cg=an.empP[c]?(an.empL[c]-an.empP[c])/an.empP[c]*100:0,cs=an.empL[c]?an.empS[c]/an.empL[c]*100:0;
+          let tag,cls;if(cg>eg+3&&cs<=es+5){tag='ameaça';cls='neg';}else if(eg>cg+3||es<cs-5){tag='alvo';cls='pos';}else{tag='páreo';cls='';}
+          return `<tr><td class="nm3" title="${DIM.empresa.nome[c]}">${short(DIM.empresa.nome[c],20)}</td><td class="nm3" style="width:34%" title="${sr}">${sr}</td><td class="n ${cls}">${tag}</td></tr>`;});
+        cards.push({ic:'var(--r)',tag:'Concorrentes diretos',h:'Quem disputa sua carteira — e em quais ramos',
+          list:mtRows(rows,'<tr><th class="l">Seguradora</th><th class="l">Compete em</th><th>Direção</th></tr>'),
+          p:'Ordenado pela sobreposição real de carteira (mesmos ramos). <b>Ameaça</b> = cresce mais rápido com sinistralidade igual ou melhor (pode tomar seu espaço). <b>Alvo</b> = você cresce mais ou tem risco melhor (pode tomar o dele). <b>Páreo</b> = equilíbrio.'});}}
+    // BENCHMARK (pares ou, se poucos, contra o segmento)
+    if(E.length===1){const e=E[0],dom=an.empDom[e];
+      const peers=[];for(let pe=0;pe<an.empL.length;pe++)if(pe!==e&&an.empDom[pe]===dom&&an.empL[pe]>0)peers.push(pe);
+      const cmp=(lb,v,med,inv,suf='%')=>{const mx=Math.max(v,med,1)*1.25,c=inv?(v<med?'var(--v)':'var(--r)'):(v>med?'var(--v)':'var(--r)');
+        return `<div class="ins-cmp"><span class="lb">${lb}</span><div class="track"><i style="left:0;width:${Math.max(2,Math.min(100,v/mx*100))}%;background:${c}"></i><div class="med" style="left:${Math.min(100,med/mx*100)}%"></div></div><b>${N1(v)}${suf}</b></div>`;};
+      let medSin,medCom,medGr,medRoe,tagTxt,note;
+      if(peers.length>=3){const pm=peers.map(met);medSin=median(pm.map(x=>x.sn));medCom=median(pm.map(x=>x.cm));medGr=median(pm.map(x=>x.gr));medRoe=median(pm.filter(x=>x.pl).map(x=>x.roe));
+        tagTxt=`Benchmark · ${peers.length} pares em ${short(DIM.grupamento.nome[dom],18)}`;note=`Pares = seguradoras com o mesmo segmento dominante (qualquer porte).`;}
+      else{medSin=an.graL[dom]?an.graS[dom]/an.graL[dom]*100:0;medCom=an.graCP[dom]?an.graCD[dom]/an.graCP[dom]*100:0;medGr=an.graP[dom]?(an.graL[dom]-an.graP[dom])/an.graP[dom]*100:0;medRoe=null;
+        tagTxt=`Benchmark vs. segmento ${short(DIM.grupamento.nome[dom],18)}`;note='Poucos pares diretos — comparação contra a média do segmento dominante.';}
+      const better=[me.sn<medSin,me.cm<medCom,me.gr>medGr].filter(Boolean).length;
+      const vd=better>=3?['var(--v2)','var(--v)','Acima da referência']:better<=1?['rgba(255,61,90,.16)','var(--r)','Atrás da referência']:['rgba(255,184,48,.16)','var(--g)','Na média'];
+      cards.push({ic:'var(--b)',tag:tagTxt,verdict:`<span class="ins-verdict" style="background:${vd[0]};color:${vd[1]}">${vd[2]}</span>`,
+        h:'Como se compara aos concorrentes',
+        list:cmp('Sinistralidade',me.sn,medSin,true)+cmp('Comissão',me.cm,medCom,true)+cmp('Crescimento',me.gr,medGr,false)+(medRoe!=null&&me.pl?cmp('ROE',me.roe,medRoe,false):'')+`<div style="font-size:.5rem;color:#7a83a6;margin-top:.2rem">barra = a seguradora · traço = referência · verde = melhor</div>`,
+        p:note+' Em sinistralidade e comissão, menor é melhor.'});}
+    // QUALIDADE DO LUCRO
     {const agg=E.map(met).reduce((o,x)=>({prem:o.prem+x.prem,luc:o.luc+x.luc,fin:o.fin+x.fin,pl:o.pl+x.pl}),{prem:0,luc:0,fin:0,pl:0});
      const margem=agg.prem?agg.luc/agg.prem*100:0,roe=agg.pl?agg.luc/agg.pl*100:0,finPct=agg.luc?agg.fin/agg.luc*100:0;
-     const cr=me.cr; const crBad=cr>100;
-     let m4=kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(margem)+'%','Margem líq.')+(agg.pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financ./lucro');
-     if(E.length===1)m4=kv(N1(me.cr)+'%','Índice combinado ~')+kv(N1(me.sn)+'%','Sinistro')+kv(N1(me.cm)+'%','Comissão')+kv(N1(me.adm)+'%','Desp. adm.')+kv(N1(me.finPct)+'%','Financ./lucro');
-     let p4=E.length===1?(crBad?`Índice combinado aproximado de ${N1(cr)}% (acima de 100%): a operação de seguro não cobre os próprios custos — o lucro vem do float (reserva aplicada na Selic). `:`Índice combinado aproximado de ${N1(cr)}% (abaixo de 100%): a subscrição se paga antes do resultado financeiro. `):'';
+     let m4=E.length===1?kv(N1(me.cr)+'%','Índice combinado ~')+kv(N1(me.sn)+'%','Sinistro')+kv(N1(me.cm)+'%','Comissão')+kv(N1(me.adm)+'%','Desp. adm.')+kv(N1(me.finPct)+'%','Financ./lucro'):kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(margem)+'%','Margem líq.')+(agg.pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financ./lucro');
+     let p4=E.length===1?(me.cr>100?`Índice combinado aproximado de ${N1(me.cr)}% (acima de 100%): a operação não cobre os próprios custos — o lucro vem do float. `:`Índice combinado aproximado de ${N1(me.cr)}% (abaixo de 100%): a subscrição se paga antes do resultado financeiro. `):'';
      p4+=finPct>50?'Mais da metade do lucro vem do resultado financeiro — dependência alta de juros.':finPct>0?'O resultado de subscrição sustenta parte relevante do lucro.':'';
-     cards.push({ic:'var(--g)',tag:'Qualidade do lucro',h:'Subscrição que se paga, ou aluguel da Selic?',m:m4,p:p4||'—'});}
-    // CONCENTRAÇÃO DA CARTEIRA
-    if(E.length===1){const e=E[0];const gh=hhiOf(an.empGra[e]);
+     cards.push({ic:'var(--g)',tag:'Qualidade do lucro',h:'Subscrição que se paga, ou aluguel da Selic?',m:m4,p:(p4||'—')+' <span style="color:#7a83a6">(DRE anual)</span>'});}
+    // CONCENTRAÇÃO
+    if(E.length===1){const e=E[0],gh=hhiOf(an.empGra[e]);
       const topG=Object.entries(an.empGra[e]).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      const ufObj=an.ufEmp; const myUf={};for(let u=0;u<DIM.uf.length;u++)if(ufObj[u][e])myUf[u]=ufObj[u][e];
-      const uh=hhiOf(myUf);const topU=Object.entries(myUf).sort((a,b)=>b[1]-a[1]).slice(0,3);
+      const myUf={};for(let u=0;u<DIM.uf.length;u++)if(an.ufEmp[u][e])myUf[u]=an.ufEmp[u][e];
+      const uh=hhiOf(myUf),topU=Object.entries(myUf).sort((a,b)=>b[1]-a[1]).slice(0,3);
       const conc=gh>4000?'muito concentrada':gh>2500?'concentrada':'diversificada';
       cards.push({ic:'var(--r)',tag:'Concentração da carteira',h:`Carteira ${conc} (HHI ${gh.toLocaleString('pt-BR')})`,
         list:rowBar(topG,an.empL[e],'var(--g)',k=>short(DIM.grupamento.nome[k],24))+`<div style="font-size:.5rem;color:#7a83a6;margin:.25rem 0 .15rem">geografia: ${topU.map(([u,v])=>DIM.uf[u]+' '+(v/an.empL[e]*100).toFixed(0)+'%').join(' · ')} (HHI geo ${uh.toLocaleString('pt-BR')})</div>`,
-        p:gh>2500?'Dependência alta de poucos ramos/estados: receita exposta a choque regulatório, climático ou de sinistralidade num único segmento. Diversificar reduz risco de cauda.':'Carteira pulverizada entre ramos e estados — menor risco de concentração, mas exige disciplina de pricing em várias frentes.'});}
+        p:gh>2500?'Dependência alta de poucos ramos/estados: receita exposta a choque num único segmento. Diversificar reduz risco de cauda.':'Carteira pulverizada — menor risco de concentração, mas exige disciplina de pricing em várias frentes.'});}
     // WHITESPACE
     if(E.length===1){const e=E[0],dom=an.empDom[e];
-      const peers=[];for(let pe=0;pe<an.empL.length;pe++)if(pe!==e&&an.empDom[pe]===dom&&an.empL[pe]>mkt.pL*0.002)peers.push(pe);
-      if(peers.length>=3){const ps={};peers.forEach(pe=>{const t=an.empL[pe]||1;for(const gi in an.empGra[pe])ps[gi]=(ps[gi]||0)+an.empGra[pe][gi]/t;});
-        for(const gi in ps)ps[gi]/=peers.length;
+      const peers=[];for(let pe=0;pe<an.empL.length;pe++)if(pe!==e&&an.empDom[pe]===dom&&an.empL[pe]>0)peers.push(pe);
+      if(peers.length>=3){const ps={};peers.forEach(pe=>{const t=an.empL[pe]||1;for(const gi in an.empGra[pe])ps[gi]=(ps[gi]||0)+an.empGra[pe][gi]/t;});for(const gi in ps)ps[gi]/=peers.length;
         const myT=an.empL[e]||1;
         const gaps=Object.keys(ps).map(gi=>({gi:+gi,gap:ps[gi]-(an.empGra[e][+gi]||0)/myT,sin:an.graL[gi]?an.graS[gi]/an.graL[gi]*100:0})).filter(x=>x.gap>0.03&&x.sin<55).sort((a,b)=>b.gap-a.gap).slice(0,4);
         if(gaps.length){const rows=gaps.map(g=>`<tr><td class="nm3" title="${DIM.grupamento.nome[g.gi]}">${short(DIM.grupamento.nome[g.gi],22)}</td><td class="n pos">+${(g.gap*100).toFixed(0)}pp</td><td class="n">${N1(g.sin)}%</td></tr>`);
-          cards.push({ic:'var(--v)',tag:'Whitespace · onde crescer',h:'Segmentos onde os pares estão e você não',
-            list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Gap vs pares</th><th>Sinist.</th></tr>'),
-            p:'Os pares alocam mais carteira nesses segmentos (gap em pontos percentuais) e a sinistralidade deles é controlada (<55%). São frentes naturais de expansão com risco conhecido.'});}}}
+          cards.push({ic:'var(--v)',tag:'Whitespace · onde crescer',h:'Segmentos onde os pares estão e você não',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Gap vs pares</th><th>Sinist.</th></tr>'),p:'Os pares alocam mais carteira nesses segmentos (gap em pontos percentuais) e a sinistralidade deles é controlada (<55%). Frentes naturais de expansão com risco conhecido.'});}}}
     // TRAJETÓRIA DE SHARE
-    {const shN=pL/(mkt.pL||1)*100,shP=pP/(mkt.pP||1)*100,d=shN-shP;
+    if(yoyOK){const shN=pL/(mCur||1)*100,shP=pP/(mPri||1)*100,d=shN-shP;
       cards.push({ic:'var(--b)',tag:'Trajetória de share',h:d>=0.1?'Ganhando terreno':d<=-0.1?'Cedendo terreno':'Share estável',
-        m:kv(N1(shP)+'%','Share 12m atrás')+kv(N1(shN)+'%','Share atual')+kv((d>=0?'+':'')+N1(d)+' pp','Variação'),
-        p:d>=0.1?`Ganhou ${N1(d)} ponto(s) de share — crescendo acima do mercado. Verifique no card de qualidade do lucro se o crescimento vem com margem ou comprando risco.`:d<=-0.1?`Perdeu ${N1(Math.abs(d))} ponto(s) de share — crescendo abaixo do mercado ou recuando. Avalie se é escolha (sair de risco ruim) ou perda competitiva.`:'Mantém posição relativa estável no mercado.'});}
+        m:kv(N1(shP)+'%','Share anterior')+kv(N1(shN)+'%','Share atual')+kv((d>=0?'+':'')+N1(d)+' pp','Variação'),
+        p:d>=0.1?`Ganhou ${N1(d)} ponto(s) de share. Veja no card de qualidade do lucro se o crescimento vem com margem ou comprando risco.`:d<=-0.1?`Perdeu ${N1(Math.abs(d))} ponto(s) de share. Avalie se é escolha (sair de risco ruim) ou perda competitiva.`:'Mantém posição relativa estável.'});}
   }
 
-  // ================= GRUPO DE RAMOS / RAMO =================
+  // ================= GRUPO / RAMO =================
   if(isSeg&&!isEmp){
-    const mkSin=sin,uwMargin=100-sin-(comOK?com:0);
-    // POOL DE LUCRO
+    const uwMargin=100-sin-(comOK?com:0);
     cards.push({ic:uwMargin>0?'var(--v)':'var(--r)',tag:'Pool de lucro',h:uwMargin>0?'Segmento com margem de subscrição':'Segmento no vermelho da subscrição',
       m:kv(N1(sin)+'%','Sinistralidade')+(comOK?kv(N1(com)+'%','Comissão'):'')+kv((uwMargin>=0?'+':'')+N1(uwMargin)+'%','Margem bruta ~'),
-      p:`Margem de subscrição aproximada (100 − sinistralidade ${comOK?'− comissão':''}) = ${N1(uwMargin)}%, antes de despesas administrativas. ${uwMargin>15?'Pool atrativo: sobra margem para operar com disciplina.':uwMargin>0?'Margem apertada: despesas administrativas podem consumir o resultado — só compensa com escala e eficiência.':'A operação não se paga; quem está aqui depende de float ou de seleção de risco muito acima da média.'}`});
-    // ESTRUTURA COMPETITIVA
+      p:`Margem aproximada (100 − sinistralidade ${comOK?'− comissão':''}) = ${N1(uwMargin)}%, antes de despesas administrativas. ${uwMargin>15?'Pool atrativo: sobra margem para operar com disciplina.':uwMargin>0?'Margem apertada: só compensa com escala e eficiência.':'A operação não se paga; quem está aqui depende de float ou seleção de risco muito acima da média.'}`});
     {const empNow={},empPrev={};byEmp.forEach((v,k)=>{if(v.pL)empNow[k]=v.pL;if(v.pP)empPrev[k]=v.pP;});
-     const hN=hhiOf(empNow),hP=hhiOf(empPrev);
-     const top=[...byEmp.entries()].sort((a,b)=>b[1].pL-a[1].pL).slice(0,5);
-     const cr5=top.reduce((s,x)=>s+x[1].pL,0)/(pL||1)*100;
-     const trend=hN>hP+150?'consolidando':hN<hP-150?'fragmentando':'estável';
-     cards.push({ic:'var(--b)',tag:'Estrutura competitiva',h:`Mercado ${trend} (HHI ${hN.toLocaleString('pt-BR')})`,
+     const hN=hhiOf(empNow),hP=hhiOf(empPrev),top=[...byEmp.entries()].sort((a,b)=>b[1].pL-a[1].pL).slice(0,5);
+     const cr5=top.reduce((s,x)=>s+x[1].pL,0)/(pL||1)*100,trend=yoyOK?(hN>hP+150?'consolidando':hN<hP-150?'fragmentando':'estável'):'';
+     cards.push({ic:'var(--b)',tag:'Estrutura competitiva',h:`Mercado ${trend||'concentração'} (HHI ${hN.toLocaleString('pt-BR')})`,
        list:rowBar(top.map(([k,v])=>[k,v.pL]),pL,'var(--v)',k=>short(DIM.empresa.nome[k],26)),
-       m:kv(N1(cr5)+'%','5 maiores')+kv((hN-hP>=0?'+':'')+N0(hN-hP),'Δ HHI 12m'),
-       p:trend==='consolidando'?'Concentração subindo: líderes ganhando escala, janela de entrada se fechando.':trend==='fragmentando'?'Concentração caindo: entrantes ganhando espaço — janela competitiva aberta.':'Equilíbrio estável entre os players.'});}
-    // CRESCIMENTO LUCRATIVO
+       m:kv(N1(cr5)+'%','5 maiores')+(yoyOK?kv((hN-hP>=0?'+':'')+N0(hN-hP),'Δ HHI'):''),
+       p:trend==='consolidando'?'Concentração subindo: líderes ganhando escala, janela de entrada se fechando.':trend==='fragmentando'?'Concentração caindo: entrantes ganhando espaço — janela aberta.':'Distribuição de mercado entre os principais players.'});}
     {const top=[...byEmp.entries()].filter(([k,v])=>v.pL>pL*0.02).sort((a,b)=>b[1].pL-a[1].pL).slice(0,6);
-     const rows=top.map(([k,v])=>{const g=v.pP?(v.pL-v.pP)/v.pP*100:0,sn=v.pL?v.sL/v.pL*100:0;
-       return `<tr><td class="nm3" title="${DIM.empresa.nome[k]}">${short(DIM.empresa.nome[k],22)}</td><td class="n ${g>=0?'pos':'neg'}">${P(g)}</td><td class="n ${sn>55?'neg':'pos'}">${N1(sn)}%</td></tr>`;});
-     cards.push({ic:'var(--g)',tag:'Crescimento lucrativo',h:'Quem cresce com risco bom — e quem compra risco ruim',
-       list:mtRows(rows,'<tr><th class="l">Seguradora</th><th>Crescimento</th><th>Sinist.</th></tr>'),
-       p:'Crescer com sinistralidade alta (vermelho) é comprar mercado a qualquer custo. Crescer com sinistralidade baixa (verde) é ganho de qualidade — o padrão a seguir ou a temer num concorrente.'});}
-    // DISPERSÃO
+     const rows=top.map(([k,v])=>{const g=v.pP?(v.pL-v.pP)/v.pP*100:0,sn=v.pL?v.sL/v.pL*100:0;return `<tr><td class="nm3" title="${DIM.empresa.nome[k]}">${short(DIM.empresa.nome[k],22)}</td><td class="n ${g>=0?'pos':'neg'}">${P(g)}</td><td class="n ${sn>55?'neg':'pos'}">${N1(sn)}%</td></tr>`;});
+     if(yoyOK)cards.push({ic:'var(--g)',tag:'Crescimento lucrativo',h:'Quem cresce com risco bom — e quem compra risco ruim',list:mtRows(rows,'<tr><th class="l">Seguradora</th><th>Crescimento</th><th>Sinist.</th></tr>'),p:'Crescer com sinistralidade alta (vermelho) é comprar mercado a qualquer custo. Crescer com sinistralidade baixa (verde) é ganho de qualidade.'});}
     {const arr=[...byEmp.values()].filter(v=>v.pL>pL*0.02).map(v=>v.sL/v.pL*100).filter(x=>x>0);
      if(arr.length>=3){const lo=Math.min(...arr),hi=Math.max(...arr),md=median(arr);
-       cards.push({ic:'var(--r)',tag:'Dispersão de risco',h:'O quanto o pricing diferencia neste segmento',
-         m:kv(N1(lo)+'%','Melhor underwriter')+kv(N1(md)+'%','Mediana')+kv(N1(hi)+'%','Pior'),
-         p:hi-lo>30?`Dispersão alta (${N1(hi-lo)} pontos entre o melhor e o pior): seleção de risco e pricing fazem enorme diferença aqui. Há espaço para um entrante disciplinado bater a média.`:`Dispersão baixa (${N1(hi-lo)} pontos): o risco é homogêneo, sobra pouca vantagem de seleção — a competição se dá em custo e distribuição.`});}}
-    // GEOGRAFIA DE OPORTUNIDADE (IBGE)
-    {const rows=[];byUf.forEach((v,u)=>{const sig=DIM.uf[u],ib=IBGE_UF[sig];if(!ib||!v.pL)return;
-       const pen=(v.pL/1e3)/ib.pib*100,sn=v.pL?v.sL/v.pL*100:0;rows.push({sig,pen,sn,p:v.pL});});
-     const natPen=(pL/1e3)/(Object.values(IBGE_UF).reduce((s,x)=>s+x.pib,0))*100; // não usado direto
-     // penetração média do segmento entre UFs com presença
+       cards.push({ic:'var(--r)',tag:'Dispersão de risco',h:'O quanto o pricing diferencia aqui',m:kv(N1(lo)+'%','Melhor')+kv(N1(md)+'%','Mediana')+kv(N1(hi)+'%','Pior'),
+         p:hi-lo>30?`Dispersão alta (${N1(hi-lo)} pontos entre melhor e pior): seleção de risco e pricing fazem enorme diferença. Espaço para um entrante disciplinado bater a média.`:`Dispersão baixa (${N1(hi-lo)} pontos): risco homogêneo, a competição se dá em custo e distribuição.`});}}
+    if(yoyOK)cards.push(emergCard(byRamo,pL,'Movimento interno'));
+    {const rows=[];byUf.forEach((v,u)=>{const sig=DIM.uf[u],ib=IBGE_UF[sig];if(!ib||!v.pL)return;rows.push({sig,pen:(v.pL/1e3)/ib.pib*100,sn:v.pL?v.sL/v.pL*100:0});});
      const avgPen=rows.length?rows.reduce((s,x)=>s+x.pen,0)/rows.length:0;
-     const opp=rows.filter(x=>x.pen<avgPen&&x.sn<55&&x.sn>0).sort((a,b)=>(a.pen/avgPen)-(b.pen/avgPen)).slice(0,5);
+     const opp=rows.filter(x=>x.pen<avgPen&&x.sn<55&&x.sn>0).sort((a,b)=>a.pen-b.pen).slice(0,5);
      if(opp.length){const r=opp.map(x=>`<tr><td class="nm3">${x.sig}</td><td class="n">${x.pen.toFixed(3)}%</td><td class="n ${x.sn>55?'neg':'pos'}">${N1(x.sn)}%</td></tr>`);
-       cards.push({ic:'var(--v)',tag:'Geografia de oportunidade · IBGE',h:'Estados subpenetrados com bom risco',
-         list:mtRows(r,'<tr><th class="l">Estado</th><th>Penetração</th><th>Sinist.</th></tr>'),
-         p:`Penetração = prêmio do segmento ÷ PIB do estado. Estes estão abaixo da média do segmento (${avgPen.toFixed(3)}% do PIB) e com sinistralidade controlada — demanda potencial pouco explorada. Cruzado com PIB IBGE 2023.`});}}
+       cards.push({ic:'var(--v)',tag:'Geografia de oportunidade · IBGE',h:'Estados subpenetrados com bom risco',list:mtRows(r,'<tr><th class="l">Estado</th><th>Penetração</th><th>Sinist.</th></tr>'),p:`Penetração = prêmio do segmento ÷ PIB do estado (IBGE 2023). Abaixo da média do segmento (${avgPen.toFixed(3)}%) e com sinistralidade controlada — demanda pouco explorada.`});}}
   }
 
   // ================= UF =================
   if(isUf&&!isEmp){
-    const sigs=[...S.ufs];
-    const pibTot=sigs.reduce((s,u)=>s+(IBGE_UF[u]?IBGE_UF[u].pib:0),0);
-    const popTot=sigs.reduce((s,u)=>s+(IBGE_UF[u]?IBGE_UF[u].pop:0),0);
-    // penetração risco (ex Pessoas Individual)
+    const sigs=[...S.ufs],pibTot=sigs.reduce((s,u)=>s+(IBGE_UF[u]?IBGE_UF[u].pib:0),0),popTot=sigs.reduce((s,u)=>s+(IBGE_UF[u]?IBGE_UF[u].pop:0),0);
     const giInd=DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes('individual'));
     let pRisk=0;byGra.forEach((v,g)=>{if(g!==giInd)pRisk+=v.pL;});
-    // PENETRAÇÃO & DENSIDADE
-    if(pibTot){const pen=(pL/1e3)/pibTot*100,penR=(pRisk/1e3)/pibTot*100,perc=popTot?(pL*1e3)/popTot:0;
-      // média nacional
-      const natPib=Object.values(IBGE_UF).reduce((s,x)=>s+x.pib,0),natPen=(mkt.pL/1e3)/natPib*100,natPerc=(mkt.pL*1e3)/Object.values(IBGE_UF).reduce((s,x)=>s+x.pop,0);
+    const uf12=sigs.reduce((s,u)=>{const ui=ufRev[u];return s+(ui!=null?an.ufL[ui]:0);},0);
+    if(pibTot&&uf12){const riskFrac=pL?pRisk/pL:1,pen=(uf12/1e3)/pibTot*100,penR=pen*riskFrac,perc=popTot?(uf12*1e3)/popTot:0;
+      const natPib=Object.values(IBGE_UF).reduce((s,x)=>s+x.pib,0),mkt=marketTotals(),natPen=(mkt.pL/1e3)/natPib*100,natPerc=(mkt.pL*1e3)/Object.values(IBGE_UF).reduce((s,x)=>s+x.pop,0);
       const sub=pen<natPen;
-      cards.push({ic:'var(--g)',tag:'Penetração & densidade · IBGE',h:sub?'Estado subpenetrado — demanda potencial':'Estado saturado em relação ao tamanho',
-        m:kv(N1(pen)+'%','Prêmio/PIB')+kv(N1(natPen)+'%','Média nacional')+kv('R$ '+N0(perc),'Prêmio/habitante')+kv('R$ '+N0(natPerc),'Média Brasil'),
-        p:`Prêmio total sobre PIB do estado: ${N1(pen)}% (Brasil: ${N1(natPen)}%). Excluindo VGBL/acumulação, a penetração de risco real é ${N1(penR)}%. ${sub?'Abaixo da média nacional: há demanda reprimida — mercado para crescer.':'Acima da média: mercado maduro, crescimento exige tirar share dos incumbentes.'} Densidade de R$ ${N0(perc)} por habitante. (PIB IBGE 2023, pop. Censo 2022.)`});}
-    // INTENSIDADE COMPETITIVA
-    {const empNow={};byEmp.forEach((v,k)=>{if(v.pL)empNow[k]=v.pL;});const h=hhiOf(empNow);
-     const top=[...byEmp.entries()].sort((a,b)=>b[1].pL-a[1].pL).slice(0,5);
+      cards.push({ic:'var(--g)',tag:'Penetração & densidade · IBGE',h:sub?'Estado subpenetrado — demanda potencial':'Estado saturado para o tamanho',
+        m:kv(N1(pen)+'%','Prêmio/PIB')+kv(N1(natPen)+'%','Média Brasil')+kv('R$ '+N0(perc),'Prêmio/hab.')+kv('R$ '+N0(natPerc),'Média Brasil'),
+        p:`Prêmio total sobre PIB: ${N1(pen)}% (Brasil ${N1(natPen)}%). Excluindo VGBL, a penetração de risco é ${N1(penR)}%. ${sub?'Abaixo da média nacional: há demanda reprimida — mercado para crescer.':'Acima da média: mercado maduro, crescer exige tirar share dos incumbentes.'} (PIB IBGE 2023, pop. Censo 2022.)`});}
+    {const empNow={};byEmp.forEach((v,k)=>{if(v.pL)empNow[k]=v.pL;});const h=hhiOf(empNow),top=[...byEmp.entries()].sort((a,b)=>b[1].pL-a[1].pL).slice(0,5);
      const frag=h<1000?'pulverizado':h<1800?'moderadamente concentrado':'concentrado';
      cards.push({ic:'var(--b)',tag:'Intensidade competitiva',h:`Mercado local ${frag} (HHI ${h.toLocaleString('pt-BR')})`,
        list:rowBar(top.map(([k,v])=>[k,v.pL]),pL,'var(--v)',k=>short(DIM.empresa.nome[k],26)),
-       p:h<1000?'Mercado fragmentado: nenhum dominante claro — entrada mais fácil para quem chega com proposta diferenciada.':h<1800?'Concentração moderada: dá para disputar, mas os líderes têm escala.':'Mercado concentrado: poucos dominam, entrada exige nicho ou preço agressivo.'});}
-    // SEGMENTOS SUBATENDIDOS
-    {const giInd2=DIM.grupamento.nome.findIndex(x=>x.toLowerCase().includes('individual'));
-     const rows=[];byGra.forEach((v,g)=>{const locShare=v.pL/(pL||1)*100,natShare=an.graL[g]/(mkt.pL||1)*100;
-       if(natShare>2)rows.push({g,locShare,natShare,gap:natShare-locShare});});
+       p:h<1000?'Fragmentado: nenhum dominante claro — entrada mais fácil com proposta diferenciada.':h<1800?'Concentração moderada: dá para disputar, mas líderes têm escala.':'Concentrado: poucos dominam, entrada exige nicho ou preço agressivo.'});}
+    if(yoyOK)cards.push(emergCard(byRamo,pL,'Oportunidades do estado'));
+    {const rows=[];byGra.forEach((v,g)=>{const locShare=v.pL/(pL||1)*100,natShare=an.graL[g]/(marketTotals().pL||1)*100;if(natShare>2)rows.push({g,locShare,natShare,gap:natShare-locShare});});
      const under=rows.filter(x=>x.gap>2).sort((a,b)=>b.gap-a.gap).slice(0,5);
      if(under.length){const r=under.map(x=>`<tr><td class="nm3" title="${DIM.grupamento.nome[x.g]}">${short(DIM.grupamento.nome[x.g],22)}</td><td class="n">${N1(x.locShare)}%</td><td class="n">${N1(x.natShare)}%</td></tr>`);
-       cards.push({ic:'var(--v)',tag:'Segmentos subatendidos',h:'O que se vende menos aqui que no Brasil',
-         list:mtRows(r,'<tr><th class="l">Grupo de ramos</th><th>No estado</th><th>Brasil</th></tr>'),
-         p:'Grupos com peso menor no estado do que na média nacional. Se a demanda econômica existe (ver penetração), são lacunas de oferta — espaço para crescer onde os incumbentes locais não chegaram.'});}}
+       cards.push({ic:'var(--v)',tag:'Segmentos subatendidos',h:'O que se vende menos aqui que no Brasil',list:mtRows(r,'<tr><th class="l">Grupo de ramos</th><th>No estado</th><th>Brasil</th></tr>'),p:'Grupos com peso menor no estado do que na média nacional. Se a demanda econômica existe (ver penetração), são lacunas de oferta — espaço onde os incumbentes locais não chegaram.'});}}
   }
 
-  // ---- LEITURA (sempre) ----
+  // ===== SÓ MÊS(ES) (sem dimensão) =====
+  if(!isEmp&&!isSeg&&!isUf){
+    const topE=[...byEmp.entries()].sort((a,b)=>b[1].pL-a[1].pL).slice(0,5);
+    if(topE.length>1)cards.push({ic:'var(--v)',tag:'Liderança no período',h:'Quem domina o período selecionado',list:rowBar(topE.map(([k,v])=>[k,v.pL]),pL,'var(--v)',k=>short(DIM.empresa.nome[k],26)),p:`Maiores seguradoras no período, entre ${byEmp.size} ativas.`});
+    const topG=[...byGra.entries()].sort((a,b)=>b[1].pL-a[1].pL).slice(0,6);
+    if(topG.length>1)cards.push({ic:'var(--g)',tag:'Composição',h:'Carteira por grupo de ramos no período',list:rowBar(topG.map(([k,v])=>[k,v.pL]),pL,'var(--g)',k=>short(DIM.grupamento.nome[k],24)),p:'Distribuição do prêmio do período entre os grupos de ramos.'});
+    if(yoyOK)cards.push(emergCard(byRamo,pL,'Movimento de mercado'));
+  }
+
+  // ---- LEITURA ----
   let leitura;
   if(sin<10)leitura='Perfil de acumulação (previdência / VGBL): sinistro baixo é a natureza do produto, não eficiência. A receita se comporta como captação e oscila com o mercado financeiro.';
-  else if(sin>55)leitura=`Risco de alta severidade: sinistralidade de ${N1(sin)}%${comOK?` somada a ${N1(com)}% de comissão`:''} deixa a margem de subscrição apertada ou negativa. O resultado depende do float.`;
+  else if(sin>55)leitura=`Risco de alta severidade: sinistralidade de ${N1(sin)}%${comOK?` somada a ${N1(com)}% de comissão`:''} deixa a margem apertada ou negativa. O resultado depende do float.`;
   else leitura=`Risco com sinistralidade controlada (${N1(sin)}%)${comOK?`, comissão de ${N1(com)}%`:''}. Há espaço de margem, desde que comissão e despesas administrativas não consumam o resultado.`;
-  if(growth>15)leitura+=' Em forte expansão — fronteira de crescimento.';else if(growth<-10)leitura+=' Em retração relevante no período.';
+  if(growth!=null){if(growth>15)leitura+=' Em forte expansão — fronteira de crescimento.';else if(growth<-10)leitura+=' Em retração relevante no período.';}
   cards.push({ic:'var(--r)',tag:'Leitura',h:'O que decidir a partir disto',p:leitura});
 
-  wrap(`Análise aprofundada do recorte · últimos 12 meses vs. 12 anteriores${S.ufs.size?' · comissão indisponível com filtro de UF':''}`,cards);
+  wrap(`Análise aprofundada do recorte · ${winLabel()}${S.ufs.size?' · comissão indisponível com filtro de UF':''} · benchmark e penetração em base anual/12m`,cards);
 }
 function renderAll(){renderKPIs();renderEmp();renderUF();renderGra();renderMes();renderDRE();renderPills();renderInsights();}
 
