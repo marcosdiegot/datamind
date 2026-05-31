@@ -659,14 +659,14 @@ function renderInsights(){
       cards.push({ic:'var(--r)',tag:'Concentração da carteira',h:`Carteira ${conc} (HHI ${gh.toLocaleString('pt-BR')})`,
         list:rowBar(topG,eL[e]||1,'var(--g)',k=>short(DIM.grupamento.nome[k],24))+`<div style="font-size:.5rem;color:#7a83a6;margin:.25rem 0 .15rem">geografia: ${topU.map(([u,v])=>DIM.uf[u]+' '+(v/(eL[e]||1)*100).toFixed(0)+'%').join(' · ')||'—'} (HHI geo ${uh.toLocaleString('pt-BR')})</div>`,
         p:gh>2500?'Dependência alta de poucos ramos/estados: receita exposta a choque num único segmento. Diversificar reduz risco de cauda.':'Carteira pulverizada — menor risco de concentração, mas exige disciplina de pricing em várias frentes.'});}
-    // WHITESPACE (janela)
+    // WHITESPACE (janela) — ponderado por prêmio dos pares
     if(E.length===1){const e=E[0],dom=eDom[e];
       const peers=[];for(let pe=0;pe<nE;pe++)if(pe!==e&&eDom[pe]===dom&&eL[pe]>0)peers.push(pe);
-      if(peers.length>=3){const ps={};peers.forEach(pe=>{const t=eL[pe]||1;for(const gi in eGra[pe])ps[gi]=(ps[gi]||0)+eGra[pe][gi]/t;});for(const gi in ps)ps[gi]/=peers.length;
+      if(peers.length>=3){const ps={};let tot=0;peers.forEach(pe=>{for(const gi in eGra[pe]){ps[gi]=(ps[gi]||0)+eGra[pe][gi];tot+=eGra[pe][gi];}});for(const gi in ps)ps[gi]/=(tot||1);
         const myT=eL[e]||1;
-        const gaps=Object.keys(ps).map(gi=>({gi:+gi,gap:ps[gi]-(eGra[e][+gi]||0)/myT,sin:gL[gi]?gS[gi]/gL[gi]*100:0})).filter(x=>x.gap>0.03&&x.sin<55).sort((a,b)=>b.gap-a.gap).slice(0,4);
-        if(gaps.length){const rows=gaps.map(g=>`<tr><td class="nm3" title="${DIM.grupamento.nome[g.gi]}">${short(DIM.grupamento.nome[g.gi],22)}</td><td class="n pos">+${(g.gap*100).toFixed(0)}pp</td><td class="n">${N1(g.sin)}%</td></tr>`);
-          cards.push({ic:'var(--v)',tag:'Whitespace · onde crescer',h:'Segmentos onde os pares estão e você não',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Gap vs pares</th><th>Sinist.</th></tr>'),p:`Os pares alocam mais carteira nesses segmentos${winTxt} (gap em pontos percentuais) e a sinistralidade deles é controlada (<55%). Frentes naturais de expansão com risco conhecido.`});}}}
+        const gaps=Object.keys(ps).map(gi=>({gi:+gi,my:(eGra[e][+gi]||0)/myT,peer:ps[gi],gap:ps[gi]-(eGra[e][+gi]||0)/myT,sin:gL[gi]?gS[gi]/gL[gi]*100:0})).filter(x=>x.gap>0.03&&x.sin<55).sort((a,b)=>b.gap-a.gap).slice(0,4);
+        if(gaps.length){const rows=gaps.map(g=>`<tr><td class="nm3" title="${DIM.grupamento.nome[g.gi]}">${short(DIM.grupamento.nome[g.gi],20)}</td><td class="n">${(g.my*100).toFixed(0)}%</td><td class="n pos">${(g.peer*100).toFixed(0)}%</td><td class="n">${N1(g.sin)}%</td></tr>`);
+          cards.push({ic:'var(--v)',tag:'Whitespace · onde crescer',h:'Segmentos onde os pares estão e você não',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Você</th><th>Pares</th><th>Sinist.</th></tr>'),p:`"Pares" = como o prêmio dos concorrentes do mesmo segmento dominante se distribui entre os grupos (ponderado por prêmio)${winTxt}. Onde eles alocam mais que você e a sinistralidade é controlada (<55%), há espaço de crescimento com risco conhecido.`});}}}
     // TRAJETÓRIA DE SHARE (janela)
     if(yoyOK){const shN=pL/(mCur||1)*100,shP=pP/(mPri||1)*100,d=shN-shP;
       cards.push({ic:'var(--b)',tag:'Trajetória de share',h:d>=0.1?'Ganhando terreno':d<=-0.1?'Cedendo terreno':'Share estável',
