@@ -595,67 +595,83 @@ function renderInsights(){
   // ================= SEGURADORA =================
   if(isEmp){
     const E=[...S.emps];
-    const met=e=>{const p=an.empL[e],s=an.empS[e],sn=p?s/p*100:0,cm=an.empCP[e]?an.empCD[e]/an.empCP[e]*100:0,gr=an.empP[e]?(an.empL[e]-an.empP[e])/an.empP[e]*100:0;
+    // analytics da JANELA selecionada (respeita tempo + filtros de UF/segmento/ramo; ignora filtro de seguradora para permitir comparação)
+    const nE=DIM.empresa.nome.length;
+    const eL=new Float64Array(nE),eP=new Float64Array(nE),eS=new Float64Array(nE);
+    const eRamo=Array.from({length:nE},()=>({})),eGra=Array.from({length:nE},()=>({})),eUf=Array.from({length:nE},()=>({}));
+    const gL={},gS={},gP={};
+    const passNoEmp=(uf,gi,ri)=>(!ufiSel||ufiSel.has(uf))&&(!S.gras.size||S.gras.has(gi))&&(!S.ramos.size||S.ramos.has(ri));
+    for(let i=0;i<G_mes.length;i++){const m=G_mes[i],C=cur.has(m),Pp=pri.has(m);if(!C&&!Pp)continue;
+      const e=G_emp[i],uf=G_uf[i],ri=G_ramo[i],gi=ramoGru[ri],pd=G_pdir[i],sd=G_sdir[i];
+      if(!passNoEmp(uf,gi,ri))continue;
+      if(C){eL[e]+=pd;eS[e]+=sd;eRamo[e][ri]=(eRamo[e][ri]||0)+pd;eGra[e][gi]=(eGra[e][gi]||0)+pd;eUf[e][uf]=(eUf[e][uf]||0)+pd;gL[gi]=(gL[gi]||0)+pd;gS[gi]=(gS[gi]||0)+sd;}
+      else{eP[e]+=pd;gP[gi]=(gP[gi]||0)+pd;}}
+    const comAvail=!S.ufs.size;const eCP=new Float64Array(nE),eCD=new Float64Array(nE),gCP={},gCD={};
+    if(comAvail)for(let i=0;i<E_mes.length;i++){const m=E_mes[i];if(!cur.has(m))continue;const e=E_emp[i],ri=E_ramo[i],gi=ramoGru[ri];
+      if(S.gras.size&&!S.gras.has(gi))continue;if(S.ramos.size&&!S.ramos.has(ri))continue;eCP[e]+=E_pdir[i];eCD[e]+=E_dcom[i];gCP[gi]=(gCP[gi]||0)+E_pdir[i];gCD[gi]=(gCD[gi]||0)+E_dcom[i];}
+    const eDom=new Int16Array(nE).fill(-1);
+    for(let e=0;e<nE;e++){let b=-1,bv=-1;for(const gi in eGra[e])if(eGra[e][gi]>bv){bv=eGra[e][gi];b=+gi;}eDom[e]=b;}
+    const winTxt=seq?' no período selecionado':'';
+    const met=e=>{const p=eL[e],s=eS[e],sn=p?s/p*100:0,cm=eCP[e]?eCD[e]/eCP[e]*100:0,gr=eP[e]?(eL[e]-eP[e])/eP[e]*100:0;
       const a=DRE.empresas[e],prem=a?a[DRE.premio_idx]:0,luc=a?a[DRE.lucro_idx]:0,fin=a?a[6]:0,pl=DRE.pl[e]||0,adm=a&&prem?Math.abs(a[4])/prem*100:0;
       return {p,sn,cm,gr,prem,luc,fin,pl,adm,margem:prem?luc/prem*100:0,roe:pl?luc/pl*100:0,finPct:luc?fin/luc*100:0,cr:sn+cm+adm};};
     const me=met(E[0]);
-    // CONCORRENTES DIRETOS (sobreposição de ramos)
-    if(E.length===1){const e=E[0],er=an.empRamo[e];
-      const sc=[];for(let c=0;c<an.empL.length;c++){if(c===e||!an.empL[c])continue;let ov=0;for(const r in er){const b=an.empRamo[c][r];if(b)ov+=Math.min(er[r],b);}if(ov>0)sc.push({c,ov});}
+    // CONCORRENTES DIRETOS (sobreposição de ramos na janela)
+    if(E.length===1){const e=E[0],er=eRamo[e];
+      const sc=[];for(let c=0;c<nE;c++){if(c===e||!eL[c])continue;let ov=0;for(const r in er){const b=eRamo[c][r];if(b)ov+=Math.min(er[r],b);}if(ov>0)sc.push({c,ov});}
       sc.sort((a,b)=>b.ov-a.ov);const top=sc.slice(0,5);
-      if(top.length){const eg=an.empP[e]?(an.empL[e]-an.empP[e])/an.empP[e]*100:0,es=an.empL[e]?an.empS[e]/an.empL[e]*100:0;
-        const rows=top.map(({c})=>{const cr=an.empRamo[c],sr=Object.keys(er).filter(r=>cr[r]).map(r=>({r:+r,mn:Math.min(er[r],cr[r])})).sort((a,b)=>b.mn-a.mn).slice(0,2).map(x=>short(DIM.ramo.nome[x.r],16)).join(', ');
-          const cg=an.empP[c]?(an.empL[c]-an.empP[c])/an.empP[c]*100:0,cs=an.empL[c]?an.empS[c]/an.empL[c]*100:0;
+      if(top.length){const eg=eP[e]?(eL[e]-eP[e])/eP[e]*100:0,es=eL[e]?eS[e]/eL[e]*100:0;
+        const rows=top.map(({c})=>{const cr=eRamo[c],sr=Object.keys(er).filter(r=>cr[r]).map(r=>({r:+r,mn:Math.min(er[r],cr[r])})).sort((a,b)=>b.mn-a.mn).slice(0,2).map(x=>short(DIM.ramo.nome[x.r],16)).join(', ');
+          const cg=eP[c]?(eL[c]-eP[c])/eP[c]*100:0,cs=eL[c]?eS[c]/eL[c]*100:0;
           let tag,cls;if(cg>eg+3&&cs<=es+5){tag='ameaça';cls='neg';}else if(eg>cg+3||es<cs-5){tag='alvo';cls='pos';}else{tag='páreo';cls='';}
           return `<tr><td class="nm3" title="${DIM.empresa.nome[c]}">${short(DIM.empresa.nome[c],20)}</td><td class="nm3" style="width:34%" title="${sr}">${sr}</td><td class="n ${cls}">${tag}</td></tr>`;});
         cards.push({ic:'var(--r)',tag:'Concorrentes diretos',h:'Quem disputa sua carteira — e em quais ramos',
           list:mtRows(rows,'<tr><th class="l">Seguradora</th><th class="l">Compete em</th><th>Direção</th></tr>'),
-          p:'Ordenado pela sobreposição real de carteira (mesmos ramos). <b>Ameaça</b> = cresce mais rápido com sinistralidade igual ou melhor (pode tomar seu espaço). <b>Alvo</b> = você cresce mais ou tem risco melhor (pode tomar o dele). <b>Páreo</b> = equilíbrio.'});}}
-    // BENCHMARK (pares ou, se poucos, contra o segmento)
-    if(E.length===1){const e=E[0],dom=an.empDom[e];
-      const peers=[];for(let pe=0;pe<an.empL.length;pe++)if(pe!==e&&an.empDom[pe]===dom&&an.empL[pe]>0)peers.push(pe);
+          p:`Sobreposição real de carteira${winTxt}. <b>Ameaça</b> = cresce mais rápido com sinistralidade igual ou melhor (pode tomar seu espaço). <b>Alvo</b> = você cresce mais ou tem risco melhor (pode tomar o dele). <b>Páreo</b> = equilíbrio.`});}}
+    // BENCHMARK
+    if(E.length===1){const e=E[0],dom=eDom[e];
+      const peers=[];for(let pe=0;pe<nE;pe++)if(pe!==e&&eDom[pe]===dom&&eL[pe]>0)peers.push(pe);
       const cmp=(lb,v,med,inv,suf='%')=>{const mx=Math.max(v,med,1)*1.25,c=inv?(v<med?'var(--v)':'var(--r)'):(v>med?'var(--v)':'var(--r)');
         return `<div class="ins-cmp"><span class="lb">${lb}</span><div class="track"><i style="left:0;width:${Math.max(2,Math.min(100,v/mx*100))}%;background:${c}"></i><div class="med" style="left:${Math.min(100,med/mx*100)}%"></div></div><b>${N1(v)}${suf}</b></div>`;};
       let medSin,medCom,medGr,medRoe,tagTxt,note;
       if(peers.length>=3){const pm=peers.map(met);medSin=median(pm.map(x=>x.sn));medCom=median(pm.map(x=>x.cm));medGr=median(pm.map(x=>x.gr));medRoe=median(pm.filter(x=>x.pl).map(x=>x.roe));
         tagTxt=`Benchmark · ${peers.length} pares em ${short(DIM.grupamento.nome[dom],18)}`;note=`Pares = seguradoras com o mesmo segmento dominante (qualquer porte).`;}
-      else{medSin=an.graL[dom]?an.graS[dom]/an.graL[dom]*100:0;medCom=an.graCP[dom]?an.graCD[dom]/an.graCP[dom]*100:0;medGr=an.graP[dom]?(an.graL[dom]-an.graP[dom])/an.graP[dom]*100:0;medRoe=null;
+      else{medSin=gL[dom]?gS[dom]/gL[dom]*100:0;medCom=gCP[dom]?gCD[dom]/gCP[dom]*100:0;medGr=gP[dom]?((gL[dom]||0)-gP[dom])/gP[dom]*100:0;medRoe=null;
         tagTxt=`Benchmark vs. segmento ${short(DIM.grupamento.nome[dom],18)}`;note='Poucos pares diretos — comparação contra a média do segmento dominante.';}
-      const better=[me.sn<medSin,me.cm<medCom,me.gr>medGr].filter(Boolean).length;
+      const better=[me.sn<medSin,comAvail?me.cm<medCom:true,me.gr>medGr].filter(Boolean).length;
       const vd=better>=3?['var(--v2)','var(--v)','Acima da referência']:better<=1?['rgba(255,61,90,.16)','var(--r)','Atrás da referência']:['rgba(255,184,48,.16)','var(--g)','Na média'];
       cards.push({ic:'var(--b)',tag:tagTxt,verdict:`<span class="ins-verdict" style="background:${vd[0]};color:${vd[1]}">${vd[2]}</span>`,
         h:'Como se compara aos concorrentes',
-        list:cmp('Sinistralidade',me.sn,medSin,true)+cmp('Comissão',me.cm,medCom,true)+cmp('Crescimento',me.gr,medGr,false)+(medRoe!=null&&me.pl?cmp('ROE',me.roe,medRoe,false):'')+`<div style="font-size:.5rem;color:#7a83a6;margin-top:.2rem">barra = a seguradora · traço = referência · verde = melhor</div>`,
-        p:note+' Em sinistralidade e comissão, menor é melhor.'});}
-    // QUALIDADE DO LUCRO
+        list:cmp('Sinistralidade',me.sn,medSin,true)+(comAvail?cmp('Comissão',me.cm,medCom,true):'')+cmp('Crescimento',me.gr,medGr,false)+(!seq&&medRoe!=null&&me.pl?cmp('ROE',me.roe,medRoe,false):'')+`<div style="font-size:.5rem;color:#7a83a6;margin-top:.2rem">barra = a seguradora · traço = referência · verde = melhor</div>`,
+        p:note+` Métricas${winTxt}; menor é melhor em sinistralidade e comissão.`+(seq?' ROE é anual (card ao lado).':'')});}
+    // QUALIDADE DO LUCRO (DRE anual)
     {const agg=E.map(met).reduce((o,x)=>({prem:o.prem+x.prem,luc:o.luc+x.luc,fin:o.fin+x.fin,pl:o.pl+x.pl}),{prem:0,luc:0,fin:0,pl:0});
      const margem=agg.prem?agg.luc/agg.prem*100:0,roe=agg.pl?agg.luc/agg.pl*100:0,finPct=agg.luc?agg.fin/agg.luc*100:0;
-     let m4=E.length===1?kv(N1(me.cr)+'%','Índice combinado ~')+kv(N1(me.sn)+'%','Sinistro')+kv(N1(me.cm)+'%','Comissão')+kv(N1(me.adm)+'%','Desp. adm.')+kv(N1(me.finPct)+'%','Financ./lucro'):kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(margem)+'%','Margem líq.')+(agg.pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financ./lucro');
+     let m4=E.length===1?kv(N1(me.cr)+'%','Índice combinado ~')+kv(N1(me.sn)+'%','Sinistro')+(comAvail?kv(N1(me.cm)+'%','Comissão'):'')+kv(N1(me.adm)+'%','Desp. adm.')+kv(N1(me.finPct)+'%','Financ./lucro'):kv('R$ '+BI(agg.luc)+' bi','Lucro')+kv(N1(margem)+'%','Margem líq.')+(agg.pl?kv(N1(roe)+'%','ROE'):'')+kv(N1(finPct)+'%','Financ./lucro');
      let p4=E.length===1?(me.cr>100?`Índice combinado aproximado de ${N1(me.cr)}% (acima de 100%): a operação não cobre os próprios custos — o lucro vem do float. `:`Índice combinado aproximado de ${N1(me.cr)}% (abaixo de 100%): a subscrição se paga antes do resultado financeiro. `):'';
      p4+=finPct>50?'Mais da metade do lucro vem do resultado financeiro — dependência alta de juros.':finPct>0?'O resultado de subscrição sustenta parte relevante do lucro.':'';
-     cards.push({ic:'var(--g)',tag:'Qualidade do lucro',h:'Subscrição que se paga, ou aluguel da Selic?',m:m4,p:(p4||'—')+' <span style="color:#7a83a6">(DRE anual)</span>'});}
-    // CONCENTRAÇÃO
-    if(E.length===1){const e=E[0],gh=hhiOf(an.empGra[e]);
-      const topG=Object.entries(an.empGra[e]).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      const myUf={};for(let u=0;u<DIM.uf.length;u++)if(an.ufEmp[u][e])myUf[u]=an.ufEmp[u][e];
-      const uh=hhiOf(myUf),topU=Object.entries(myUf).sort((a,b)=>b[1]-a[1]).slice(0,3);
+     cards.push({ic:'var(--g)',tag:'Qualidade do lucro',h:'Subscrição que se paga, ou aluguel da Selic?',m:m4,p:(p4||'—')+' <span style="color:#7a83a6">(lucro/margem/ROE em base anual — DRE)</span>'});}
+    // CONCENTRAÇÃO (janela)
+    if(E.length===1){const e=E[0],gh=hhiOf(eGra[e]);
+      const topG=Object.entries(eGra[e]).sort((a,b)=>b[1]-a[1]).slice(0,5);
+      const uh=hhiOf(eUf[e]),topU=Object.entries(eUf[e]).sort((a,b)=>b[1]-a[1]).slice(0,3);
       const conc=gh>4000?'muito concentrada':gh>2500?'concentrada':'diversificada';
       cards.push({ic:'var(--r)',tag:'Concentração da carteira',h:`Carteira ${conc} (HHI ${gh.toLocaleString('pt-BR')})`,
-        list:rowBar(topG,an.empL[e],'var(--g)',k=>short(DIM.grupamento.nome[k],24))+`<div style="font-size:.5rem;color:#7a83a6;margin:.25rem 0 .15rem">geografia: ${topU.map(([u,v])=>DIM.uf[u]+' '+(v/an.empL[e]*100).toFixed(0)+'%').join(' · ')} (HHI geo ${uh.toLocaleString('pt-BR')})</div>`,
+        list:rowBar(topG,eL[e]||1,'var(--g)',k=>short(DIM.grupamento.nome[k],24))+`<div style="font-size:.5rem;color:#7a83a6;margin:.25rem 0 .15rem">geografia: ${topU.map(([u,v])=>DIM.uf[u]+' '+(v/(eL[e]||1)*100).toFixed(0)+'%').join(' · ')||'—'} (HHI geo ${uh.toLocaleString('pt-BR')})</div>`,
         p:gh>2500?'Dependência alta de poucos ramos/estados: receita exposta a choque num único segmento. Diversificar reduz risco de cauda.':'Carteira pulverizada — menor risco de concentração, mas exige disciplina de pricing em várias frentes.'});}
-    // WHITESPACE
-    if(E.length===1){const e=E[0],dom=an.empDom[e];
-      const peers=[];for(let pe=0;pe<an.empL.length;pe++)if(pe!==e&&an.empDom[pe]===dom&&an.empL[pe]>0)peers.push(pe);
-      if(peers.length>=3){const ps={};peers.forEach(pe=>{const t=an.empL[pe]||1;for(const gi in an.empGra[pe])ps[gi]=(ps[gi]||0)+an.empGra[pe][gi]/t;});for(const gi in ps)ps[gi]/=peers.length;
-        const myT=an.empL[e]||1;
-        const gaps=Object.keys(ps).map(gi=>({gi:+gi,gap:ps[gi]-(an.empGra[e][+gi]||0)/myT,sin:an.graL[gi]?an.graS[gi]/an.graL[gi]*100:0})).filter(x=>x.gap>0.03&&x.sin<55).sort((a,b)=>b.gap-a.gap).slice(0,4);
+    // WHITESPACE (janela)
+    if(E.length===1){const e=E[0],dom=eDom[e];
+      const peers=[];for(let pe=0;pe<nE;pe++)if(pe!==e&&eDom[pe]===dom&&eL[pe]>0)peers.push(pe);
+      if(peers.length>=3){const ps={};peers.forEach(pe=>{const t=eL[pe]||1;for(const gi in eGra[pe])ps[gi]=(ps[gi]||0)+eGra[pe][gi]/t;});for(const gi in ps)ps[gi]/=peers.length;
+        const myT=eL[e]||1;
+        const gaps=Object.keys(ps).map(gi=>({gi:+gi,gap:ps[gi]-(eGra[e][+gi]||0)/myT,sin:gL[gi]?gS[gi]/gL[gi]*100:0})).filter(x=>x.gap>0.03&&x.sin<55).sort((a,b)=>b.gap-a.gap).slice(0,4);
         if(gaps.length){const rows=gaps.map(g=>`<tr><td class="nm3" title="${DIM.grupamento.nome[g.gi]}">${short(DIM.grupamento.nome[g.gi],22)}</td><td class="n pos">+${(g.gap*100).toFixed(0)}pp</td><td class="n">${N1(g.sin)}%</td></tr>`);
-          cards.push({ic:'var(--v)',tag:'Whitespace · onde crescer',h:'Segmentos onde os pares estão e você não',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Gap vs pares</th><th>Sinist.</th></tr>'),p:'Os pares alocam mais carteira nesses segmentos (gap em pontos percentuais) e a sinistralidade deles é controlada (<55%). Frentes naturais de expansão com risco conhecido.'});}}}
-    // TRAJETÓRIA DE SHARE
+          cards.push({ic:'var(--v)',tag:'Whitespace · onde crescer',h:'Segmentos onde os pares estão e você não',list:mtRows(rows,'<tr><th class="l">Grupo de ramos</th><th>Gap vs pares</th><th>Sinist.</th></tr>'),p:`Os pares alocam mais carteira nesses segmentos${winTxt} (gap em pontos percentuais) e a sinistralidade deles é controlada (<55%). Frentes naturais de expansão com risco conhecido.`});}}}
+    // TRAJETÓRIA DE SHARE (janela)
     if(yoyOK){const shN=pL/(mCur||1)*100,shP=pP/(mPri||1)*100,d=shN-shP;
       cards.push({ic:'var(--b)',tag:'Trajetória de share',h:d>=0.1?'Ganhando terreno':d<=-0.1?'Cedendo terreno':'Share estável',
         m:kv(N1(shP)+'%','Share anterior')+kv(N1(shN)+'%','Share atual')+kv((d>=0?'+':'')+N1(d)+' pp','Variação'),
-        p:d>=0.1?`Ganhou ${N1(d)} ponto(s) de share. Veja no card de qualidade do lucro se o crescimento vem com margem ou comprando risco.`:d<=-0.1?`Perdeu ${N1(Math.abs(d))} ponto(s) de share. Avalie se é escolha (sair de risco ruim) ou perda competitiva.`:'Mantém posição relativa estável.'});}
+        p:d>=0.1?`Ganhou ${N1(d)} ponto(s) de share${winTxt}. Veja no card de qualidade do lucro se o crescimento vem com margem ou comprando risco.`:d<=-0.1?`Perdeu ${N1(Math.abs(d))} ponto(s) de share${winTxt}. Avalie se é escolha (sair de risco ruim) ou perda competitiva.`:'Mantém posição relativa estável.'});}
   }
 
   // ================= GRUPO / RAMO =================
