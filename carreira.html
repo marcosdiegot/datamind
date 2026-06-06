@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Carreira — Estabilidade vs Equity | DataMind</title>
+<title>Calculadora — Vale a pena dar o salto? | DataMind</title>
 <style>
 :root{
   --bg:#07080D; --card:rgba(255,255,255,.04); --card2:rgba(255,255,255,.02);
@@ -13,131 +13,132 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;padding:16px;max-width:880px;margin:0 auto}
 h1{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
-h1 .g{color:var(--green)} h1 .r{color:var(--red)}
+h1 .g{color:var(--green)} h1 .b{color:var(--blue)}
 .sub{color:var(--mut);font-size:.95rem;margin-bottom:20px}
+.period{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:680px){.grid{grid-template-columns:1fr 1fr}}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;backdrop-filter:blur(8px)}
-.card h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.clt h2{color:var(--blue)} .stp h2{color:var(--green)}
+.card h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card .desc{font-size:.75rem;color:var(--mut);margin-bottom:14px;line-height:1.4}
+.stay h2{color:var(--blue)} .jump h2{color:var(--green)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:.8rem;color:var(--mut);margin-bottom:6px}
 .field .val{float:right;color:var(--tx);font-weight:600}
 input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:5px;background:rgba(255,255,255,.12);outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--green);cursor:pointer;border:2px solid #07080D;box-shadow:0 0 0 1px var(--green)}
-.stp input[type=range]::-webkit-slider-thumb{background:var(--green);box-shadow:0 0 0 1px var(--green)}
-.clt input[type=range]::-webkit-slider-thumb{background:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--green);cursor:pointer;border:2px solid #07080D}
+.stay input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid #07080D;box-shadow:0 0 0 1px var(--blue)}
+.jump input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--green);cursor:pointer;border:2px solid #07080D;box-shadow:0 0 0 1px var(--green)}
+.period input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid #07080D;box-shadow:0 0 0 1px var(--gold)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid #07080D}
 .result{margin-top:18px;background:var(--card2);border:1px solid var(--bd);border-radius:16px;padding:20px}
 .result h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;color:var(--gold)}
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
 .cmp .box{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;text-align:center}
 .cmp .lbl{font-size:.75rem;color:var(--mut);margin-bottom:6px}
-.cmp .big{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
-.cmp .clt-c .big{color:var(--blue)} .cmp .stp-c .big{color:var(--green)}
-.scen{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
-.scen .s{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px;text-align:center}
-.scen .s .t{font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.scen .s .n{font-size:1.05rem;font-weight:700}
-.scen .bear .n{color:var(--red)} .scen .base .n{color:var(--gold)} .scen .bull .n{color:var(--green)}
-.verdict{padding:14px;border-radius:12px;font-size:.95rem;text-align:center;font-weight:600;border:1px solid var(--bd)}
-.verdict.win-stp{background:rgba(0,229,160,.08);color:var(--green);border-color:rgba(0,229,160,.3)}
-.verdict.win-clt{background:rgba(79,142,247,.08);color:var(--blue);border-color:rgba(79,142,247,.3)}
-.breakeven{margin-top:12px;font-size:.85rem;color:var(--mut);text-align:center}
-.breakeven b{color:var(--gold)}
+.cmp .big{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.cmp .stay-c .big{color:var(--blue)} .cmp .jump-c .big{color:var(--green)}
+.verdict{padding:14px;border-radius:12px;font-size:.95rem;text-align:center;font-weight:600;border:1px solid var(--bd);margin-bottom:12px}
+.verdict.win-jump{background:rgba(0,229,160,.08);color:var(--green);border-color:rgba(0,229,160,.3)}
+.verdict.win-stay{background:rgba(79,142,247,.08);color:var(--blue);border-color:rgba(79,142,247,.3)}
+.turn{font-size:.9rem;color:var(--mut);text-align:center;padding:12px;background:var(--card);border-radius:10px}
+.turn b{color:var(--gold)}
+.chart{margin-top:16px}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;justify-content:center;gap:18px;margin-top:8px;font-size:.75rem;color:var(--mut)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .dot{width:10px;height:10px;border-radius:50%}
 .note{margin-top:20px;font-size:.75rem;color:var(--mut);line-height:1.6;border-top:1px solid var(--bd);padding-top:16px}
 .note b{color:var(--tx)}
 .foot{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid var(--bd)}
 .foot .logo{font-size:1.1rem;font-weight:700;letter-spacing:.05em}
 .foot .tag{font-size:.7rem;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.period{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:14px}
 </style>
 </head>
 <body>
 
-<h1>Estabilidade <span class="r">vs</span> <span class="g">Equity</span></h1>
-<p class="sub">Quanto vale, em reais, trocar um salário garantido por equity de startup? Rode seus números.</p>
+<h1>Vale a pena dar o <span class="g">salto</span>?</h1>
+<p class="sub">Ficar na empresa grande com salário maior agora, ou sair para um cargo maior e crescer mais rápido? Rode seus números.</p>
 
-<div class="period card">
+<div class="period">
   <div class="field" style="margin-bottom:0">
-    <label>Horizonte de análise <span class="val" id="vYears">5 anos</span></label>
-    <input type="range" id="years" min="3" max="10" value="5" step="1">
+    <label>Horizonte de análise <span class="val" id="vYears">7 anos</span></label>
+    <input type="range" id="years" min="3" max="15" value="7" step="1">
   </div>
 </div>
 
 <div class="grid">
-  <div class="card clt">
-    <h2>🏢 Empresa estável (CLT)</h2>
+  <div class="card stay">
+    <h2>🏢 Ficar na empresa grande</h2>
+    <div class="desc">Salário maior agora, mas crescimento lento — a cadeira acima demora a vagar.</div>
     <div class="field">
-      <label>Salário mensal inicial <span class="val" id="vCltSal">R$ 18.000</span></label>
-      <input type="range" id="cltSal" min="5000" max="50000" value="18000" step="500">
+      <label>Salário mensal atual <span class="val" id="vStaySal">R$ 18.000</span></label>
+      <input type="range" id="staySal" min="5000" max="50000" value="18000" step="500">
     </div>
     <div class="field">
-      <label>Reajuste anual <span class="val" id="vCltRaise">8%</span></label>
-      <input type="range" id="cltRaise" min="0" max="20" value="8" step="1">
+      <label>Reajuste anual médio <span class="val" id="vStayRaise">7%</span></label>
+      <input type="range" id="stayRaise" min="0" max="20" value="7" step="1">
     </div>
     <div class="field">
-      <label>Bônus anual (nº de salários) <span class="val" id="vCltBonus">1,5</span></label>
-      <input type="range" id="cltBonus" min="0" max="6" value="1.5" step="0.5">
+      <label>Promoção a cada <span class="val" id="vStayPromo">5 anos</span></label>
+      <input type="range" id="stayPromo" min="1" max="10" value="5" step="1">
+    </div>
+    <div class="field">
+      <label>Salto salarial por promoção <span class="val" id="vStayJump">15%</span></label>
+      <input type="range" id="stayJump" min="0" max="50" value="15" step="5">
     </div>
   </div>
 
-  <div class="card stp">
-    <h2>🚀 Startup (salário + equity)</h2>
+  <div class="card jump">
+    <h2>🚀 Dar o salto (cargo maior)</h2>
+    <div class="desc">Aceita ganhar menos agora e menos estabilidade, mas entra num cargo maior e cresce rápido.</div>
     <div class="field">
-      <label>Salário mensal inicial <span class="val" id="vStpSal">R$ 14.000</span></label>
-      <input type="range" id="stpSal" min="5000" max="50000" value="14000" step="500">
+      <label>Salário mensal inicial <span class="val" id="vJumpSal">R$ 15.000</span></label>
+      <input type="range" id="jumpSal" min="5000" max="50000" value="15000" step="500">
     </div>
     <div class="field">
-      <label>Reajuste anual <span class="val" id="vStpRaise">5%</span></label>
-      <input type="range" id="stpRaise" min="0" max="20" value="5" step="1">
+      <label>Reajuste anual médio <span class="val" id="vJumpRaise">10%</span></label>
+      <input type="range" id="jumpRaise" min="0" max="25" value="10" step="1">
     </div>
     <div class="field">
-      <label>Seu equity (% da empresa) <span class="val" id="vEquity">0,5%</span></label>
-      <input type="range" id="equity" min="0" max="5" value="0.5" step="0.1">
+      <label>Promoção a cada <span class="val" id="vJumpPromo">2 anos</span></label>
+      <input type="range" id="jumpPromo" min="1" max="10" value="2" step="1">
     </div>
     <div class="field">
-      <label>Valuation no exit (R$ milhões) <span class="val" id="vExit">R$ 200 mi</span></label>
-      <input type="range" id="exit" min="0" max="2000" value="200" step="25">
-    </div>
-    <div class="field">
-      <label>Diluição até o exit <span class="val" id="vDil">40%</span></label>
-      <input type="range" id="dil" min="0" max="80" value="40" step="5">
-    </div>
-    <div class="field">
-      <label>Chance de liquidez real <span class="val" id="vLiq">10%</span></label>
-      <input type="range" id="liq" min="0" max="100" value="10" step="5">
+      <label>Salto salarial por promoção <span class="val" id="vJumpJump">25%</span></label>
+      <input type="range" id="jumpJump" min="0" max="50" value="25" step="5">
     </div>
   </div>
 </div>
 
 <div class="result">
-  <h2>Resultado — ganho total acumulado</h2>
+  <h2>Resultado — ganho total acumulado no período</h2>
   <div class="cmp">
-    <div class="box clt-c">
-      <div class="lbl">Empresa estável</div>
-      <div class="big" id="rClt">—</div>
+    <div class="box stay-c">
+      <div class="lbl">Ficar na empresa grande</div>
+      <div class="big" id="rStay">—</div>
     </div>
-    <div class="box stp-c">
-      <div class="lbl">Startup (valor esperado)</div>
-      <div class="big" id="rStp">—</div>
+    <div class="box jump-c">
+      <div class="lbl">Dar o salto</div>
+      <div class="big" id="rJump">—</div>
     </div>
-  </div>
-
-  <div class="scen">
-    <div class="s bear"><div class="t">Pessimista</div><div class="n" id="rBear">—</div><div class="lbl" style="font-size:.62rem;margin-top:3px">startup fecha, equity zera</div></div>
-    <div class="s base"><div class="t">Esperado</div><div class="n" id="rBase">—</div><div class="lbl" style="font-size:.62rem;margin-top:3px">ajustado pela chance</div></div>
-    <div class="s bull"><div class="t">Otimista</div><div class="n" id="rBull">—</div><div class="lbl" style="font-size:.62rem;margin-top:3px">exit acontece</div></div>
   </div>
 
   <div class="verdict" id="verdict">—</div>
-  <div class="breakeven" id="breakeven"></div>
+  <div class="turn" id="turn"></div>
+
+  <div class="chart">
+    <svg id="svg" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--blue)"></span>Ficar</span>
+      <span><span class="dot" style="background:var(--green)"></span>Salto</span>
+    </div>
+  </div>
 </div>
 
 <div class="note">
-  <b>Metodologia e fontes.</b> Faixas salariais de referência: Robert Half Guia Salarial 2026 e State of Data Brazil 2025/26.
-  Sobrevivência de startups: Sebrae e Distrito (vida média ~4,8 anos; cerca de metade encerra atividades no período).
-  <b>Chance de liquidez de equity não é medida publicamente no Brasil de forma robusta</b> — por isso é um valor que <b>você</b> define, com base no seu julgamento. Esta é uma ferramenta de simulação, não uma previsão. O valor esperado do equity = % equity × valuation no exit × (1 − diluição) × chance de liquidez. Rode com seus próprios números.
+  <b>Como funciona.</b> A calculadora soma o salário acumulado (13 salários por ano) ao longo do horizonte escolhido, aplicando o reajuste anual e os saltos de promoção de cada caminho.
+  O <b>ponto de virada</b> é o ano em que o salto ultrapassa a opção de ficar. Esta é uma ferramenta de simulação para você rodar seu próprio cenário — não uma previsão.
+  Faixas salariais de referência por cargo e senioridade: Robert Half Guia Salarial 2026 e State of Data Brazil 2025/26.
 </div>
 
 <div class="foot">
@@ -147,59 +148,66 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 
 <script>
 const $=id=>document.getElementById(id);
-const brl=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
-const brlC=n=>{ if(n>=1e6) return 'R$ '+(n/1e6).toFixed(2).replace('.',',')+' mi'; return brl(n); };
+const brlC=n=>{ if(Math.abs(n)>=1e6) return 'R$ '+(n/1e6).toFixed(2).replace('.',',')+' mi'; return 'R$ '+Math.round(n).toLocaleString('pt-BR'); };
+
+function salaryAt(year, sal0, raise, promoEvery, promoJump){
+  let s = sal0 * Math.pow(1+raise, year);
+  const nPromos = Math.floor(year / promoEvery);
+  s *= Math.pow(1+promoJump, nPromos);
+  return s;
+}
 
 function calc(){
   const years=+$('years').value;
-  const cltSal=+$('cltSal').value, cltRaise=+$('cltRaise').value/100, cltBonus=+$('cltBonus').value;
-  const stpSal=+$('stpSal').value, stpRaise=+$('stpRaise').value/100;
-  const equity=+$('equity').value/100, exit=+$('exit').value*1e6, dil=+$('dil').value/100, liq=+$('liq').value/100;
+  const staySal=+$('staySal').value, stayRaise=+$('stayRaise').value/100, stayPromo=+$('stayPromo').value, stayJump=+$('stayJump').value/100;
+  const jumpSal=+$('jumpSal').value, jumpRaise=+$('jumpRaise').value/100, jumpPromo=+$('jumpPromo').value, jumpJump=+$('jumpJump').value/100;
 
-  // labels
   $('vYears').textContent=years+' anos';
-  $('vCltSal').textContent=brl(cltSal); $('vCltRaise').textContent=$('cltRaise').value+'%'; $('vCltBonus').textContent=(+$('cltBonus').value).toLocaleString('pt-BR');
-  $('vStpSal').textContent=brl(stpSal); $('vStpRaise').textContent=$('stpRaise').value+'%';
-  $('vEquity').textContent=(+$('equity').value).toLocaleString('pt-BR')+'%';
-  $('vExit').textContent='R$ '+(+$('exit').value).toLocaleString('pt-BR')+' mi';
-  $('vDil').textContent=$('dil').value+'%'; $('vLiq').textContent=$('liq').value+'%';
+  $('vStaySal').textContent='R$ '+(+$('staySal').value).toLocaleString('pt-BR'); $('vStayRaise').textContent=$('stayRaise').value+'%'; $('vStayPromo').textContent=$('stayPromo').value+' anos'; $('vStayJump').textContent=$('stayJump').value+'%';
+  $('vJumpSal').textContent='R$ '+(+$('jumpSal').value).toLocaleString('pt-BR'); $('vJumpRaise').textContent=$('jumpRaise').value+'%'; $('vJumpPromo').textContent=$('jumpPromo').value+' anos'; $('vJumpJump').textContent=$('jumpJump').value+'%';
 
-  // salário acumulado (13 salários/ano via bônus na CLT; startup sem bônus)
-  let cltTotal=0, stpSalTotal=0;
+  let stayTotal=0, jumpTotal=0, turnYear=null;
+  const stayCum=[], jumpCum=[];
   for(let y=0;y<years;y++){
-    cltTotal += cltSal*Math.pow(1+cltRaise,y)*(12+cltBonus);
-    stpSalTotal += stpSal*Math.pow(1+stpRaise,y)*12;
+    stayTotal += salaryAt(y,staySal,stayRaise,stayPromo,stayJump)*13;
+    jumpTotal += salaryAt(y,jumpSal,jumpRaise,jumpPromo,jumpJump)*13;
+    stayCum.push(stayTotal); jumpCum.push(jumpTotal);
+    if(turnYear===null && jumpTotal>=stayTotal) turnYear=y+1;
   }
 
-  // equity
-  const equityGross = equity*exit*(1-dil);     // se o exit acontecer
-  const equityExpected = equityGross*liq;       // ajustado pela chance
+  $('rStay').textContent=brlC(stayTotal);
+  $('rJump').textContent=brlC(jumpTotal);
 
-  const stpExpected = stpSalTotal + equityExpected;
-  const stpBull = stpSalTotal + equityGross;    // exit acontece
-  const stpBear = stpSalTotal;                  // equity zera
+  const v=$('verdict'); const diff=jumpTotal-stayTotal;
+  if(diff>0){ v.className='verdict win-jump'; v.textContent='Em '+years+' anos, o salto rende '+brlC(Math.abs(diff))+' a mais.'; }
+  else{ v.className='verdict win-stay'; v.textContent='Em '+years+' anos, ficar rende '+brlC(Math.abs(diff))+' a mais.'; }
 
-  $('rClt').textContent=brlC(cltTotal);
-  $('rStp').textContent=brlC(stpExpected);
-  $('rBear').textContent=brlC(stpBear);
-  $('rBase').textContent=brlC(stpExpected);
-  $('rBull').textContent=brlC(stpBull);
+  const t=$('turn');
+  if(turnYear){ t.innerHTML='Ponto de virada: o salto ultrapassa ficar no <b>ano '+turnYear+'</b>. Antes disso, você ganha menos — é o preço da aposta.'; }
+  else{ t.innerHTML='Neste cenário, o salto <b>não ultrapassa</b> ficar dentro do horizonte escolhido. A aposta não compensa aqui.'; }
 
-  // veredito
-  const v=$('verdict');
-  const diff=stpExpected-cltTotal;
-  if(diff>0){ v.className='verdict win-stp'; v.textContent='No valor esperado, a startup rende '+brlC(Math.abs(diff))+' a mais.'; }
-  else{ v.className='verdict win-clt'; v.textContent='No valor esperado, a empresa estável rende '+brlC(Math.abs(diff))+' a mais.'; }
-
-  // break-even: que chance de liquidez iguala os dois
-  const be=$('breakeven');
-  if(equityGross>0){
-    const liqBE=(cltTotal-stpSalTotal)/equityGross;
-    if(liqBE<=0){ be.innerHTML='Mesmo sem equity, a startup já empata ou supera a CLT com esses salários.'; }
-    else if(liqBE>1){ be.innerHTML='Nem com 100% de chance de liquidez a startup alcança a CLT neste cenário.'; }
-    else{ be.innerHTML='Ponto de equilíbrio: a startup compensa se a chance de liquidez for <b>≥ '+(liqBE*100).toFixed(0)+'%</b>. Você definiu '+$('liq').value+'%.'; }
-  } else { be.innerHTML=''; }
+  drawChart(stayCum, jumpCum, years, turnYear);
 }
+
+function drawChart(stay, jump, years, turnYear){
+  const W=600,H=260,pad=40;
+  const max=Math.max(stay[stay.length-1],jump[jump.length-1]);
+  const x=i=> years<2 ? pad : pad+(i/(years-1))*(W-pad*2);
+  const y=v=>H-pad-(v/max)*(H-pad*2);
+  const path=arr=>arr.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  let grid='';
+  for(let g=0;g<=4;g++){ const gy=pad+g*(H-pad*2)/4; grid+='<line x1="'+pad+'" y1="'+gy+'" x2="'+(W-pad)+'" y2="'+gy+'" stroke="rgba(255,255,255,.06)"/>'; }
+  let xl='';
+  for(let i=0;i<years;i++){ if(years<=8||i%2===0||i===years-1){ xl+='<text x="'+x(i)+'" y="'+(H-pad+18)+'" fill="#8A8F98" font-size="11" text-anchor="middle">'+(i+1)+'</text>'; } }
+  let turn='';
+  if(turnYear){ const tx=x(turnYear-1); turn='<line x1="'+tx+'" y1="'+pad+'" x2="'+tx+'" y2="'+(H-pad)+'" stroke="#FFB830" stroke-dasharray="4 4" opacity=".6"/><circle cx="'+tx+'" cy="'+y(jump[turnYear-1])+'" r="5" fill="#FFB830"/>'; }
+  $('svg').innerHTML=grid+turn+
+    '<path d="'+path(stay)+'" fill="none" stroke="#4F8EF7" stroke-width="2.5"/>'+
+    '<path d="'+path(jump)+'" fill="none" stroke="#00E5A0" stroke-width="2.5"/>'+
+    xl+
+    '<text x="'+(W/2)+'" y="'+(H-6)+'" fill="#8A8F98" font-size="11" text-anchor="middle">ano</text>';
+}
+
 document.querySelectorAll('input[type=range]').forEach(el=>el.addEventListener('input',calc));
 calc();
 </script>
