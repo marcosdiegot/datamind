@@ -15,7 +15,7 @@ Saída: estudos/caged/resultado_sazonalidade_sp.csv (agregado mensal)
 import os, subprocess, sys, time
 import pandas as pd
 
-FTP_BASE = "ftp://ftp.mtps.gov.br/pdet/microdados/NOVO CAGED"
+FTP_BASE = "ftp://ftp.mtps.gov.br/pdet/microdados/NOVO%20CAGED"
 OUT = "estudos/caged/resultado_sazonalidade_sp.csv"
 CBO_TI_PREFIX = ("1425", "2123", "2124", "3171", "3172")
 MONTHS = [(y, m) for y in (2023, 2024, 2025) for m in range(1, 13)]
