@@ -1,0 +1,27 @@
+name: CAGED Sazonalidade SP
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Dependências
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq p7zip-full
+          pip install -q pandas
+      - name: Pipeline CAGED
+        run: python estudos/caged/caged_pipeline.py
+      - name: Commit resultado
+        run: |
+          git config user.name "datamind-bot"
+          git config user.email "bot@datamind"
+          git add estudos/caged/resultado_sazonalidade_sp.csv
+          git commit -m "data: sazonalidade CAGED SP 2023-2025 (admissoes tipicas + TI)" || echo "sem mudanças"
+          git push
