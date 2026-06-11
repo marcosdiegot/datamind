@@ -1,6 +1,8 @@
 name: CAGED Sazonalidade SP
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '15 */2 * * *'
 permissions:
   contents: write
 jobs:
@@ -51,6 +53,7 @@ jobs:
           PY
           git config user.name "datamind-bot"
           git config user.email "bot@datamind"
+          git pull --rebase
           git pull --rebase
           git add estudos/caged/resultado_sazonalidade_sp.csv
           git commit -m "data: sazonalidade CAGED SP 2023-2025 (paralelo)" || echo "sem mudanças"
