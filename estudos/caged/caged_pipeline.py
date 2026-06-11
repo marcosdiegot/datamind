@@ -105,9 +105,18 @@ def main():
         if (y, m) in done:
             continue
         print(f"Processando {y}-{m:02d}...", flush=True)
-        results.append(process(y, m))
+        try:
+            results.append(process(y, m))
+        except RuntimeError as e:
+            print(f"FTP indisponível ({e}); salvando progresso parcial "
+                  f"({len(results)}/36 meses) e encerrando para retomada.", flush=True)
+            break
         pd.DataFrame(results).to_csv(OUT, index=False)
-    print("Concluído.")
+    if len(results) == len(MONTHS):
+        print("CONCLUÍDO: 36/36 meses.")
+    else:
+        print(f"PARCIAL: {len(results)}/36 meses.")
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
