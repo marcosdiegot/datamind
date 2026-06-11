@@ -4,24 +4,54 @@ on:
 permissions:
   contents: write
 jobs:
-  pipeline:
+  mes:
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        comp: ['202301','202302','202303','202304','202305','202306','202307','202308','202309','202310','202311','202312','202401','202402','202403','202404','202405','202406','202407','202408','202409','202410','202411','202412','202501','202502','202503','202504','202505','202506','202507','202508','202509','202510','202511','202512']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Dependências
-        run: |
+      - run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq p7zip-full
           pip install -q pandas
-      - name: Pipeline CAGED
+      - name: Processar mês
+        env:
+          COMP: ${{ matrix.comp }}
         run: python estudos/caged/caged_pipeline.py
-      - name: Commit resultado
+      - uses: actions/upload-artifact@v4
+        with:
+          name: parcial-${{ matrix.comp }}
+          path: parcial_${{ matrix.comp }}.csv
+  agrega:
+    needs: mes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: parciais
+          merge-multiple: true
+      - name: Agregar e commitar
         run: |
+          pip install -q pandas
+          python - << 'PY'
+          import glob, pandas as pd, os
+          files = sorted(glob.glob("parciais/parcial_*.csv"))
+          print("parciais encontrados:", len(files))
+          df = pd.concat([pd.read_csv(f) for f in files]).sort_values(["ano","mes"])
+          os.makedirs("estudos/caged", exist_ok=True)
+          df.to_csv("estudos/caged/resultado_sazonalidade_sp.csv", index=False)
+          PY
           git config user.name "datamind-bot"
           git config user.email "bot@datamind"
+          git pull --rebase
           git add estudos/caged/resultado_sazonalidade_sp.csv
-          git commit -m "data: sazonalidade CAGED SP 2023-2025 (admissoes tipicas + TI)" || echo "sem mudanças"
+          git commit -m "data: sazonalidade CAGED SP 2023-2025 (paralelo)" || echo "sem mudanças"
           git push
