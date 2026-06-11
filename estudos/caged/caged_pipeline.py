@@ -49,8 +49,15 @@ def process(y, m):
     rows = {"ano": y, "mes": m, "adm_total": 0, "deslig_total": 0,
             "adm_tipica": 0, "deslig_tipico": 0,
             "adm_tipica_ti": 0, "deslig_tipico_ti": 0}
+    # detectar encoding pelo header
+    raw = open(txt, "rb").readline()
+    try:
+        raw.decode("utf-8"); enc = "utf-8"
+    except UnicodeDecodeError:
+        enc = "latin-1"
+    print("encoding detectado:", enc, flush=True)
     first = True
-    for chunk in pd.read_csv(txt, sep=";", encoding="latin-1", decimal=",",
+    for chunk in pd.read_csv(txt, sep=";", encoding=enc, decimal=",",
                              usecols=lambda c: norm(c) in USECOLS,
                              chunksize=500_000, low_memory=True):
         chunk.columns = [norm(c) for c in chunk.columns]
