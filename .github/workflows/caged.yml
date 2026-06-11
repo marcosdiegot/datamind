@@ -60,7 +60,9 @@ jobs:
           PY
           git config user.name "datamind-bot"
           git config user.email "bot@datamind"
+          git stash || true
           git pull --rebase
+          git stash pop || true
           git add estudos/caged/resultado_sazonalidade_sp.csv
           git commit -m "data: sazonalidade CAGED SP 2023-2025 (paralelo)" || echo "sem mudanças"
           git push
