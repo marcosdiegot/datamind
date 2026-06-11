@@ -47,13 +47,19 @@ jobs:
           import glob, pandas as pd, os
           files = sorted(glob.glob("parciais/parcial_*.csv"))
           print("parciais encontrados:", len(files))
-          df = pd.concat([pd.read_csv(f) for f in files]).sort_values(["ano","mes"])
+          frames = [pd.read_csv(f) for f in files]
+          prev = "estudos/caged/resultado_sazonalidade_sp.csv"
+          if os.path.exists(prev):
+              frames.append(pd.read_csv(prev))  # preserva meses já conquistados
+          df = (pd.concat(frames)
+                  .drop_duplicates(subset=["ano","mes"], keep="first")
+                  .sort_values(["ano","mes"]))
+          print("meses no consolidado:", len(df))
           os.makedirs("estudos/caged", exist_ok=True)
           df.to_csv("estudos/caged/resultado_sazonalidade_sp.csv", index=False)
           PY
           git config user.name "datamind-bot"
           git config user.email "bot@datamind"
-          git pull --rebase
           git pull --rebase
           git add estudos/caged/resultado_sazonalidade_sp.csv
           git commit -m "data: sazonalidade CAGED SP 2023-2025 (paralelo)" || echo "sem mudanças"
