@@ -33,8 +33,9 @@ def download(y, m):
     name = f"CAGEDMOV{y}{m:02d}"
     url = f"{FTP_BASE}/{y}/{y}{m:02d}/{name}.7z"
     for attempt in range(4):
-        r = subprocess.run(["curl", "-sS", "--retry", "3", "--max-time", "900",
-                            "-o", f"{name}.7z", url])
+        r = subprocess.run(["curl", "-sS", "--retry", "5", "--retry-all-errors", "--max-time", "600",
+                            "--speed-limit", "50000", "--speed-time", "60",
+                            "--ftp-method", "nocwd", "-o", f"{name}.7z", url])
         if r.returncode == 0 and os.path.getsize(f"{name}.7z") > 1_000_000:
             return name
         time.sleep(20 * (attempt + 1))
@@ -81,9 +82,16 @@ def process(y, m):
     return rows
 
 def main():
+    comp = os.environ.get("COMP")  # modo job único: YYYYMM
+    if comp:
+        y, m = int(comp[:4]), int(comp[4:])
+        print(f"Processando {y}-{m:02d}...", flush=True)
+        pd.DataFrame([process(y, m)]).to_csv(f"parcial_{comp}.csv", index=False)
+        print("Concluído.")
+        return
     os.makedirs("estudos/caged", exist_ok=True)
     results = []
-    if os.path.exists(OUT):  # retomada
+    if os.path.exists(OUT):
         results = pd.read_csv(OUT).to_dict("records")
     done = {(r["ano"], r["mes"]) for r in results}
     for y, m in MONTHS:
