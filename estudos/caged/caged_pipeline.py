@@ -20,9 +20,14 @@ OUT = "estudos/caged/resultado_sazonalidade_sp.csv"
 CBO_TI_PREFIX = ("1425", "2123", "2124", "3171", "3172")
 MONTHS = [(y, m) for y in (2023, 2024, 2025) for m in range(1, 13)]
 
-USECOLS = ["uf", "saldomovimentação", "cbo2002ocupação", "categoria",
+import unicodedata
+def norm(s):
+    return "".join(c for c in unicodedata.normalize("NFD", str(s).strip().lower())
+                   if unicodedata.category(c) != "Mn")
+
+USECOLS = {"uf", "saldomovimentacao", "cbo2002ocupacao", "categoria",
            "horascontratuais", "indtrabintermitente", "indtrabparcial",
-           "indicadoraprendiz"]
+           "indicadoraprendiz"}
 
 def download(y, m):
     name = f"CAGEDMOV{y}{m:02d}"
@@ -43,22 +48,28 @@ def process(y, m):
     rows = {"ano": y, "mes": m, "adm_total": 0, "deslig_total": 0,
             "adm_tipica": 0, "deslig_tipico": 0,
             "adm_tipica_ti": 0, "deslig_tipico_ti": 0}
+    first = True
     for chunk in pd.read_csv(txt, sep=";", encoding="latin-1", decimal=",",
-                             usecols=lambda c: c.lower() in USECOLS,
+                             usecols=lambda c: norm(c) in USECOLS,
                              chunksize=500_000, low_memory=True):
-        chunk.columns = [c.lower() for c in chunk.columns]
-        sp = chunk[chunk["uf"] == 35]
+        chunk.columns = [norm(c) for c in chunk.columns]
+        if first:
+            print("colunas selecionadas:", list(chunk.columns), flush=True)
+            first = False
+        sp = chunk[pd.to_numeric(chunk["uf"], errors="coerce") == 35]
         if sp.empty:
             continue
-        adm = sp["saldomovimentação"] == 1
-        des = sp["saldomovimentação"] == -1
+        saldo = pd.to_numeric(sp["saldomovimentacao"], errors="coerce")
+        adm = saldo == 1
+        des = saldo == -1
         hc = pd.to_numeric(sp["horascontratuais"], errors="coerce").fillna(44)
-        tipico = (~sp["categoria"].isin([105, 106])
-                  & (sp["indtrabintermitente"] != 1)
-                  & (sp["indtrabparcial"] != 1)
-                  & (sp["indicadoraprendiz"] != 1)
+        cat = pd.to_numeric(sp["categoria"], errors="coerce")
+        tipico = (~cat.isin([105, 106])
+                  & (pd.to_numeric(sp["indtrabintermitente"], errors="coerce").fillna(0) != 1)
+                  & (pd.to_numeric(sp["indtrabparcial"], errors="coerce").fillna(0) != 1)
+                  & (pd.to_numeric(sp["indicadoraprendiz"], errors="coerce").fillna(0) != 1)
                   & (hc > 30))
-        cbo = sp["cbo2002ocupação"].astype(str).str.strip()
+        cbo = sp["cbo2002ocupacao"].astype(str).str.strip()
         ti = cbo.str.startswith(CBO_TI_PREFIX)
         rows["adm_total"] += int(adm.sum())
         rows["deslig_total"] += int(des.sum())
