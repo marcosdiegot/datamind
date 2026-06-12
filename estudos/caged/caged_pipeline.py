@@ -9,6 +9,13 @@ Filtro base: UF=35 (SP). Vínculos "típicos" = exclui categoria 105 (temporári
 Senioridade: NÃO existe no CAGED — proxy declarado por faixa salarial em salários mínimos
 (SM por ano: 2023=1320, 2024=1412, 2025=1518, 2026=1621).
 Cesto TI/dados (proxy): famílias CBO 1425, 2123, 2124, 3171, 3172.
+Cesto DADOS (v3, separado, não contamina o cesto TI dos temas publicados):
+famílias 2112 (inclui 2112-20 Cientista de Dados, oficial desde mar/2023) e 2122,
+mais códigos 212305, 212405, 212410, 212425 e 203105 (Pesquisador em ciências da computação, uso de mercado documentado para cientistas de dados pré e pós 2112-20).
+Saídas v3 adicionais:
+  parcial_dadoshist_YYYYMM.csv — universo DADOS típico: mes x CBO6 x movimento x
+    bin salarial (passos de R$500, teto 50k) -> permite percentis pós-agregação
+  parcial_dadoscnae_YYYYMM.csv — universo DADOS típico: mes x CBO6 x seção CNAE x movimento
 
 Saídas (modo job único, COMP=YYYYMM):
   parcial_resumo_YYYYMM.csv  — agregado mensal (compatível com v1)
@@ -22,6 +29,8 @@ import pandas as pd
 
 FTP_BASE = "ftp://ftp.mtps.gov.br/pdet/microdados/NOVO%20CAGED"
 CBO_TI_PREFIX = ("1425", "2123", "2124", "3171", "3172")
+CBO_DADOS_PREFIX = ("2112", "2122")
+CBO_DADOS_CODES = ("212305", "212405", "212410", "212425", "203105")
 SM = {2023: 1320.0, 2024: 1412.0, 2025: 1518.0, 2026: 1621.0}
 MONTHS = [(y, m) for y in (2023, 2024, 2025) for m in range(1, 13)] + \
          [(2026, m) for m in range(1, 5)]
@@ -68,6 +77,7 @@ def process(y, m):
               "deslig_total": 0, "deslig_tipico": 0,
               "adm_tipica_ti": 0, "deslig_tipico_ti": 0}
     acc_cnae, acc_cbo4, acc_ti6, acc_tipo = {}, {}, {}, {}
+    acc_dh, acc_dc = {}, {}
 
     for chunk in pd.read_csv(txt, sep=";", encoding=enc, decimal=",",
                              usecols=lambda c: norm(c) in USECOLS,
@@ -88,6 +98,7 @@ def process(y, m):
                         & (hc > 30))
         sp["cbo"] = sp["cbo2002ocupacao"].astype(str).str.strip()
         sp["ti"] = sp["cbo"].str.startswith(CBO_TI_PREFIX)
+        sp["dados"] = sp["cbo"].str.startswith(CBO_DADOS_PREFIX) | sp["cbo"].isin(CBO_DADOS_CODES)
         sp["sal"] = pd.to_numeric(sp["salario"], errors="coerce")
 
         # resumo (compatível v1)
@@ -125,6 +136,22 @@ def process(y, m):
             for k, v in g.items():
                 acc_tipo[k] = acc_tipo.get(k, 0) + int(v)
 
+        # 5) universo DADOS tipico: histograma salarial (bins R$500, teto 50k) p/ percentis
+        dd = tp[tp["dados"]].copy()
+        if not dd.empty:
+            binw = 500.0
+            dd["bin"] = (dd["sal"].clip(upper=50_000) // binw * binw)
+            dd["bin"] = dd["bin"].where(dd["sal"].notna(), other=-1)
+            g = dd.groupby(["cbo", "mov", "bin"]).size()
+            for k, v in g.items():
+                acc_dh[k] = acc_dh.get(k, 0) + int(v)
+            # 6) universo DADOS tipico: CBO6 x secao CNAE x movimento + salario
+            g = dd.groupby(["cbo", dd["secao"].astype(str).str.strip(), "mov"]).agg(
+                n=("cbo", "size"), sal_sum=("sal", "sum"), sal_n=("sal", "count"))
+            for k, row in g.iterrows():
+                cur = acc_dc.get(k, [0, 0.0, 0])
+                acc_dc[k] = [cur[0] + int(row["n"]), cur[1] + float(row["sal_sum"] or 0), cur[2] + int(row["sal_n"])]
+
     os.remove(f"{name}.7z"); os.remove(txt)
     comp = f"{y}{m:02d}"
     pd.DataFrame([resumo]).to_csv(f"parcial_resumo_{comp}.csv", index=False)
@@ -138,7 +165,12 @@ def process(y, m):
                   for k, v in acc_ti6.items()]).to_csv(f"parcial_ti6_{comp}.csv", index=False)
     pd.DataFrame([{"ano": y, "mes": m, "tipomovimentacao": k[0], "mov": k[1], "n": v}
                   for k, v in acc_tipo.items()]).to_csv(f"parcial_tipomov_{comp}.csv", index=False)
-    print(f"OK {comp}: resumo + 4 tabelas", flush=True)
+    pd.DataFrame([{"ano": y, "mes": m, "cbo6": k[0], "mov": k[1], "bin": k[2], "n": v}
+                  for k, v in acc_dh.items()]).to_csv(f"parcial_dadoshist_{comp}.csv", index=False)
+    pd.DataFrame([{"ano": y, "mes": m, "cbo6": k[0], "secao": k[1], "mov": k[2], "n": v[0],
+                   "sal_medio": round(v[1] / v[2], 2) if v[2] else None}
+                  for k, v in acc_dc.items()]).to_csv(f"parcial_dadoscnae_{comp}.csv", index=False)
+    print(f"OK {comp}: resumo + 6 tabelas", flush=True)
 
 def main():
     comp = os.environ.get("COMP")
