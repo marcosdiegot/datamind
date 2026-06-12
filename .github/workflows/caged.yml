@@ -53,6 +53,8 @@ jobs:
             "cbo4":    ("estudos/caged/base_cbo4_sp.csv",   ["ano","mes","cbo4","mov"]),
             "ti6":     ("estudos/caged/base_ti_cbo6_sp.csv",["ano","mes","cbo6","faixa_sm","mov"]),
             "tipomov": ("estudos/caged/base_ti_tipomov_sp.csv",["ano","mes","tipomovimentacao","mov"]),
+            "dadoshist": ("estudos/caged/base_dados_hist_sp.csv",["ano","mes","cbo6","mov","bin"]),
+            "dadoscnae": ("estudos/caged/base_dados_cnae_sp.csv",["ano","mes","cbo6","secao","mov"]),
           }
           for nome, (saida, chaves) in tabelas.items():
               files = sorted(glob.glob(f"parciais/parcial_{nome}_*.csv"))
