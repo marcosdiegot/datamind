@@ -1,4 +1,4 @@
-name: CAGED Sazonalidade SP
+name: CAGED Base SP v2
 on:
   workflow_dispatch:
 concurrency:
@@ -12,9 +12,9 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 10
       matrix:
-        comp: ['202301','202302','202303','202304','202305','202306','202307','202308','202309','202310','202311','202312','202401','202402','202403','202404','202405','202406','202407','202408','202409','202410','202411','202412','202501','202502','202503','202504','202505','202506','202507','202508','202509','202510','202511','202512']
+        comp: ['202301','202302','202303','202304','202305','202306','202307','202308','202309','202310','202311','202312','202401','202402','202403','202404','202405','202406','202407','202408','202409','202410','202411','202412','202501','202502','202503','202504','202505','202506','202507','202508','202509','202510','202511','202512','202601','202602','202603','202604']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: parcial-${{ matrix.comp }}
-          path: parcial_${{ matrix.comp }}.csv
+          path: parcial_*_${{ matrix.comp }}.csv
   agrega:
     needs: mes
     if: always()
@@ -46,24 +46,32 @@ jobs:
           pip install -q pandas
           python - << 'PY'
           import glob, pandas as pd, os
-          files = sorted(glob.glob("parciais/parcial_*.csv"))
-          print("parciais encontrados:", len(files))
-          frames = [pd.read_csv(f) for f in files]
-          prev = "estudos/caged/resultado_sazonalidade_sp.csv"
-          if os.path.exists(prev):
-              frames.append(pd.read_csv(prev))  # preserva meses já conquistados
-          df = (pd.concat(frames)
-                  .drop_duplicates(subset=["ano","mes"], keep="first")
-                  .sort_values(["ano","mes"]))
-          print("meses no consolidado:", len(df))
           os.makedirs("estudos/caged", exist_ok=True)
-          df.to_csv("estudos/caged/resultado_sazonalidade_sp.csv", index=False)
+          tabelas = {
+            "resumo":  ("estudos/caged/resultado_sazonalidade_sp.csv", ["ano","mes"]),
+            "cnae":    ("estudos/caged/base_cnae_sp.csv",   ["ano","mes","secao","tipico","mov"]),
+            "cbo4":    ("estudos/caged/base_cbo4_sp.csv",   ["ano","mes","cbo4","mov"]),
+            "ti6":     ("estudos/caged/base_ti_cbo6_sp.csv",["ano","mes","cbo6","faixa_sm","mov"]),
+            "tipomov": ("estudos/caged/base_ti_tipomov_sp.csv",["ano","mes","tipomovimentacao","mov"]),
+          }
+          for nome, (saida, chaves) in tabelas.items():
+              files = sorted(glob.glob(f"parciais/parcial_{nome}_*.csv"))
+              frames = [pd.read_csv(f) for f in files]
+              if os.path.exists(saida):
+                  frames.append(pd.read_csv(saida))
+              if not frames:
+                  print(nome, ": sem dados"); continue
+              df = (pd.concat(frames)
+                      .drop_duplicates(subset=chaves, keep="first")
+                      .sort_values(chaves))
+              df.to_csv(saida, index=False)
+              print(nome, ":", len(df), "linhas | meses:", df[["ano","mes"]].drop_duplicates().shape[0])
           PY
           git config user.name "datamind-bot"
           git config user.email "bot@datamind"
           git stash || true
           git pull --rebase
           git stash pop || true
-          git add estudos/caged/resultado_sazonalidade_sp.csv
-          git commit -m "data: sazonalidade CAGED SP 2023-2025 (paralelo)" || echo "sem mudanças"
+          git add estudos/caged/*.csv
+          git commit -m "data: base CAGED SP v2 (resumo, cnae, cbo4, ti6, tipomov) 2023-2026" || echo "sem mudanças"
           git push
