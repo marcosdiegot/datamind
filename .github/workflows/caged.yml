@@ -1,20 +1,47 @@
 name: CAGED Base SP v2
 on:
   workflow_dispatch:
+    inputs:
+      meses:
+        description: 'Meses a processar (CSV, ex: 202503,202504). Vazio = todos os 40.'
+        required: false
+        default: ''
 concurrency:
   group: caged-pipeline
   cancel-in-progress: false
 permissions:
   contents: write
 jobs:
+  prep:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - id: set
+        run: |
+          python - << 'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          todos = ['202301','202302','202303','202304','202305','202306','202307','202308','202309','202310','202311','202312','202401','202402','202403','202404','202405','202406','202407','202408','202409','202410','202411','202412','202501','202502','202503','202504','202505','202506','202507','202508','202509','202510','202511','202512','202601','202602','202603','202604']
+          raw = os.environ.get("MESES", "").strip()
+          if raw:
+              sel = [m.strip() for m in raw.split(",") if m.strip()]
+              invalidos = [m for m in sel if m not in todos]
+              if invalidos:
+                  raise SystemExit(f"meses invalidos: {invalidos}")
+          else:
+              sel = todos
+          print("matrix=" + json.dumps({"comp": sel}))
+          PY
+        env:
+          MESES: ${{ inputs.meses }}
   mes:
+    needs: prep
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       max-parallel: 10
-      matrix:
-        comp: ['202301','202302','202303','202304','202305','202306','202307','202308','202309','202310','202311','202312','202401','202402','202403','202404','202405','202406','202407','202408','202409','202410','202411','202412','202501','202502','202503','202504','202505','202506','202507','202508','202509','202510','202511','202512','202601','202602','202603','202604']
+      matrix: ${{ fromJSON(needs.prep.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
