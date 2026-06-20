@@ -87,7 +87,7 @@ def process(y, m, acc_porte, acc_demog):
             jk["idade"] = pd.to_numeric(jk["idade"], errors="coerce").fillna(-1).astype(int)
             jk["grau"] = pd.to_numeric(jk["graudeinstrucao"], errors="coerce").fillna(-1).astype(int)
             jk["bin_sal"] = (jk["sal"].clip(upper=50_000) // 500 * 500).where(jk["sal"].notna(), -1).astype(int)
-            g = jk.groupby(["sec", "mov", "idade", "grau", "bin_sal"]).size()
+            g = jk.groupby(["cbo", "sec", "mov", "idade", "grau", "bin_sal"]).size()
             for k, v in g.items():
                 key = (y, m) + tuple(k)
                 acc_demog[key] = acc_demog.get(key, 0) + int(v)
@@ -110,9 +110,14 @@ def main():
     pd.DataFrame([{"ano": k[0], "mes": k[1], "cbo6": k[2], "secao": k[3], "mov": k[4],
                    "porte": k[5], "n": v[0], "sal_medio": round(v[1] / v[2], 2) if v[2] else None}
                   for k, v in acc_porte.items()]).to_csv(f"{OUTDIR}/base_dados_porte_sp.csv", index=False)
-    pd.DataFrame([{"ano": k[0], "mes": k[1], "secao": k[2], "mov": k[3], "idade": k[4],
-                   "grau": k[5], "bin_sal": k[6], "n": v}
+    pd.DataFrame([{"ano": k[0], "mes": k[1], "cbo6": k[2], "secao": k[3], "mov": k[4], "idade": k[5],
+                   "grau": k[6], "bin_sal": k[7], "n": v}
                   for k, v in acc_demog.items()]).to_csv(f"{OUTDIR}/base_dados_demog_sp.csv", index=False)
+    # diagnóstico do código de porte (para auditoria do dicionário)
+    dp = {}
+    for k, v in acc_porte.items():
+        dp[k[5]] = dp.get(k[5], 0) + v[0]
+    print("DISTRIBUIÇÃO tamestabjan (confira contra o dicionário oficial do Novo CAGED):", dict(sorted(dp.items())), flush=True)
     print(f"CONCLUÍDO. Falhas: {falhas or 'nenhuma'}", flush=True)
     return 0
 
